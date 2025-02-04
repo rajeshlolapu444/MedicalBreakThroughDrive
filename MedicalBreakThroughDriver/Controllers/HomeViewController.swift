@@ -25,7 +25,6 @@ class HomeViewController: UIViewController {
     let months = [
         "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"
     ]
-    let rsraj = "rsraj"
     var ordersArray: [Order] = []
     override func viewDidLoad() {
         super.viewDidLoad()
