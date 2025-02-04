@@ -22,9 +22,7 @@ class ServiceModel: NSObject {
     // MARK: - POST REQUEST
     func postRequest(strURL:NSString,postParams:Encodable,postHeaders:NSDictionary,successHandler:@escaping( _ result:Any)->Void,failureHandler:@escaping (_ error:String)->Void) -> Void {
         if isConnectedToNetwork() == false {
-            //print("Please Check Internet")
-            
-         //   showToastforInterNet(message: "Please Check Internet")
+           // showToast(message: "Please Check Internet")
             return
         }
       //  LoaderView.shared.showLoader(in: self.view)
@@ -38,20 +36,13 @@ class ServiceModel: NSObject {
         }
         
         if let authToken = UserDefaults.standard.string(forKey: k_token) {
-            //print(authToken)
             request.setValue("Bearer" + " " + authToken,forHTTPHeaderField: "Authorization")
         }
         
         do {
-            let headerData = try! JSONSerialization.data(withJSONObject:postHeaders, options:.prettyPrinted)
-            let headerDataString = String(data: headerData, encoding: String.Encoding.utf8)!
-            
-            debugPrint(":\(headerDataString)")
             request.httpBody = try JSONEncoder().encode(postParams)
         }
         catch {
-            DispatchQueue.main.async(){
-            }
         }
         task = URLSession.shared.dataTask(with: request as URLRequest) {(data, response, error) in
             DispatchQueue.main.async(){
@@ -144,6 +135,62 @@ class ServiceModel: NSObject {
         }
         task?.resume()
     }
+    // MARK: - PUT REQUEST
+    func putRequest(strURL:NSString,postParams:Encodable,postHeaders:NSDictionary,successHandler:@escaping( _ result:Any)->Void,failureHandler:@escaping (_ error:String)->Void) -> Void {
+        if isConnectedToNetwork() == false {
+          //  showToastforInterNet(message: "Please Check Internet")
+            return
+        }
+        let urlStr:NSString = strURL.addingPercentEncoding(withAllowedCharacters: .urlFragmentAllowed)! as NSString
+        let url: NSURL = NSURL(string: urlStr as String)!
+        let request:NSMutableURLRequest = NSMutableURLRequest(url:url as URL)
+        request.httpMethod = "PUT"
+        request.addValue("application/json",forHTTPHeaderField:"Content-Type")
+        request.addValue("application/json",forHTTPHeaderField:"Accept")
+        if postHeaders["Authorization"] != nil  {
+        }
+        
+        if let authToken = UserDefaults.standard.string(forKey: k_token) {
+            request.setValue("Bearer" + " " + authToken,forHTTPHeaderField: "Authorization")
+        }
+        
+        task = URLSession.shared.dataTask(with: request as URLRequest) {(data, response, error) in
+            DispatchQueue.main.async(){
+                if response != nil {
+                    // Response Status Code
+                 //   let statusCode = (response as! HTTPURLResponse).statusCode
+//                    if statusCode == 401 {
+//                        failureHandler("unAuthorized")
+//                    }
+//                    if statusCode == 400 {
+//                        failureHandler("nvalid order or order cannot be accepted")
+//                    }
+//                    if statusCode == 500 {
+//                        //print("failuer 1")
+//                        failureHandler("unAuthorized")
+//                    } else if statusCode == 422 {
+//                        failureHandler("Phone number already exists")
+//                    }
+//                    else if error != nil
+//                    {
+//                        return
+//                    }
+//                    else {
+                        do {
+                            let parsedData = try JSONSerialization.jsonObject(with: data!, options:.mutableContainers) as! [String:Any]
+                            debugPrint(parsedData)
+                            successHandler(data! as NSData)
+                        } catch let error as NSError {
+                            debugPrint("error=\(error)")
+                            return
+                        }
+                    }
+                }
+           // }
+        }
+        task?.resume()
+    }
+    
     func isConnectedToNetwork() -> Bool {
         var zeroAddress = sockaddr_in(sin_len: 0, sin_family: 0, sin_port: 0, sin_addr: in_addr(s_addr: 0), sin_zero: (0, 0, 0, 0, 0, 0, 0, 0))
         zeroAddress.sin_len = UInt8(MemoryLayout.size(ofValue: zeroAddress))

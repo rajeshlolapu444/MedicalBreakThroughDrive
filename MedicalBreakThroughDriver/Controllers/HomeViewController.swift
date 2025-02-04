@@ -9,6 +9,7 @@ import UIKit
 
 class HomeViewController: UIViewController {
     
+    @IBOutlet weak var noOrdersLbl: UILabel!
     @IBOutlet weak var calendarCollectionView: UICollectionView!
     @IBOutlet weak var monthLabel: UILabel!
     @IBOutlet weak var yearLabel: UILabel!
@@ -22,9 +23,7 @@ class HomeViewController: UIViewController {
     var selectedYear = Calendar.current.component(.year, from: Date())
     var years: [Int] = []
     var clikedYear = false
-    let months = [
-        "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"
-    ]
+    let months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
     var ordersArray: [Order] = []
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -37,7 +36,9 @@ class HomeViewController: UIViewController {
         setupCollectionView()
         generateDates()
         pickerContainerView.isHidden = true
-        getOrdersListApi(date: "29-11-2024")//getCurrentDate())
+        //getOrdersListApi(date: "29-11-2024")//getCurrentDate())
+        getOrdersListApi(date: getCurrentDate())
+        debugPrint(PersistenceStorage.sharedInstance.driverProfileData?.accessToken ?? "", "accessToken")
     }
     // MARK: - Setup Collection View
     func setupCollectionView() {
@@ -126,13 +127,18 @@ class HomeViewController: UIViewController {
         pickerContainerView.isHidden = true
     }
     func getOrdersListApi(date: String){
+        LoaderView.shared.showLoader(in: self.view)
         HomeViewModel.shared.getOrdersListAPI(date: date) { data, status, msg  in
             if status {
+                LoaderView.shared.hideLoader()
                 self.ordersArray = data ?? []
                 debugPrint(self.ordersArray,"ordersArray")
+                self.noOrdersLbl.isHidden = !self.ordersArray.isEmpty
                 self.ordersListTableView.reloadData()
             } else {
+                self.noOrdersLbl.isHidden = false
                 self.showToast(message: msg ?? "")
+                LoaderView.shared.hideLoader()
             }
         }
     }
@@ -163,7 +169,8 @@ extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSour
         collectionView.reloadData()
         scrollToSelectedDate(animated: true)
         updateMonthYearLabels(for: dates[indexPath.item])
-        self.getOrdersListApi(date:"29-11-2024")//formatDate(dates[indexPath.item]))
+       // self.getOrdersListApi(date:"29-11-2024")//formatDate(dates[indexPath.item]))
+        self.getOrdersListApi(date:formatDate(dates[indexPath.item]))
     }
     // Update month & year when scrolling
 //    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {

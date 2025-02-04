@@ -16,3 +16,7 @@ let LOGIN_URL = BASEURL + "drivers/dlogin"
 
 //https://yesdone.com/api/v1/drivers/deliveryOrders?date=18-02-2024
 let GET_ORDERS_URL = BASEURL + "drivers/deliveryOrders"
+
+//https://yesdone.com/api/v1/drivers/orders/{orderid}
+
+let PUT_ORDER_STATUS_URL = BASEURL + "drivers/orders"

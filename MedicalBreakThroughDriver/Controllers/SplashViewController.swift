@@ -15,10 +15,10 @@ class SplashViewController: UIViewController {
     }
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        let rs = UserDefaults.standard.string(forKey: "rajesh")
-        debugPrint(rs ?? ",","rs")
-        if rs == "rs" {
-            Timer.scheduledTimer(withTimeInterval: 2.0, repeats: false) { _ in
+        let driverId = PersistenceStorage.sharedInstance.driverProfileData?.driver?.id ?? 0
+        debugPrint(driverId,"driverId")
+        if driverId != 0 {
+            Timer.scheduledTimer(withTimeInterval: 1.0, repeats: false) { _ in
                 let homeViewController = MAIN.instantiateViewController(withIdentifier: "HomeViewController") as! HomeViewController
                 self.navigationController?.pushViewController(homeViewController, animated: true)
             }
@@ -28,7 +28,6 @@ class SplashViewController: UIViewController {
                 self.navigationController?.pushViewController(homeVC, animated: true)
             }
         }
-
     }
 }
 

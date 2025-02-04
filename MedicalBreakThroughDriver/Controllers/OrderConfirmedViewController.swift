@@ -19,6 +19,7 @@ class OrderConfirmedViewController: UIViewController {
 
     @IBOutlet weak var instructionsBgView: UIView!
     
+    @IBOutlet weak var instructionLbl: UILabel!
     var orderData : Order?
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -36,8 +37,13 @@ class OrderConfirmedViewController: UIViewController {
     }
     
     @IBAction func startDeliveryBtnAct(_ sender: UIButton) {
-//        let vc = ProofOfDeliveryVC()
-//        self.navigationController?.pushViewController(vc, animated: true)
+//        HomeViewModel.shared.putOrdersStatusAPI(orderId: orderData?.orderID ?? 0, status: DeliveryStatus.accepted.rawValue) { status, msg in
+//            if status {
+//                self.showToast(message: msg ?? "")
+//            } else {
+//                self.showToast(message: msg ?? "")
+//            }
+//        }
         let orderVC = MAIN.instantiateViewController(withIdentifier: "MapViewController") as! MapViewController
         self.navigationController?.pushViewController(orderVC, animated: true)
     }
@@ -54,7 +60,13 @@ class OrderConfirmedViewController: UIViewController {
         } else {
             self.mobileNumberLbl.text = data.customer?.phone ?? "N/A"
         }
+        if data.deliveryInstructions == "" || data.deliveryInstructions == nil {
+            self.instructionLbl.text = "N/A"
+        } else {
+            self.instructionLbl.text = data.deliveryInstructions ?? "N/A"
+        }
         loadImage(from: data.products?.first?.productImage ?? "", into: productImgView)
+        
     }
     func loadImage(from urlString: String, into imageView: UIImageView) {
         guard let url = URL(string: urlString) else { return }
