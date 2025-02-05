@@ -68,7 +68,7 @@ class LoginViewController: UIViewController {
                 debugPrint(headers,"headerss")
                 PersistenceStorage.sharedInstance.driverProfileData = loginResponse?.data
                 LoaderView.shared.hideLoader()
-                self.navigateToHome()
+                self.navigateToSummary()
             }
              else {
                 LoaderView.shared.hideLoader()
@@ -83,6 +83,10 @@ class LoginViewController: UIViewController {
     func navigateToHome() {
         let homeViewController = MAIN.instantiateViewController(withIdentifier: "HomeViewController") as! HomeViewController
         navigationController?.pushViewController(homeViewController, animated: true)
+    }
+    func navigateToSummary() {
+        let vc = MAIN.instantiateViewController(withIdentifier: "SummaryPageViewController") as! SummaryPageViewController
+        navigationController?.pushViewController(vc, animated: true)
     }
 }
 

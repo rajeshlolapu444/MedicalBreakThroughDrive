@@ -9,6 +9,7 @@ import UIKit
 
 class HomeViewController: UIViewController {
     
+    @IBOutlet weak var titleLbl: UILabel!
     @IBOutlet weak var noOrdersLbl: UILabel!
     @IBOutlet weak var calendarCollectionView: UICollectionView!
     @IBOutlet weak var monthLabel: UILabel!
@@ -25,8 +26,10 @@ class HomeViewController: UIViewController {
     var clikedYear = false
     let months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
     var ordersArray: [Order] = []
+    var topTitle = "Orders"
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.titleLbl.text = topTitle
         let currentYear = Calendar.current.component(.year, from: Date())
                 // Generate an array of years from the current year to the past
         for year in stride(from: currentYear, to: 1900, by: -1) {
@@ -48,6 +51,9 @@ class HomeViewController: UIViewController {
         calendarCollectionView.backgroundColor = .white
         calendarCollectionView.showsHorizontalScrollIndicator = false
         calendarCollectionView.decelerationRate = .fast
+    }
+    @IBAction func backBtnAct(_ sender: UIButton) {
+        self.navigationController?.popViewController(animated: true)
     }
     // MARK: - Setup Table View
     func setupTableView() {

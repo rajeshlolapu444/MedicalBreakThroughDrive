@@ -19,8 +19,7 @@ class SplashViewController: UIViewController {
         debugPrint(driverId,"driverId")
         if driverId != 0 {
             Timer.scheduledTimer(withTimeInterval: 1.0, repeats: false) { _ in
-                let homeViewController = MAIN.instantiateViewController(withIdentifier: "HomeViewController") as! HomeViewController
-                self.navigationController?.pushViewController(homeViewController, animated: true)
+                self.navigateToSummary()
             }
         } else {
             Timer.scheduledTimer(withTimeInterval: 2.0, repeats: false) { _ in
@@ -28,6 +27,14 @@ class SplashViewController: UIViewController {
                 self.navigationController?.pushViewController(homeVC, animated: true)
             }
         }
+    }
+    func navigateToHome() {
+        let homeViewController = MAIN.instantiateViewController(withIdentifier: "HomeViewController") as! HomeViewController
+        navigationController?.pushViewController(homeViewController, animated: true)
+    }
+    func navigateToSummary() {
+        let vc = MAIN.instantiateViewController(withIdentifier: "SummaryPageViewController") as! SummaryPageViewController
+        navigationController?.pushViewController(vc, animated: true)
     }
 }
 
