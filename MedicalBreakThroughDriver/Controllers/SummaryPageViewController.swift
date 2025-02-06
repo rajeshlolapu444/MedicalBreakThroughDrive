@@ -8,13 +8,13 @@
 import UIKit
 
 class SummaryPageViewController: UIViewController {
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         // Do any additional setup after loading the view.
     }
-   
+    
     @IBAction func activeOrdersBtnAct(_ sender: UIButton) {
         let homeViewController = MAIN.instantiateViewController(withIdentifier: "HomeViewController") as! HomeViewController
         homeViewController.topTitle = "Active Orders"
@@ -29,4 +29,19 @@ class SummaryPageViewController: UIViewController {
         let homeViewController = MAIN.instantiateViewController(withIdentifier: "HomeViewController") as! HomeViewController
         navigationController?.pushViewController(homeViewController, animated: true)
     }
+    @IBAction func profileBtnAct(_ sender: UIButton) {
+        let vc = ProfileViewController()
+        self.navigationController?.pushViewController(vc, animated: true)
+    }
+    @IBAction func helpBtnAct(_ sender: UIButton) {
+        let vc = MAIN.instantiateViewController(withIdentifier: "HelpViewController") as! HelpViewController
+        navigationController?.pushViewController(vc, animated: true)
+    }
+//    func navigationTo<T: UIViewController>(identifier: String, type: T.Type) {
+//        if let vc = MAIN.instantiateViewController(withIdentifier: identifier) as? T {
+//            navigationController?.pushViewController(vc, animated: true)
+//        } else {
+//            print("Failed to instantiate view controller with identifier: \(identifier)")
+//        }
+//    }
 }

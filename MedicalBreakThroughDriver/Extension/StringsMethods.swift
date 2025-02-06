@@ -27,6 +27,19 @@ func getCurrentDate() -> String {
     return dateFormatter.string(from: Date())
 }
 
+func convertDateFormat(dateString: String, from inputFormat: String, to outputFormat: String = "dd-MM-yyyy", timeZone: TimeZone = .current) -> String? {
+    let dateFormatter = DateFormatter()
+    dateFormatter.dateFormat = inputFormat
+    dateFormatter.timeZone = timeZone
+    
+    // Convert string to Date
+    guard let date = dateFormatter.date(from: dateString) else { return nil }
+    
+    // Convert Date to new format
+    dateFormatter.dateFormat = outputFormat
+    return dateFormatter.string(from: date)
+}
+
 extension String {
     func isValidEmail() -> Bool {
         // here, `try!` will always succeed because the pattern is valid

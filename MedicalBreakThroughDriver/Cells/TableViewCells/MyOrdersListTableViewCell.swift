@@ -14,6 +14,7 @@ class MyOrdersListTableViewCell: UITableViewCell {
     @IBOutlet weak var addressLbl: UILabel!
     @IBOutlet weak var timeLbl: UILabel!
     @IBOutlet weak var productImgView: UIImageView!
+    @IBOutlet weak var contactLbl: UILabel!
     @IBOutlet weak var confirmedBtn: UIButton!
     var confirmedBtnNavi: (() -> Void)?
     override func awakeFromNib() {
@@ -38,7 +39,12 @@ class MyOrdersListTableViewCell: UITableViewCell {
             self.timeLbl.text = formattedDate
         }
         loadImage(from: data.products?.first?.productImage ?? "", into: productImgView)
-        self.confirmedBtn.setTitle(data.status ?? "", for: .normal)
+     //   self.confirmedBtn.setTitle(data.status ?? "", for: .normal)
+        if data.customer?.phone == nil || data.customer?.phone == "" {
+            self.contactLbl.text = "No Cantact"
+        } else {
+            self.contactLbl.text = data.customer?.phone
+        }
     }
     func loadImage(from urlString: String, into imageView: UIImageView) {
         guard let url = URL(string: urlString) else { return }
@@ -56,15 +62,4 @@ class MyOrdersListTableViewCell: UITableViewCell {
 // MARK: - NibReusable
 extension MyOrdersListTableViewCell: NibReusable { }
 
-func convertDateFormat(dateString: String, from inputFormat: String, to outputFormat: String = "dd-MM-yyyy", timeZone: TimeZone = .current) -> String? {
-    let dateFormatter = DateFormatter()
-    dateFormatter.dateFormat = inputFormat
-    dateFormatter.timeZone = timeZone
-    
-    // Convert string to Date
-    guard let date = dateFormatter.date(from: dateString) else { return nil }
-    
-    // Convert Date to new format
-    dateFormatter.dateFormat = outputFormat
-    return dateFormatter.string(from: date)
-}
+

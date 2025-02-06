@@ -1,5 +1,5 @@
 //
-//  OrderConfirmedViewController.swift
+//  OrderDetailViewController.swift
 //  MedicalBreakThroughDriver
 //
 //  Created by macbok on 30/01/25.
@@ -7,7 +7,7 @@
 
 import UIKit
 
-class OrderConfirmedViewController: UIViewController {
+class OrderDetailViewController: UIViewController {
 
     @IBOutlet weak var orderIdLbl: UILabel!
     @IBOutlet weak var productNameLbl: UILabel!
@@ -23,9 +23,9 @@ class OrderConfirmedViewController: UIViewController {
     var orderData : Order?
     override func viewDidLoad() {
         super.viewDidLoad()
-//        instructionsBgView.layer.cornerRadius = 5
+        instructionsBgView.layer.cornerRadius = 5
         instructionsBgView.layer.borderWidth = 1
-        instructionsBgView.layer.borderColor = UIColor.lightGray.cgColor
+        instructionsBgView.layer.borderColor = UIColor.clear.cgColor
         // Do any additional setup after loading the view.
         if let data = orderData {
             loadData(data: data)
@@ -44,8 +44,9 @@ class OrderConfirmedViewController: UIViewController {
 //                self.showToast(message: msg ?? "")
 //            }
 //        }
-        let orderVC = MAIN.instantiateViewController(withIdentifier: "MapViewController") as! MapViewController
-        self.navigationController?.pushViewController(orderVC, animated: true)
+        let vc = MAIN.instantiateViewController(withIdentifier: "MapViewController") as! MapViewController
+        vc.orderData = self.orderData
+        self.navigationController?.pushViewController(vc, animated: true)
     }
     func loadData(data: Order) {
         self.orderIdLbl.text = "#\(data.orderID ?? 0)"
@@ -61,7 +62,7 @@ class OrderConfirmedViewController: UIViewController {
             self.mobileNumberLbl.text = data.customer?.phone ?? "N/A"
         }
         if data.deliveryInstructions == "" || data.deliveryInstructions == nil {
-            self.instructionLbl.text = "N/A"
+            //self.instructionLbl.text = "N/A"
         } else {
             self.instructionLbl.text = data.deliveryInstructions ?? "N/A"
         }

@@ -18,6 +18,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate {
     let destinationCoordinate = CLLocationCoordinate2D(latitude: 17.452938, longitude: 78.380981) // Your destination coordinates
     var userLocationAnnotation: MKPointAnnotation?
     var previousUserCoordinate: CLLocationCoordinate2D?
+    var orderData : Order?
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -68,19 +69,12 @@ class MapViewController: UIViewController, CLLocationManagerDelegate {
         self.navigationController?.popViewController(animated: true)
     }
     @IBAction func NextBtnAct(_ sender: UIButton) {
-        let vc = ProofOfDeliveryVC()
-        self.navigationController?.pushViewController(vc, animated: true)
+//        let vc = ProofOfDeliveryVC()
+//        self.navigationController?.pushViewController(vc, animated: true)
+        let vc = MAIN.instantiateViewController(withIdentifier: "ConfirmDeliveryVC") as! ConfirmDeliveryVC
+        vc.orderData = self.orderData
+        navigationController?.pushViewController(vc, animated: true)
     }
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
 }
 //extension MapViewController {
 //    func setupLocationManager() {

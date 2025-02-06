@@ -39,8 +39,8 @@ class HomeViewController: UIViewController {
         setupCollectionView()
         generateDates()
         pickerContainerView.isHidden = true
-        //getOrdersListApi(date: "29-11-2024")//getCurrentDate())
-        getOrdersListApi(date: getCurrentDate())
+        getOrdersListApi(date: "29-11-2024")//getCurrentDate())
+       // getOrdersListApi(date: getCurrentDate())
         debugPrint(PersistenceStorage.sharedInstance.driverProfileData?.accessToken ?? "", "accessToken")
     }
     // MARK: - Setup Collection View
@@ -54,6 +54,16 @@ class HomeViewController: UIViewController {
     }
     @IBAction func backBtnAct(_ sender: UIButton) {
         self.navigationController?.popViewController(animated: true)
+    }
+    @IBAction func calendarBtnAct(_ sender: UIButton) {
+        let calendarVC = CalendarPopupViewController()
+        calendarVC.modalPresentationStyle = .popover
+        if let popover = calendarVC.popoverPresentationController {
+            popover.sourceView = view
+            popover.sourceRect = CGRect(x: view.bounds.midX, y: view.bounds.midY, width: 0, height: 0)
+            popover.permittedArrowDirections = []
+        }
+       // present(calendarVC, animated: true, completion: nil)
     }
     // MARK: - Setup Table View
     func setupTableView() {
@@ -204,13 +214,13 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
         let orderData = ordersArray[indexPath.row]
         cell.loadData(data: orderData)
         cell.confirmedBtnNavi = {
-            let orderVC = MAIN.instantiateViewController(withIdentifier: "OrderConfirmedViewController") as! OrderConfirmedViewController
+            let orderVC = MAIN.instantiateViewController(withIdentifier: "OrderDetailViewController") as! OrderDetailViewController
             self.navigationController?.pushViewController(orderVC, animated: true)
         }
         return cell
     }
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let orderVC = MAIN.instantiateViewController(withIdentifier: "OrderConfirmedViewController") as! OrderConfirmedViewController
+        let orderVC = MAIN.instantiateViewController(withIdentifier: "OrderDetailViewController") as! OrderDetailViewController
         orderVC.orderData = ordersArray[indexPath.row]
         self.navigationController?.pushViewController(orderVC, animated: true)
     }
