@@ -19,7 +19,7 @@ class ProfileViewController: UIViewController {
         setupData()
     }
     func setupData() {
-        let data = PersistenceStorage.sharedInstance.driverProfileData?.driver
+        let data = PersistenceStorage.sharedInstance.driverProfileData
         self.firstNameTF.text = data?.firstName
         self.lastNameTF.text = data?.lastName
         self.emailTF.text = data?.email

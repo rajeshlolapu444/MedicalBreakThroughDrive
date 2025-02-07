@@ -12,16 +12,29 @@ class PersistenceStorage {
     
     static let sharedInstance = PersistenceStorage()
     let defaults = UserDefaults.standard
-    var driverProfileData: LoginResponseDataModel? {
+    
+    var loginResponseData: LoginResponseDataModel? {
         get {
-            guard let data = UserDefaults.standard.data(forKey: "DriverProfileData") else {
+            guard let data = UserDefaults.standard.data(forKey: "loginResponseData") else {
                 return nil
             }
             return try? JSONDecoder().decode(LoginResponseDataModel.self, from: data)
         }
         set {
             let data = try? JSONEncoder().encode(newValue)
-            UserDefaults.standard.set(data, forKey: "DriverProfileData")
+            UserDefaults.standard.set(data, forKey: "loginResponseData")
+        }
+    }
+    var driverProfileData: DriverProfileModel? {
+        get {
+            guard let data = UserDefaults.standard.data(forKey: "driverProfileData") else {
+                return nil
+            }
+            return try? JSONDecoder().decode(DriverProfileModel.self, from: data)
+        }
+        set {
+            let data = try? JSONEncoder().encode(newValue)
+            UserDefaults.standard.set(data, forKey: "driverProfileData")
         }
     }
 }

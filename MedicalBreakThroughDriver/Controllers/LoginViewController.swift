@@ -66,7 +66,7 @@ class LoginViewController: UIViewController {
                 UserDefaults.standard.setValue(loginResponse?.data?.accessToken ?? "", forKey: k_token)
                 headers.updateValue("Bearer " + (loginResponse?.data?.accessToken ?? ""), forKey: "Authorization")
                 debugPrint(headers,"headerss")
-                PersistenceStorage.sharedInstance.driverProfileData = loginResponse?.data
+                PersistenceStorage.sharedInstance.loginResponseData = loginResponse?.data
                 LoaderView.shared.hideLoader()
                 self.navigateToSummary()
             }
@@ -107,70 +107,10 @@ struct LoginResponseModel: Codable {
         case data = "data"
     }
 }
-
 struct LoginResponseDataModel: Codable {
     let accessToken : String?
-    let driver: DriverProfileModel?
    
     enum CodingKeys: String, CodingKey {
         case accessToken = "access_token"
-        case driver
-    }
-}
-
-// MARK: - Driver
-struct DriverProfileModel: Codable {
-    let id: Int?
-    let firstName, lastName, email, name: String?
-    let rating, countryCode, phone, profileImage: String?
-    let companyLogo, city, state, address: String?
-    let country, postalCode, gender, dateOfBirth: String?
-    let firebaseToken, nickName, storeName, storeUserName: String?
-    let reviewsCount: Int?
-    let totalLikes, accountType: String?
-    let isVerified: Bool?
-    let premiumType, buyerMembership, saunaMembership, memberSince: String?
-    let isAdmin: Bool?
-   // let store: JSONNull?
-    let department: Department?
-
-    enum CodingKeys: String, CodingKey {
-        case id
-        case firstName = "first_name"
-        case lastName = "last_name"
-        case email, name, rating
-        case countryCode = "country_code"
-        case phone
-        case profileImage = "profile_image"
-        case companyLogo = "company_logo"
-        case city, state, address, country
-        case postalCode = "postal_code"
-        case gender
-        case dateOfBirth = "date_of_birth"
-        case firebaseToken = "firebase_token"
-        case nickName = "nick_name"
-        case storeName = "store_name"
-        case storeUserName = "store_user_name"
-        case reviewsCount = "reviews_count"
-        case totalLikes = "total_likes"
-        case accountType = "account_type"
-        case isVerified = "is_verified"
-        case premiumType = "premium_type"
-        case buyerMembership = "buyer_membership"
-        case saunaMembership = "sauna_membership"
-        case memberSince = "member_since"
-        case isAdmin = "is_admin"
-        case department
-    }
-}
-
-// MARK: - Department
-struct Department: Codable {
-    let id: Int?
-    let name, aliasName: String?
-
-    enum CodingKeys: String, CodingKey {
-        case id, name
-        case aliasName = "alias_name"
     }
 }

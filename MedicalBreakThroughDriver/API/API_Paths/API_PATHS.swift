@@ -20,3 +20,7 @@ let GET_ORDERS_URL = BASEURL + "drivers/deliveryOrders"
 //https://yesdone.com/api/v1/drivers/orders/{orderid}
 
 let PUT_ORDER_STATUS_URL = BASEURL + "drivers/orders"
+
+//https://yesdone.com/api/v1/drivers/driver
+
+let GET_DRIVER_DETAILS_URL = BASEURL + "drivers/driver"

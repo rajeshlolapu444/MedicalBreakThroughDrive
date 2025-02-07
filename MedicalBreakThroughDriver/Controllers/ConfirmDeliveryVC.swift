@@ -17,6 +17,7 @@ struct MediaItem {
 
 
 class ConfirmDeliveryVC: UIViewController {
+    @IBOutlet weak var notesBgView: UIView!
     @IBOutlet weak var orderIdLbl: UILabel!
     @IBOutlet weak var productNameLbl: UILabel!
     @IBOutlet weak var customerNameLbl: UILabel!
@@ -40,6 +41,8 @@ class ConfirmDeliveryVC: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.notesBgView.layer.borderWidth = 1
+        self.notesBgView.layer.borderColor = UIColor.lightGray.cgColor
         if let data = orderData {
             loadData(data: data)
             self.deliveredSelectionBgView.isHidden = true

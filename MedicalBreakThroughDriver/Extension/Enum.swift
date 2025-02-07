@@ -17,4 +17,4 @@ enum DeliveryStatus: String {
 enum MediaType {
     case image
     case video
-}
+} 

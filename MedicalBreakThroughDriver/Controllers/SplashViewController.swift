@@ -15,7 +15,7 @@ class SplashViewController: UIViewController {
     }
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        let driverId = PersistenceStorage.sharedInstance.driverProfileData?.driver?.id ?? 0
+        let driverId = PersistenceStorage.sharedInstance.driverProfileData?.id ?? 0
         debugPrint(driverId,"driverId")
         if driverId != 0 {
             Timer.scheduledTimer(withTimeInterval: 1.0, repeats: false) { _ in

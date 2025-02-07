@@ -11,23 +11,34 @@ import CoreLocation
 import MapKit
 
 class MapViewController: UIViewController, CLLocationManagerDelegate {
+    @IBOutlet weak var nextBtn: UIButton!
     @IBOutlet weak var mapKitView: MKMapView!
     @IBOutlet weak var mapContainerView: UIView!
     var locationManager = CLLocationManager()
     var mapView: GMSMapView!
-    let destinationCoordinate = CLLocationCoordinate2D(latitude: 17.452938, longitude: 78.380981) // Your destination coordinates
+  //  let destinationCoordinate = CLLocationCoordinate2D(latitude: 17.452938, longitude: 78.380981) // Your destination coordinates
+    var userCoordinate: CLLocationCoordinate2D?
+    var destinations: [CLLocationCoordinate2D] = [
+           CLLocationCoordinate2D(latitude: 17.452938, longitude: 78.380981), // Destination 1
+           CLLocationCoordinate2D(latitude: 17.496602, longitude: 78.367925), // Destination 2
+           CLLocationCoordinate2D(latitude: 17.476824, longitude: 78.421963)  // Destination 3
+       ]
+
+       var sortedDestinations: [CLLocationCoordinate2D] = []
+    
     var userLocationAnnotation: MKPointAnnotation?
     var previousUserCoordinate: CLLocationCoordinate2D?
     var orderData : Order?
+    var isfromSummary : Bool = false
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        self.nextBtn.isHidden = isfromSummary
         mapKitView.delegate = self
         mapKitView.showsUserLocation = true
         setupLocationManager()
-        
+        addAllDestinationMarkers()
         // Add marker for destination
-                addMarker(at: destinationCoordinate, title: "Destination")
+                //addMarker(at: destinationCoordinate, title: "Destination")
 //        // Request location permission
 //        locationManager.delegate = self
 //        locationManager.requestWhenInUseAuthorization()
@@ -178,81 +189,173 @@ extension MapViewController: MKMapViewDelegate {
        }
 }
 
+//extension MapViewController {
+//    func setupLocationManager() {
+//            locationManager.delegate = self
+//            locationManager.desiredAccuracy = kCLLocationAccuracyBest
+//            locationManager.requestWhenInUseAuthorization()
+//            locationManager.startUpdatingLocation()
+//        }
+//
+//        func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+//            guard let userLocation = locations.last else { return }
+//            let userCoordinate = userLocation.coordinate
+//
+//            // Update current location marker dynamically
+//            updateUserMarker(at: userCoordinate)
+//
+//            // Only update route if the user has moved significantly (10 meters)
+//            if previousUserCoordinate == nil || distanceBetween(previousUserCoordinate!, userCoordinate) > 10 {
+//                previousUserCoordinate = userCoordinate
+//                updateRoute(from: userCoordinate, to: destinationCoordinate)
+//            }
+//
+//            // Keep the camera centered on the user
+//            let region = MKCoordinateRegion(
+//                center: userCoordinate,
+//                latitudinalMeters: 1000,
+//                longitudinalMeters: 1000
+//            )
+//            mapKitView.setRegion(region, animated: true)
+//        }
+//
+//        func updateUserMarker(at coordinate: CLLocationCoordinate2D) {
+//            // Remove previous user location marker
+//            if let existingAnnotation = userLocationAnnotation {
+//                mapKitView.removeAnnotation(existingAnnotation)
+//            }
+//
+//            // Add a new user location marker
+//            let annotation = MKPointAnnotation()
+//            annotation.coordinate = coordinate
+//            annotation.title = "You are here"
+//            mapKitView.addAnnotation(annotation)
+//
+//            // Store reference for future updates
+//            userLocationAnnotation = annotation
+//        }
+//
+//        func addMarker(at coordinate: CLLocationCoordinate2D, title: String) {
+//            let annotation = MKPointAnnotation()
+//            annotation.coordinate = coordinate
+//            annotation.title = title
+//            mapKitView.addAnnotation(annotation)
+//        }
+//
+//        func updateRoute(from source: CLLocationCoordinate2D, to destination: CLLocationCoordinate2D) {
+//            // Remove old routes
+//            mapKitView.overlays.forEach { if $0 is MKPolyline { mapKitView.removeOverlay($0) } }
+//
+//            let sourcePlacemark = MKPlacemark(coordinate: source)
+//            let destinationPlacemark = MKPlacemark(coordinate: destination)
+//
+//            let directionRequest = MKDirections.Request()
+//            directionRequest.source = MKMapItem(placemark: sourcePlacemark)
+//            directionRequest.destination = MKMapItem(placemark: destinationPlacemark)
+//            directionRequest.transportType = .automobile
+//
+//            let directions = MKDirections(request: directionRequest)
+//            directions.calculate { (response, error) in
+//                guard let response = response, let route = response.routes.first else { return }
+//                self.mapKitView.addOverlay(route.polyline, level: .aboveRoads)
+//            }
+//        }
+//
+//        func distanceBetween(_ coord1: CLLocationCoordinate2D, _ coord2: CLLocationCoordinate2D) -> CLLocationDistance {
+//            let loc1 = CLLocation(latitude: coord1.latitude, longitude: coord1.longitude)
+//            let loc2 = CLLocation(latitude: coord2.latitude, longitude: coord2.longitude)
+//            return loc1.distance(from: loc2)
+//        }
+//    }
+
 extension MapViewController {
+   
     func setupLocationManager() {
-            locationManager.delegate = self
-            locationManager.desiredAccuracy = kCLLocationAccuracyBest
-            locationManager.requestWhenInUseAuthorization()
-            locationManager.startUpdatingLocation()
+        locationManager.delegate = self
+        locationManager.desiredAccuracy = kCLLocationAccuracyBest
+        locationManager.requestWhenInUseAuthorization()
+        locationManager.startUpdatingLocation()
+    }
+
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        guard let userLocation = locations.last else { return }
+        userCoordinate = userLocation.coordinate
+
+        // Sort destinations based on distance from user
+        sortedDestinations = destinations.sorted { (loc1, loc2) in
+            let distance1 = distanceBetween(userLocation.coordinate, loc1)
+            let distance2 = distanceBetween(userLocation.coordinate, loc2)
+            return distance1 < distance2
         }
 
-        func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-            guard let userLocation = locations.last else { return }
-            let userCoordinate = userLocation.coordinate
+        // Add all destination markers
+        addAllDestinationMarkers()
 
-            // Update current location marker dynamically
-            updateUserMarker(at: userCoordinate)
+        // Show all routes at the same time in order
+        drawRoutes()
+    }
 
-            // Only update route if the user has moved significantly (10 meters)
-            if previousUserCoordinate == nil || distanceBetween(previousUserCoordinate!, userCoordinate) > 10 {
-                previousUserCoordinate = userCoordinate
-                updateRoute(from: userCoordinate, to: destinationCoordinate)
-            }
+    func drawRoutes() {
+        guard let userLocation = userCoordinate else { return }
+        
+        var allLocations = [userLocation] + sortedDestinations // Start with user location
 
-            // Keep the camera centered on the user
-            let region = MKCoordinateRegion(
-                center: userCoordinate,
-                latitudinalMeters: 1000,
-                longitudinalMeters: 1000
-            )
-            mapKitView.setRegion(region, animated: true)
+        for i in 0..<allLocations.count - 1 {
+            let source = allLocations[i]
+            let destination = allLocations[i + 1]
+            drawRoute(from: source, to: destination)
+        }
+        adjustMapZoom()
+    }
+    func adjustMapZoom() {
+        var zoomRect = MKMapRect.null
+
+        // Include user location in zoom calculation
+        if let userLocation = userCoordinate {
+            let point = MKMapPoint(userLocation)
+            zoomRect = MKMapRect(x: point.x, y: point.y, width: 0, height: 0)
         }
 
-        func updateUserMarker(at coordinate: CLLocationCoordinate2D) {
-            // Remove previous user location marker
-            if let existingAnnotation = userLocationAnnotation {
-                mapKitView.removeAnnotation(existingAnnotation)
-            }
-
-            // Add a new user location marker
-            let annotation = MKPointAnnotation()
-            annotation.coordinate = coordinate
-            annotation.title = "You are here"
-            mapKitView.addAnnotation(annotation)
-
-            // Store reference for future updates
-            userLocationAnnotation = annotation
+        // Include all destinations in zoom calculation
+        for destination in sortedDestinations {
+            let point = MKMapPoint(destination)
+            let rect = MKMapRect(x: point.x, y: point.y, width: 0, height: 0)
+            zoomRect = zoomRect.union(rect)
         }
 
-        func addMarker(at coordinate: CLLocationCoordinate2D, title: String) {
-            let annotation = MKPointAnnotation()
-            annotation.coordinate = coordinate
-            annotation.title = title
-            mapKitView.addAnnotation(annotation)
-        }
+        // Apply a padding so markers don't touch screen edges
+        let edgePadding = UIEdgeInsets(top: 50, left: 50, bottom: 50, right: 50)
+        mapKitView.setVisibleMapRect(zoomRect, edgePadding: edgePadding, animated: true)
+    }
 
-        func updateRoute(from source: CLLocationCoordinate2D, to destination: CLLocationCoordinate2D) {
-            // Remove old routes
-            mapKitView.overlays.forEach { if $0 is MKPolyline { mapKitView.removeOverlay($0) } }
+    func drawRoute(from source: CLLocationCoordinate2D, to destination: CLLocationCoordinate2D) {
+        let sourcePlacemark = MKPlacemark(coordinate: source)
+        let destinationPlacemark = MKPlacemark(coordinate: destination)
 
-            let sourcePlacemark = MKPlacemark(coordinate: source)
-            let destinationPlacemark = MKPlacemark(coordinate: destination)
+        let directionRequest = MKDirections.Request()
+        directionRequest.source = MKMapItem(placemark: sourcePlacemark)
+        directionRequest.destination = MKMapItem(placemark: destinationPlacemark)
+        directionRequest.transportType = .automobile
 
-            let directionRequest = MKDirections.Request()
-            directionRequest.source = MKMapItem(placemark: sourcePlacemark)
-            directionRequest.destination = MKMapItem(placemark: destinationPlacemark)
-            directionRequest.transportType = .automobile
-
-            let directions = MKDirections(request: directionRequest)
-            directions.calculate { (response, error) in
-                guard let response = response, let route = response.routes.first else { return }
-                self.mapKitView.addOverlay(route.polyline, level: .aboveRoads)
-            }
-        }
-
-        func distanceBetween(_ coord1: CLLocationCoordinate2D, _ coord2: CLLocationCoordinate2D) -> CLLocationDistance {
-            let loc1 = CLLocation(latitude: coord1.latitude, longitude: coord1.longitude)
-            let loc2 = CLLocation(latitude: coord2.latitude, longitude: coord2.longitude)
-            return loc1.distance(from: loc2)
+        let directions = MKDirections(request: directionRequest)
+        directions.calculate { (response, error) in
+            guard let response = response, let route = response.routes.first else { return }
+            self.mapKitView.addOverlay(route.polyline, level: .aboveRoads)
         }
     }
+
+    func distanceBetween(_ coord1: CLLocationCoordinate2D, _ coord2: CLLocationCoordinate2D) -> CLLocationDistance {
+        let loc1 = CLLocation(latitude: coord1.latitude, longitude: coord1.longitude)
+        let loc2 = CLLocation(latitude: coord2.latitude, longitude: coord2.longitude)
+        return loc1.distance(from: loc2)
+    }
+
+    func addAllDestinationMarkers() {
+        for (index, coordinate) in sortedDestinations.enumerated() {
+            let annotation = MKPointAnnotation()
+            annotation.coordinate = coordinate
+            annotation.title = "Destination \(index + 1)"
+            mapKitView.addAnnotation(annotation)
+        }
+    }
+}
