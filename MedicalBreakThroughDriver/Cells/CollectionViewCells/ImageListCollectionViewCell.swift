@@ -9,6 +9,7 @@ import UIKit
 
 class ImageListCollectionViewCell: UICollectionViewCell {
 
+    @IBOutlet weak var previewImg: UIImageView!
     @IBOutlet weak var deleteImgBtn: UIButton!
     @IBOutlet weak var bgView: UIView!
     @IBOutlet weak var takePhotoBtn: UIButton!
