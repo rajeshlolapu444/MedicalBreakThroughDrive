@@ -17,6 +17,7 @@ class MyOrdersListTableViewCell: UITableViewCell {
     @IBOutlet weak var contactLbl: UILabel!
     @IBOutlet weak var confirmedBtn: UIButton!
     var confirmedBtnNavi: (() -> Void)?
+    var notesBtn: (() -> Void)?
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
@@ -29,6 +30,9 @@ class MyOrdersListTableViewCell: UITableViewCell {
     }
     @IBAction func confirmedBtnAct(_ sender: UIButton) {
         confirmedBtnNavi?()
+    }
+    @IBAction func notesBtnAct(_ sender: UIButton) {
+        self.notesBtn?()
     }
     func loadData(data: Order) {
         self.orderIdLbl.text = "#\(data.orderID ?? 0)"

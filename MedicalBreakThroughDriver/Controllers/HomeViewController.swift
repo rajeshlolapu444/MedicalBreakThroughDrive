@@ -17,6 +17,9 @@ class HomeViewController: UIViewController {
     @IBOutlet weak var ordersListTableView: UITableView!
     @IBOutlet weak var pickerContainerView: UIView!
     @IBOutlet weak var pickerView: UIPickerView!
+    @IBOutlet weak var notesPopupView: UIView!
+    @IBOutlet weak var notesTitleLbl: UILabel!
+    @IBOutlet weak var notesTextViewBgView: UIView!
     var dates = [Date]()
     let calendar = Calendar.current
     var selectedIndexPath: IndexPath?
@@ -42,6 +45,10 @@ class HomeViewController: UIViewController {
         getOrdersListApi(date: "29-11-2024")//getCurrentDate())
        // getOrdersListApi(date: getCurrentDate())
         debugPrint(PersistenceStorage.sharedInstance.loginResponseData?.accessToken ?? "", "accessToken")
+        self.notesPoupViewSetup()
+    }
+    override func viewWillAppear(_ animated: Bool) {
+        self.notesPopupView.isHidden = true
     }
     // MARK: - Setup Collection View
     func setupCollectionView() {
@@ -52,6 +59,11 @@ class HomeViewController: UIViewController {
         calendarCollectionView.showsHorizontalScrollIndicator = false
         calendarCollectionView.decelerationRate = .fast
     }
+    func notesPoupViewSetup() {
+        self.notesTextViewBgView.layer.borderColor = UIColor.lightGray.cgColor
+        self.notesTextViewBgView.layer.borderWidth = 1
+    }
+
     @IBAction func backBtnAct(_ sender: UIButton) {
         self.navigationController?.popViewController(animated: true)
     }
@@ -161,6 +173,9 @@ class HomeViewController: UIViewController {
             }
         }
     }
+    @IBAction func notePopupCloseBtnAct(_ sender: UIButton) {
+        self.notesPopupView.isHidden = true
+    }
 }
 
 // MARK: - Collection View Methods
@@ -219,6 +234,13 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
         cell.confirmedBtnNavi = {
             let orderVC = MAIN.instantiateViewController(withIdentifier: "OrderDetailViewController") as! OrderDetailViewController
             self.navigationController?.pushViewController(orderVC, animated: true)
+        }
+        cell.notesBtn = {
+            self.notesPopupView.isHidden = false
+            self.notesTitleLbl.text = "Add notes for order #\(orderData.orderID ?? 0)"
+        }
+        if titleLbl.text == "Past Orders" {
+            
         }
         return cell
     }
