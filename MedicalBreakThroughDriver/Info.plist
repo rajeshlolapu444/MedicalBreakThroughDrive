@@ -2,14 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>NSCameraUsageDescription</key>
-	<string>We need access to the camera to capture photos and videos.</string>
-	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>We need access to save captured media to your photo library.</string>
-	<key>NSMicrophoneUsageDescription</key>
-	<string>We need access to the microphone to record audio in videos.</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>We need access to your photo library to save and select photos and videos.</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>
