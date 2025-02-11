@@ -11,26 +11,15 @@ class HomeViewController: UIViewController {
     
     @IBOutlet weak var titleLbl: UILabel!
     @IBOutlet weak var noOrdersLbl: UILabel!
-    @IBOutlet weak var calendarCollectionView: UICollectionView!
     @IBOutlet weak var monthLabel: UILabel!
     @IBOutlet weak var yearLabel: UILabel!
     @IBOutlet weak var ordersListTableView: UITableView!
-    @IBOutlet weak var pickerContainerView: UIView!
-    @IBOutlet weak var pickerView: UIPickerView!
     @IBOutlet weak var notesPopupView: UIView!
     @IBOutlet weak var notesTitleLbl: UILabel!
     @IBOutlet weak var notesTextViewBgView: UIView!
-    var dates = [Date]()
-    let calendar = Calendar.current
-    var selectedIndexPath: IndexPath?
-    var selectedMonthIndex = 0
-    var selectedYear = Calendar.current.component(.year, from: Date())
-    var years: [Int] = []
-    var clikedYear = false
-    let months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+    @IBOutlet weak var notesTextView: UITextView!
     var ordersArray: [Order] = []
     var topTitle = "Orders"
-    
     
     let datePicker = UIDatePicker()
     let pickerVieww = UIPickerView()
@@ -38,39 +27,26 @@ class HomeViewController: UIViewController {
     var startDate: Date?
     var endDate: Date?
     var availableEndDates: [Date] = []
-
-    
-    
-    
-    
+    var ordersType: OrdersType?
+    var selectedOrderID : Int?
     override func viewDidLoad() {
         super.viewDidLoad()
         self.titleLbl.text = topTitle
-        let currentYear = Calendar.current.component(.year, from: Date())
-                // Generate an array of years from the current year to the past
-        for year in stride(from: currentYear, to: 1900, by: -1) {
-            years.append(year)
-        }
         setupTableView()
-        setupCollectionView()
-        generateDates()
-        pickerContainerView.isHidden = true
-        getOrdersListApi(date: "29-11-2024")//getCurrentDate())
-       // getOrdersListApi(date: getCurrentDate())
         debugPrint(PersistenceStorage.sharedInstance.loginResponseData?.accessToken ?? "", "accessToken")
         self.notesPoupViewSetup()
+        self.monthLabel.text = formatDate(Date(), format: "dd-MM-yyyy")
+        self.yearLabel.text = formatDate(Date(), format: "dd-MM-yyyy")
+        startDate = Date()
+       // endDate = Date()
+        if ordersType == .Active {
+            self.getActiveOrdersList(startDate: self.monthLabel.text ?? "", endDate: self.yearLabel.text ?? "")
+        } else {
+            self.getPastOrdersList(startDate: self.monthLabel.text ?? "", endDate: self.yearLabel.text ?? "")
+        }
     }
     override func viewWillAppear(_ animated: Bool) {
         self.notesPopupView.isHidden = true
-    }
-    // MARK: - Setup Collection View
-    func setupCollectionView() {
-        calendarCollectionView.delegate = self
-        calendarCollectionView.dataSource = self
-        calendarCollectionView?.register(UINib(nibName: "CalendarCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "CalendarCollectionViewCell")
-        calendarCollectionView.backgroundColor = .white
-        calendarCollectionView.showsHorizontalScrollIndicator = false
-        calendarCollectionView.decelerationRate = .fast
     }
     func notesPoupViewSetup() {
         self.notesTextViewBgView.layer.borderColor = UIColor.lightGray.cgColor
@@ -81,18 +57,8 @@ class HomeViewController: UIViewController {
         self.navigationController?.popViewController(animated: true)
     }
     @IBAction func calendarBtnAct(_ sender: UIButton) {
-//        let calendarVC = CalendarPopupViewController()
-//        calendarVC.modalPresentationStyle = .popover
-//        if let popover = calendarVC.popoverPresentationController {
-//            popover.sourceView = view
-//            popover.sourceRect = CGRect(x: view.bounds.midX, y: view.bounds.midY, width: 0, height: 0)
-//            popover.permittedArrowDirections = []
-//        }
-       // present(calendarVC, animated: true, completion: nil)
-//        let vc = MAIN.instantiateViewController(withIdentifier: "MapViewController") as! MapViewController
-//        vc.isfromSummary = true
-//        self.navigationController?.pushViewController(vc, animated: true)
         let vc = GoogleMapViewController()
+        vc.isfromHome = true
         self.navigationController?.pushViewController(vc, animated: true)
     }
     // MARK: - Setup Table View
@@ -101,27 +67,6 @@ class HomeViewController: UIViewController {
         ordersListTableView.dataSource = self
         ordersListTableView.register(MyOrdersListTableViewCell.self)
     }
-    // MARK: - Setup DATES
-    func generateDates() {
-        let currentDate = Date()
-        let currentYear = calendar.component(.year, from: currentDate)
-        let currentMonth = calendar.component(.month, from: currentDate)
-        
-        guard let firstDayOfMonth = calendar.date(from: DateComponents(year: currentYear, month: currentMonth, day: 1)),
-              let range = calendar.range(of: .day, in: .month, for: firstDayOfMonth) else { return }
-        
-        dates = range.compactMap { calendar.date(from: DateComponents(year: currentYear, month: currentMonth, day: $0)) }
-        
-        // Set current date as default selected date
-        if let currentIndex = dates.firstIndex(where: { calendar.isDate($0, inSameDayAs: currentDate) }) {
-            selectedIndexPath = IndexPath(item: currentIndex, section: 0)
-            DispatchQueue.main.async {
-                self.calendarCollectionView.reloadData()
-                self.scrollToSelectedDate(animated: false)
-            }
-        }
-        updateMonthYearLabels(for: dates.first!)
-    }
     func updateMonthYearLabels(for date: Date) {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "MMMM"
@@ -129,30 +74,6 @@ class HomeViewController: UIViewController {
         
         dateFormatter.dateFormat = "yyyy"
         yearLabel.text = dateFormatter.string(from: date)
-    }
-    func scrollToSelectedDate(animated: Bool) {
-        if let indexPath = selectedIndexPath {
-            calendarCollectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: animated)
-        }
-    }
-    // MARK: - Load Dates
-    func loadDates(for month: Int, year: Int) {
-        // Save current content offset before reloading
-     //   let currentOffset = calendarCollectionView.contentOffset.x
-        guard let firstDayOfMonth = calendar.date(from: DateComponents(year: year, month: month, day: 1)),
-              let range = calendar.range(of: .day, in: .month, for: firstDayOfMonth) else { return }
-        dates = range.compactMap { calendar.date(from: DateComponents(year: year, month: month, day: $0)) }
-        debugPrint(dates,"range.compactMap")
-        // Remove any selected date
-        selectedIndexPath = nil
-        DispatchQueue.main.async {
-            self.calendarCollectionView.reloadData()
-            // Restore the previous content offset (scroll position)
-//            self.calendarCollectionView.setContentOffset(CGPoint(x: currentOffset, y: 0), animated: false)
-            self.calendarCollectionView.scrollToItem(at: IndexPath(item: 0, section: 0), at: .left, animated: true)
-        }
-        // Update labels
-        updateMonthYearLabels(for: firstDayOfMonth)
     }
     @IBAction func monthBtnAct(_ sender: UIButton) {
        // pickerContainerView.isHidden = false
@@ -166,17 +87,25 @@ class HomeViewController: UIViewController {
         //pickerViewSetup()
         showDatePicker(isStartDate: false)
     }
-    @IBAction func donePickerBtnAct(_ sender: UIButton) {
-        loadDates(for:selectedMonthIndex+1, year: selectedYear)
-        debugPrint("month: \(selectedMonthIndex+1), year: \(selectedYear)")
-        pickerContainerView.isHidden = true
-    }
-    @IBAction func cancelPickerBtnAct(_ sender: UIButton) {
-        pickerContainerView.isHidden = true
-    }
-    func getOrdersListApi(date: String){
+    func getActiveOrdersList(startDate: String,endDate: String){
         LoaderView.shared.showLoader(in: self.view)
-        HomeViewModel.shared.getOrdersListAPI(date: date) { data, status, msg  in
+        HomeViewModel.shared.getActiveOrdersListAPI(start_date: startDate, end_date: endDate) { data, status, msg in
+            if status {
+                LoaderView.shared.hideLoader()
+                self.ordersArray = data ?? []
+                debugPrint(self.ordersArray,"ordersArray")
+                self.noOrdersLbl.isHidden = !self.ordersArray.isEmpty
+                self.ordersListTableView.reloadData()
+            } else {
+                self.noOrdersLbl.isHidden = false
+                self.showToast(message: msg ?? "")
+                LoaderView.shared.hideLoader()
+            }
+        }
+    }
+    func getPastOrdersList(startDate: String,endDate: String){
+        LoaderView.shared.showLoader(in: self.view)
+        HomeViewModel.shared.getPastOrdersListAPI(start_date: startDate, end_date: endDate) { data, status, msg in
             if status {
                 LoaderView.shared.hideLoader()
                 self.ordersArray = data ?? []
@@ -193,48 +122,16 @@ class HomeViewController: UIViewController {
     @IBAction func notePopupCloseBtnAct(_ sender: UIButton) {
         self.notesPopupView.isHidden = true
     }
-}
-
-// MARK: - Collection View Methods
-extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
-    
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return dates.count
-    }
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "CalendarCollectionViewCell", for: indexPath) as! CalendarCollectionViewCell
-        let date = dates[indexPath.item]
-        let day = calendar.component(.day, from: date)
-        
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "E" // Get short day name (Sun, Mon, etc.)
-        let weekday = dateFormatter.string(from: date).prefix(1).uppercased() // Get first letter
-        
-        let isSelected = indexPath == selectedIndexPath
-        let isToday = calendar.isDate(date, inSameDayAs: Date())
-        cell.configure(day: day, isSelected: isSelected, isToday: isToday, weekday: weekday)
-        return cell
-    }
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        selectedIndexPath = indexPath
-        collectionView.reloadData()
-        scrollToSelectedDate(animated: true)
-        updateMonthYearLabels(for: dates[indexPath.item])
-       // self.getOrdersListApi(date:"29-11-2024")//formatDate(dates[indexPath.item]))
-        self.getOrdersListApi(date:formatDate(dates[indexPath.item]))
-    }
-    // Update month & year when scrolling
-//    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-//        if let firstVisibleIndexPath = calendarCollectionView.indexPathsForVisibleItems.min() {
-//            updateMonthYearLabels(for: dates[firstVisibleIndexPath.item])
-//        }
-//    }
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let itemsPerRow: CGFloat = 7  // Show 7 items
-        let spacing: CGFloat = 0      // Adjust spacing if needed
-        let totalSpacing = spacing * (itemsPerRow - 1)
-        let itemWidth = (collectionView.frame.width - totalSpacing) / itemsPerRow
-        return CGSize(width: itemWidth, height: calendarCollectionView.frame.height)
+    @IBAction func notesSaveBtnAct(_ sender: UIButton) {
+        if notesTextView.text != "" {
+            HomeViewModel.shared.notesAPICall(id: self.selectedOrderID, notes: notesTextView.text ?? "") { status, msg in
+                self.showToast(message: msg ?? "")
+                if status {
+                    self.notesTextView.text = ""
+                    self.notesPopupView.isHidden = true
+                }
+            }
+        }
     }
 }
 // MARK: - Table View Methods
@@ -255,9 +152,7 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
         cell.notesBtn = {
             self.notesPopupView.isHidden = false
             self.notesTitleLbl.text = "Add notes for order #\(orderData.orderID ?? 0)"
-        }
-        if titleLbl.text == "Past Orders" {
-            
+            self.selectedOrderID = orderData.id ?? 0
         }
         return cell
     }
@@ -271,36 +166,7 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
 }
-//// MARK: - Picker View Methods
-//extension HomeViewController : UIPickerViewDataSource, UIPickerViewDelegate{
-//    func pickerViewSetup(){
-//        pickerView.delegate = self
-//        pickerView.dataSource = self
-//        // Initially position the picker container off-screen (bottom)
-//    }
-//    func numberOfComponents(in pickerView: UIPickerView) -> Int {
-//         return 1
-//    }
-//    // UIPickerView DataSource
-//    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-//        return clikedYear ? years.count : months.count
-//    }
-//    
-//    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-//        return clikedYear ? "\(years[row])" : months[row]
-//    }
-//    
-//    // UIPickerView Delegate
-//    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-//        if clikedYear {
-//            selectedYear = years[row]
-//            debugPrint("Selected year: \(years[row])")
-//        } else {
-//            selectedMonthIndex = row
-//            debugPrint("Selected month: \(row)")
-//        }
-//    }
-//}
+
 extension HomeViewController: UIPickerViewDelegate, UIPickerViewDataSource {
     func showDatePicker(isStartDate: Bool) {
            let alertVC = UIViewController()
@@ -340,17 +206,9 @@ extension HomeViewController: UIPickerViewDelegate, UIPickerViewDataSource {
                if isStartDate {
                    self.startDate = selectedDate
                    self.monthLabel.text = formatDate(selectedDate, format: "dd-MM-yyyy")
-                   // When Start Date is selected, update the End Date picker to show future dates
-                   if let endDate = self.endDate {
-                      // self.updateEndDatePicker(minimumDate: selectedDate, maxDate: endDate)
-                   }
                } else {
                    self.endDate = selectedDate
                    self.yearLabel.text = formatDate(selectedDate, format: "dd-MM-yyyy")
-                   // When End Date is selected, update the Start Date picker to show dates before the selected end date
-                   if let startDate = self.startDate {
-                      // self.updateStartDatePicker(minimumDate: startDate, maxDate: selectedDate)
-                   }
                }
            }))
            
@@ -395,6 +253,6 @@ extension HomeViewController: UIPickerViewDelegate, UIPickerViewDataSource {
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         endDate = availableEndDates[row]
-        //endDateButton.setTitle(formatDate(endDate!), for: .normal)
+        self.yearLabel.text = formatDate(endDate ?? Date(), format: "dd-MM-yyyy")
     }
 }

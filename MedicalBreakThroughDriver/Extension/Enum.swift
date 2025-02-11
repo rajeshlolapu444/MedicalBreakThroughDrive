@@ -18,3 +18,8 @@ enum MediaType {
     case image
     case video
 } 
+
+enum OrdersType {
+    case Active
+    case Past
+}

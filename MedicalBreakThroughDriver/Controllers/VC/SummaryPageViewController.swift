@@ -27,11 +27,13 @@ class SummaryPageViewController: UIViewController {
     @IBAction func activeOrdersBtnAct(_ sender: UIButton) {
         let homeViewController = MAIN.instantiateViewController(withIdentifier: "HomeViewController") as! HomeViewController
         homeViewController.topTitle = "Active Orders"
+        homeViewController.ordersType = .Active
         navigationController?.pushViewController(homeViewController, animated: true)
     }
     @IBAction func pastOrdersBtnAct(_ sender: UIButton) {
         let homeViewController = MAIN.instantiateViewController(withIdentifier: "HomeViewController") as! HomeViewController
         homeViewController.topTitle = "Past Orders"
+        homeViewController.ordersType = .Past
         navigationController?.pushViewController(homeViewController, animated: true)
     }
     func navigateToHome() {
@@ -39,7 +41,8 @@ class SummaryPageViewController: UIViewController {
         navigationController?.pushViewController(homeViewController, animated: true)
     }
     @IBAction func profileBtnAct(_ sender: UIButton) {
-        let vc = DateSelectionViewController() //ProfileViewController()
+      //  let vc = DateSelectionViewController()
+        let vc = ProfileViewController()
         self.navigationController?.pushViewController(vc, animated: true)
     }
     @IBAction func routeBtnAct(_ sender: UIButton) {

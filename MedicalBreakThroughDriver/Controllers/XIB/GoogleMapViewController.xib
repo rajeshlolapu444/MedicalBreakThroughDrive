@@ -11,6 +11,7 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="GoogleMapViewController" customModule="MedicalBreakThroughDriver" customModuleProvider="target">
             <connections>
                 <outlet property="mapContainerView" destination="wJt-XP-IDP" id="OP8-Al-cym"/>
+                <outlet property="nextBtn" destination="2TR-Rp-7cp" id="1iQ-R0-Rrm"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
         </placeholder>
@@ -64,6 +65,26 @@
                     <rect key="frame" x="0.0" y="109" width="393" height="743"/>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                 </view>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2TR-Rp-7cp">
+                    <rect key="frame" x="76.666666666666686" y="768" width="240" height="40"/>
+                    <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="240" id="N6V-bs-hYH"/>
+                        <constraint firstAttribute="height" constant="40" id="xgk-DG-bQb"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" type="boldSystem" pointSize="20"/>
+                    <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                    <state key="normal" title="Next"/>
+                    <userDefinedRuntimeAttributes>
+                        <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                            <real key="value" value="20"/>
+                        </userDefinedRuntimeAttribute>
+                    </userDefinedRuntimeAttributes>
+                    <connections>
+                        <action selector="NextBtnAct:" destination="-1" eventType="touchUpInside" id="BQF-TV-bax"/>
+                    </connections>
+                </button>
             </subviews>
             <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
             <color key="backgroundColor" red="0.22745099660000001" green="0.49411764740000003" blue="0.74117648599999997" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
@@ -72,6 +93,8 @@
                 <constraint firstAttribute="trailing" secondItem="wJt-XP-IDP" secondAttribute="trailing" id="4W3-rr-fdA"/>
                 <constraint firstItem="wJt-XP-IDP" firstAttribute="top" secondItem="hbg-is-Eb8" secondAttribute="bottom" id="BgS-wu-zVB"/>
                 <constraint firstItem="hbg-is-Eb8" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="FGz-rx-KEs"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="2TR-Rp-7cp" secondAttribute="bottom" constant="10" id="HoI-NG-Qui"/>
+                <constraint firstItem="2TR-Rp-7cp" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" id="Jmx-QQ-0iQ"/>
                 <constraint firstItem="hbg-is-Eb8" firstAttribute="trailing" secondItem="fnl-2z-Ty3" secondAttribute="trailing" id="Pfu-WC-0Fq"/>
                 <constraint firstAttribute="bottom" secondItem="wJt-XP-IDP" secondAttribute="bottom" id="i4Y-60-S6m"/>
                 <constraint firstItem="hbg-is-Eb8" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" id="t2m-Dz-sjQ"/>

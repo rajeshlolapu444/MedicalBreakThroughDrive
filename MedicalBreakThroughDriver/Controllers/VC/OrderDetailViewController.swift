@@ -44,7 +44,11 @@ class OrderDetailViewController: UIViewController {
 //                self.showToast(message: msg ?? "")
 //            }
 //        }
-        let vc = MAIN.instantiateViewController(withIdentifier: "MapViewController") as! MapViewController
+//        let vc = MAIN.instantiateViewController(withIdentifier: "MapViewController") as! MapViewController
+//        vc.orderData = self.orderData
+//        self.navigationController?.pushViewController(vc, animated: true)
+        let vc = GoogleMapViewController()
+        vc.isfromHome = false
         vc.orderData = self.orderData
         self.navigationController?.pushViewController(vc, animated: true)
     }

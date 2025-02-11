@@ -12,6 +12,7 @@ import CoreLocation
 
 class GoogleMapViewController: UIViewController, CLLocationManagerDelegate {
     @IBOutlet weak var mapContainerView: UIView!
+    @IBOutlet weak var nextBtn: UIButton!
     var mapView: GMSMapView!
     var locationManager = CLLocationManager()
     var currentLocation: CLLocation?
@@ -21,10 +22,13 @@ class GoogleMapViewController: UIViewController, CLLocationManagerDelegate {
         CLLocationCoordinate2D(latitude: 17.496602, longitude: 78.367925), // Destination 2
         CLLocationCoordinate2D(latitude: 17.476824, longitude: 78.421963)  // Destination 3
     ]
+    var isfromHome : Bool = false
+    var orderData : Order?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Initialize map
+        self.nextBtn.isHidden = isfromHome
         let camera = GMSCameraPosition.camera(withLatitude: 37.7749, longitude: -122.4194, zoom: 10)
         mapView = GMSMapView(frame: self.mapContainerView.frame, camera: camera)
         self.mapContainerView.addSubview(mapView)
@@ -48,6 +52,12 @@ class GoogleMapViewController: UIViewController, CLLocationManagerDelegate {
     @IBAction func backBtnAct(_ sender: UIButton) {
         self.navigationController?.popViewController(animated: true)
     }
+    @IBAction func NextBtnAct(_ sender: UIButton) {
+        let vc = MAIN.instantiateViewController(withIdentifier: "ConfirmDeliveryVC") as! ConfirmDeliveryVC
+        vc.orderData = self.orderData
+        navigationController?.pushViewController(vc, animated: true)
+    }
+
     func showDestinationMarkers() {
         for destination in destinations {
             let marker = GMSMarker(position: destination)
