@@ -10,7 +10,7 @@ import UIKit
 
 enum DeliveryStatus: String {
     case accepted = "accepted"
-    case started = "started"
+    //case started = "started"
     case finished = "finished"
     case rejected = "rejected"
 }

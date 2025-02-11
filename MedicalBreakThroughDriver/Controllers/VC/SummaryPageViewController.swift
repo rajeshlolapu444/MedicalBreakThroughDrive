@@ -39,7 +39,7 @@ class SummaryPageViewController: UIViewController {
         navigationController?.pushViewController(homeViewController, animated: true)
     }
     @IBAction func profileBtnAct(_ sender: UIButton) {
-        let vc = ProfileViewController()
+        let vc = DateSelectionViewController() //ProfileViewController()
         self.navigationController?.pushViewController(vc, animated: true)
     }
     @IBAction func routeBtnAct(_ sender: UIButton) {

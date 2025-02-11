@@ -18,7 +18,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Override point for customization after application launch.
         IQKeyboardManager.shared.isEnabled = true
         IQKeyboardManager.shared.enableAutoToolbar = true
-        GMSServices.provideAPIKey("YOUR_GOOGLE_MAPS_API_KEY")
+        GMSServices.provideAPIKey("AIzaSyD09AGUnxXVmRLRFZ0R4AWVE_qPgyoecjg")
         return true
     }
 

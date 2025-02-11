@@ -30,6 +30,19 @@ class HomeViewController: UIViewController {
     let months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
     var ordersArray: [Order] = []
     var topTitle = "Orders"
+    
+    
+    let datePicker = UIDatePicker()
+    let pickerVieww = UIPickerView()
+    
+    var startDate: Date?
+    var endDate: Date?
+    var availableEndDates: [Date] = []
+
+    
+    
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.titleLbl.text = topTitle
@@ -76,8 +89,10 @@ class HomeViewController: UIViewController {
 //            popover.permittedArrowDirections = []
 //        }
        // present(calendarVC, animated: true, completion: nil)
-        let vc = MAIN.instantiateViewController(withIdentifier: "MapViewController") as! MapViewController
-        vc.isfromSummary = true
+//        let vc = MAIN.instantiateViewController(withIdentifier: "MapViewController") as! MapViewController
+//        vc.isfromSummary = true
+//        self.navigationController?.pushViewController(vc, animated: true)
+        let vc = GoogleMapViewController()
         self.navigationController?.pushViewController(vc, animated: true)
     }
     // MARK: - Setup Table View
@@ -140,14 +155,16 @@ class HomeViewController: UIViewController {
         updateMonthYearLabels(for: firstDayOfMonth)
     }
     @IBAction func monthBtnAct(_ sender: UIButton) {
-        pickerContainerView.isHidden = false
-        clikedYear = false
-        pickerViewSetup()
+       // pickerContainerView.isHidden = false
+       // clikedYear = false
+        //pickerViewSetup()
+        showDatePicker(isStartDate: true)
     }
     @IBAction func yearBtnAct(_ sender: UIButton) {
-        pickerContainerView.isHidden = false
-        clikedYear = true
-        pickerViewSetup()
+        //pickerContainerView.isHidden = false
+       // clikedYear = true
+        //pickerViewSetup()
+        showDatePicker(isStartDate: false)
     }
     @IBAction func donePickerBtnAct(_ sender: UIButton) {
         loadDates(for:selectedMonthIndex+1, year: selectedYear)
@@ -254,33 +271,130 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
 }
-// MARK: - Picker View Methods
-extension HomeViewController : UIPickerViewDataSource, UIPickerViewDelegate{
-    func pickerViewSetup(){
-        pickerView.delegate = self
-        pickerView.dataSource = self
-        // Initially position the picker container off-screen (bottom)
+//// MARK: - Picker View Methods
+//extension HomeViewController : UIPickerViewDataSource, UIPickerViewDelegate{
+//    func pickerViewSetup(){
+//        pickerView.delegate = self
+//        pickerView.dataSource = self
+//        // Initially position the picker container off-screen (bottom)
+//    }
+//    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+//         return 1
+//    }
+//    // UIPickerView DataSource
+//    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+//        return clikedYear ? years.count : months.count
+//    }
+//    
+//    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+//        return clikedYear ? "\(years[row])" : months[row]
+//    }
+//    
+//    // UIPickerView Delegate
+//    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+//        if clikedYear {
+//            selectedYear = years[row]
+//            debugPrint("Selected year: \(years[row])")
+//        } else {
+//            selectedMonthIndex = row
+//            debugPrint("Selected month: \(row)")
+//        }
+//    }
+//}
+extension HomeViewController: UIPickerViewDelegate, UIPickerViewDataSource {
+    func showDatePicker(isStartDate: Bool) {
+           let alertVC = UIViewController()
+           alertVC.preferredContentSize = CGSize(width: 340, height: 250) // Adjust height to prevent overlap
+           
+           let datePicker = UIDatePicker()
+           datePicker.datePickerMode = .date
+        datePicker.preferredDatePickerStyle = .wheels
+           datePicker.frame = CGRect(x: 0, y: 0, width: 270, height: 200) // Set proper size
+           
+           if isStartDate {
+               // If Start Date is selected, allow selecting current date to future dates
+               //datePicker.minimumDate = Date()
+               if let endDate = endDate {
+                   datePicker.maximumDate = endDate // Ensure end date is after start date
+                   datePicker.minimumDate = Date()
+               } else {
+                   datePicker.minimumDate = Date()
+               }
+           } else {
+               // If End Date is selected, allow selecting current date to future dates
+               if let startDate = startDate {
+                   datePicker.minimumDate = startDate // Ensure end date is after start date
+               } else {
+                   datePicker.minimumDate = Date()
+               }
+           }
+           
+           alertVC.view.addSubview(datePicker)
+           
+           let alert = UIAlertController(title: isStartDate ? "Select Start Date" : "Select End Date", message: nil, preferredStyle: .alert)
+           
+           alert.setValue(alertVC, forKey: "contentViewController") // Embed picker in alert
+           
+           alert.addAction(UIAlertAction(title: "Done", style: .default, handler: { _ in
+               let selectedDate = datePicker.date
+               if isStartDate {
+                   self.startDate = selectedDate
+                   self.monthLabel.text = formatDate(selectedDate, format: "dd-MM-yyyy")
+                   // When Start Date is selected, update the End Date picker to show future dates
+                   if let endDate = self.endDate {
+                      // self.updateEndDatePicker(minimumDate: selectedDate, maxDate: endDate)
+                   }
+               } else {
+                   self.endDate = selectedDate
+                   self.yearLabel.text = formatDate(selectedDate, format: "dd-MM-yyyy")
+                   // When End Date is selected, update the Start Date picker to show dates before the selected end date
+                   if let startDate = self.startDate {
+                      // self.updateStartDatePicker(minimumDate: startDate, maxDate: selectedDate)
+                   }
+               }
+           }))
+           
+           alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+           
+           present(alert, animated: true)
+       }
+              
+//       // Format Date
+//       func formatDate(_ date: Date) -> String {
+//           let formatter = DateFormatter()
+//           formatter.dateFormat = "yyyy-MM-dd"
+//           return formatter.string(from: date)
+//       }
+    func updateAvailableEndDates() {
+        guard let startDate = startDate else { return }
+        
+        availableEndDates.removeAll()
+        var nextDate = Calendar.current.date(byAdding: .day, value: 1, to: startDate)!
+        
+        for _ in 1...30 {
+            availableEndDates.append(nextDate)
+            nextDate = Calendar.current.date(byAdding: .day, value: 1, to: nextDate)!
+        }
+        
+        pickerVieww.reloadAllComponents()
     }
+    
+    
+    // MARK: - UIPickerView Delegate & DataSource
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
-         return 1
+        return 1
     }
-    // UIPickerView DataSource
+    
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-        return clikedYear ? years.count : months.count
+        return availableEndDates.count
     }
     
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        return clikedYear ? "\(years[row])" : months[row]
+        return formatDate(availableEndDates[row])
     }
     
-    // UIPickerView Delegate
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        if clikedYear {
-            selectedYear = years[row]
-            debugPrint("Selected year: \(years[row])")
-        } else {
-            selectedMonthIndex = row
-            debugPrint("Selected month: \(row)")
-        }
+        endDate = availableEndDates[row]
+        //endDateButton.setTitle(formatDate(endDate!), for: .normal)
     }
 }
