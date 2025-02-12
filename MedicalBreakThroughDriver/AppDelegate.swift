@@ -43,6 +43,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 //        let poolId = "us-west-1:83a11d48-4aa8-4f3d-bd86-5225447ff113" // Old
         _ = "us-west-1:3a1210b2-4a70-47e6-8d06-3fa6de14861f" // New
 //        let credentialsProvider = AWSStaticCredentialsProvider(accessKey: accessKey, secretKey: secretKey)
+        let COGNITO_POOL_ID = "us-west-1:3a1210b2-4a70-47e6-8d06-3fa6de14861f"
         let credentialsProvider = AWSCognitoCredentialsProvider(regionType: .USWest1, identityPoolId: COGNITO_POOL_ID)
         let configuration = AWSServiceConfiguration(region: .USWest1, credentialsProvider: credentialsProvider)
         AWSServiceManager.default().defaultServiceConfiguration = configuration
