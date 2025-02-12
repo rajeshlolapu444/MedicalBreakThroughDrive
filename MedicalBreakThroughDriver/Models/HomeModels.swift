@@ -22,7 +22,8 @@ struct OrdersData: Codable {
 
 // MARK: - Order
 struct Order: Codable {
-    let id, orderID, amount: Int?
+    let id, orderID : Int?
+    let amount : Double?
     let transactionID: String?
     let deliveryInstructions: String?
     let phone: String?

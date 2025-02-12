@@ -128,6 +128,19 @@ class ConfirmDeliveryVC: UIViewController {
             } else {
                 let deliveryParams = ConfirmDeliveryRequestModel(order_id: orderData?.id ?? 0, status: DeliveryStatus.delivered.rawValue, attachments: attachments)
                 debugPrint(deliveryParams,"deliveryParams")
+                LoaderView.shared.showLoader(in: self.view)
+                ConfirmViewModel.shared.putOrdersConfirmAPI(parms: deliveryParams) { status, msg in
+                    if status {
+                        self.showToast(message: msg ?? "")
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+                            LoaderView.shared.hideLoader()
+                            self.navigateToSummary()
+                        }
+                    } else {
+                        self.showToast(message: msg ?? "")
+                        LoaderView.shared.hideLoader()
+                    }
+                }
             }
         case .rejected:
             if notesTextView.text == "" {
@@ -136,6 +149,19 @@ class ConfirmDeliveryVC: UIViewController {
             }
             let rejectParams = CancelledDeliveryRequestModel(order_id: orderData?.id ?? 0, status: DeliveryStatus.rejected.rawValue, reason:notesTextView.text ?? "")
             debugPrint(rejectParams,"rejectParams")
+            LoaderView.shared.showLoader(in: self.view)
+            ConfirmViewModel.shared.putOrdersCancellAPI(parms: rejectParams) { status, msg in
+                if status {
+                    self.showToast(message: msg ?? "")
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+                        LoaderView.shared.hideLoader()
+                        self.navigateToSummary()
+                    }
+                } else {
+                    self.showToast(message: msg ?? "")
+                    LoaderView.shared.hideLoader()
+                }
+            }
         case .none:
             self.showToast(message: "Plese select status")
         }

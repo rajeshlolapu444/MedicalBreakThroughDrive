@@ -18,7 +18,7 @@ class ConfirmViewModel {
         APIModel.putRequest(strURL: url as NSString, postParams: parms, postHeaders: headers as NSDictionary) { result in
             let response = try? JSONDecoder().decode(PutStatusResponseModel.self, from: result as! Data)
             if response?.status == 200 {
-                completion(true,"")
+                completion(true,response?.message ?? "")
             } else {
                 completion(false,response?.message ?? "")
             }
@@ -33,7 +33,7 @@ class ConfirmViewModel {
         APIModel.putRequest(strURL: url as NSString, postParams: parms, postHeaders: headers as NSDictionary) { result in
             let response = try? JSONDecoder().decode(PutStatusResponseModel.self, from: result as! Data)
             if response?.status == 200 {
-                completion(true,"")
+                completion(true,response?.message ?? "")
             } else {
                 completion(false,response?.message ?? "")
             }

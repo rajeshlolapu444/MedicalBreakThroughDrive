@@ -36,7 +36,7 @@ class SignatureView: UIView {
     }
     
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
-        if let touch = touches.first, let previousPoint = previousPoint {
+        if let touch = touches.first, let _ = previousPoint {
             let currentPoint = touch.location(in: self)
             path.addLine(to: currentPoint)
             self.previousPoint = currentPoint

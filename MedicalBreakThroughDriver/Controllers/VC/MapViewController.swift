@@ -298,7 +298,7 @@ extension MapViewController {
     func drawRoutes() {
         guard let userLocation = userCoordinate else { return }
         
-        var allLocations = [userLocation] + sortedDestinations // Start with user location
+        let allLocations = [userLocation] + sortedDestinations // Start with user location
 
         for i in 0..<allLocations.count - 1 {
             let source = allLocations[i]

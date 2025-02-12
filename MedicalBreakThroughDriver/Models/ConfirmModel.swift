@@ -9,18 +9,18 @@ import Foundation
 
 // MARK: - Confirm Delivery Reuest Model
 // MARK: - deliverd/finished
-struct ConfirmDeliveryRequestModel: Codable {
+struct ConfirmDeliveryRequestModel: Encodable {
     let order_id: Int?
     let status: String?
     let attachments: [AttechmentRequestModel]?
 }
-struct AttechmentRequestModel: Codable {
+struct AttechmentRequestModel: Encodable {
     var attachment_type: String?
     var url: String?
 }
 
 // MARK: - rejected/cancelled
-struct CancelledDeliveryRequestModel: Codable {
+struct CancelledDeliveryRequestModel: Encodable {
     let order_id: Int?
     let status: String?
     let reason: String?

@@ -17,6 +17,7 @@ class HomeViewController: UIViewController {
     @IBOutlet weak var notesPopupView: UIView!
     @IBOutlet weak var notesTitleLbl: UILabel!
     @IBOutlet weak var notesTextViewBgView: UIView!
+    @IBOutlet weak var notesSaveBtn: UIButton!
     @IBOutlet weak var notesTextView: UITextView!
     var ordersArray: [Order] = []
     var topTitle = "Orders"
@@ -41,8 +42,12 @@ class HomeViewController: UIViewController {
        // endDate = Date()
         if ordersType == .Active {
             self.getActiveOrdersList(startDate: self.monthLabel.text ?? "", endDate: self.yearLabel.text ?? "")
+            self.notesSaveBtn.isHidden = false
+            self.notesTextView.isUserInteractionEnabled = true
         } else {
             self.getPastOrdersList(startDate: self.monthLabel.text ?? "", endDate: self.yearLabel.text ?? "")
+            self.notesSaveBtn.isHidden = true
+            self.notesTextView.isUserInteractionEnabled = false
         }
     }
     override func viewWillAppear(_ animated: Bool) {

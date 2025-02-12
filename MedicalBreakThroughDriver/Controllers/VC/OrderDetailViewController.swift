@@ -26,6 +26,7 @@ class OrderDetailViewController: UIViewController {
         instructionsBgView.layer.cornerRadius = 5
         instructionsBgView.layer.borderWidth = 1
         instructionsBgView.layer.borderColor = UIColor.clear.cgColor
+        productImgView.layer.cornerRadius = 5
         // Do any additional setup after loading the view.
         if let data = orderData {
             loadData(data: data)
@@ -70,18 +71,7 @@ class OrderDetailViewController: UIViewController {
         } else {
             self.instructionLbl.text = data.deliveryInstructions ?? "N/A"
         }
-        loadImage(from: data.products?.first?.productImage ?? "", into: productImgView)
+        productImgView.setImage(from: data.products?.first?.productImage ?? "")
         
-    }
-    func loadImage(from urlString: String, into imageView: UIImageView) {
-        guard let url = URL(string: urlString) else { return }
-        
-        URLSession.shared.dataTask(with: url) { data, response, error in
-            if let data = data, let image = UIImage(data: data) {
-                DispatchQueue.main.async {
-                    imageView.image = image
-                }
-            }
-        }.resume()
     }
 }

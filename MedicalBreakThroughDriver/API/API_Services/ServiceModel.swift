@@ -138,10 +138,20 @@ class ServiceModel: NSObject {
     // MARK: - PUT REQUEST
     func putRequest(strURL:NSString,postParams:Encodable,postHeaders:NSDictionary,successHandler:@escaping( _ result:Any)->Void,failureHandler:@escaping (_ error:String)->Void) -> Void {
         if isConnectedToNetwork() == false {
+            //print("Please Check Internet")
+            /*DesignModel.stopActivityIndicator*/()
           //  showToastforInterNet(message: "Please Check Internet")
             return
         }
+//        KRProgressHUD.show()
+//        let kAccess_token       : String = "kAccess_token"
+//        let kToken_type          = "kToken_type"
+//        let kClient_id           = "kClient_id"
+//        let kRefreshToken        = "kRefreshToken"
+//        let kTokenType           = "tokenType"
+        
         let urlStr:NSString = strURL.addingPercentEncoding(withAllowedCharacters: .urlFragmentAllowed)! as NSString
+        //        let urlStr:NSString = strURL.addingPercentEscapes(using:String.Encoding.utf8.rawValue)! as NSString
         let url: NSURL = NSURL(string: urlStr as String)!
         let request:NSMutableURLRequest = NSMutableURLRequest(url:url as URL)
         request.httpMethod = "PUT"
@@ -151,31 +161,54 @@ class ServiceModel: NSObject {
         }
         
         if let authToken = UserDefaults.standard.string(forKey: k_token) {
+            //print(authToken)
             request.setValue("Bearer" + " " + authToken,forHTTPHeaderField: "Authorization")
         }
         
-        task = URLSession.shared.dataTask(with: request as URLRequest) {(data, response, error) in
+        do {
+            //            let data = try! JSONSerialization.data(withJSONObject:postParams, options:.prettyPrinted)
+            //            let dataString = String(data: data, encoding: String.Encoding.utf8)!
+            let headerData = try! JSONSerialization.data(withJSONObject:postHeaders, options:.prettyPrinted)
+            let headerDataString = String(data: headerData, encoding: String.Encoding.utf8)!
+            
+            //print("Request Url :\(url)")
+            debugPrint("Request Header Data :\(headerDataString)")
+            //            //print("Request Data : \(dataString)")
+            //            request.httpBody = data
+            request.httpBody = try JSONEncoder().encode(postParams)
+            
+            // do other stuff on success
+        }
+        catch {
             DispatchQueue.main.async(){
+                //print("JSON serialization failed:  \(error)")
+            }
+        }
+        task = URLSession.shared.dataTask(with: request as URLRequest) {(data, response, error) in
+            //DesignModel.stopActivityIndicator()
+            //            //print(data)
+            //            //print(response)
+            //            //print(error)
+            DispatchQueue.main.async(){
+                //  UIApplication.shared.isNetworkActivityIndicatorVisible = false
                 if response != nil {
                     // Response Status Code
-                 //   let statusCode = (response as! HTTPURLResponse).statusCode
-//                    if statusCode == 401 {
-//                        failureHandler("unAuthorized")
-//                    }
-//                    if statusCode == 400 {
-//                        failureHandler("nvalid order or order cannot be accepted")
-//                    }
-//                    if statusCode == 500 {
-//                        //print("failuer 1")
-//                        failureHandler("unAuthorized")
-//                    } else if statusCode == 422 {
-//                        failureHandler("Phone number already exists")
-//                    }
-//                    else if error != nil
-//                    {
-//                        return
-//                    }
-//                    else {
+                    let statusCode = (response as! HTTPURLResponse).statusCode
+                    //print("statusCode:\(statusCode)")
+                    if statusCode == 401 {
+                        failureHandler("unAuthorized")
+                    }
+                    if statusCode == 500 {
+                        //print("failuer 1")
+                        failureHandler("unAuthorized")
+                    }
+                    else if error != nil
+                    {
+                        //print("error=\(String(describing: error))")
+                        //        appDelegate.window?.makeToast(kRequestTimedOutMessage, duration:kToastDuration , position:CSToastPositionCenter)
+                        return
+                    }
+                    else {
                         do {
                             let parsedData = try JSONSerialization.jsonObject(with: data!, options:.mutableContainers) as! [String:Any]
                             debugPrint(parsedData)
@@ -186,7 +219,7 @@ class ServiceModel: NSObject {
                         }
                     }
                 }
-           // }
+            }
         }
         task?.resume()
     }

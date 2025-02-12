@@ -811,6 +811,7 @@
                         <outlet property="monthLabel" destination="2Sw-or-P4c" id="Wfe-PZ-YST"/>
                         <outlet property="noOrdersLbl" destination="u3V-sE-4yG" id="fgi-du-lDh"/>
                         <outlet property="notesPopupView" destination="jaZ-Nm-8G1" id="ayA-Bc-kEx"/>
+                        <outlet property="notesSaveBtn" destination="oPz-ON-KLi" id="JmX-Bf-HMQ"/>
                         <outlet property="notesTextView" destination="Rsz-rR-VU5" id="yCA-vM-ZhP"/>
                         <outlet property="notesTextViewBgView" destination="DRC-Pu-xbj" id="LqK-PM-tcm"/>
                         <outlet property="notesTitleLbl" destination="pu6-mO-Z1e" id="utb-hf-Tgn"/>
@@ -896,6 +897,7 @@
                                                                         <subviews>
                                                                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="NKf-5E-izC">
                                                                                 <rect key="frame" x="104" y="0.0" width="150" height="150"/>
+                                                                                <color key="backgroundColor" red="0.25490196079999999" green="0.41568627450000001" blue="0.54117647059999996" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                                                                 <constraints>
                                                                                     <constraint firstAttribute="height" constant="150" id="rKB-3J-P6z"/>
                                                                                     <constraint firstAttribute="width" constant="150" id="vdj-K3-V6R"/>

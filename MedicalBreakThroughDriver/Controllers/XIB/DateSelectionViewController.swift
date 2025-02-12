@@ -83,7 +83,7 @@ class DateSelectionViewController: UIViewController, UIPickerViewDelegate, UIPic
                    self.startDateButton.setTitle(self.formatDate(selectedDate), for: .normal)
                    
                    // When Start Date is selected, update the End Date picker to show future dates
-                   if let endDate = self.endDate {
+                   if self.endDate != nil {
                       // self.updateEndDatePicker(minimumDate: selectedDate, maxDate: endDate)
                    }
                } else {
@@ -91,7 +91,7 @@ class DateSelectionViewController: UIViewController, UIPickerViewDelegate, UIPic
                    self.endDateButton.setTitle(self.formatDate(selectedDate), for: .normal)
                    
                    // When End Date is selected, update the Start Date picker to show dates before the selected end date
-                   if let startDate = self.startDate {
+                   if self.startDate != nil {
                       // self.updateStartDatePicker(minimumDate: startDate, maxDate: selectedDate)
                    }
                }

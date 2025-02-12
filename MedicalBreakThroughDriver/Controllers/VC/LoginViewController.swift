@@ -34,8 +34,10 @@ class LoginViewController: UIViewController {
                                      placeholderColor: .lightGray,
                                      leftPadding: 10,
                                      rightPadding: 5)
-        emailTF.text = "mylescurbside@medicalbreakthrough.com" 
-       // emailTF.text = "mylesinstallation@medicalbreakthrough.com"
+       // emailTF.text = "mylescurbside@medicalbreakthrough.com"
+        //emailTF.text = "mylesinstallation@medicalbreakthrough.com"
+        // "luiscurbside@medicalbreakthrough.com"
+        emailTF.text = "mylescurbside@medicalbreakthrough.com"
         passwordTF.text = "apple@123"
         configureEyeButton()
     }
