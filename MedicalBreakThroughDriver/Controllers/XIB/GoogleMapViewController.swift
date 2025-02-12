@@ -29,6 +29,13 @@ class GoogleMapViewController: UIViewController, CLLocationManagerDelegate {
         super.viewDidLoad()
         // Initialize map
         self.nextBtn.isHidden = isfromHome
+        if !isfromHome {
+            let latitude = Double(orderData?.address?.latitude ?? "17.452938") ?? 17.452938
+            let longitude = Double(orderData?.address?.longitude ?? "78.380981") ?? 78.380981
+            self.destinations = [
+                CLLocationCoordinate2D(latitude: latitude, longitude: longitude), // Destination 1
+            ]
+        }
         let camera = GMSCameraPosition.camera(withLatitude: 37.7749, longitude: -122.4194, zoom: 10)
         mapView = GMSMapView(frame: self.mapContainerView.frame, camera: camera)
         self.mapContainerView.addSubview(mapView)
