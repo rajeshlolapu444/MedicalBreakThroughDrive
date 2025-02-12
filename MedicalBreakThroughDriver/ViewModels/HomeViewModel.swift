@@ -70,21 +70,5 @@ class HomeViewModel {
             completion(false,error)
         }
     }
-    func putOrdersStatusAPI(orderId: Int?,status: String?, completion: @escaping (_ status:Bool, _ msg:String?) -> Void) {
-        let url = PUT_ORDER_STATUS_URL + "/\(orderId ?? 0)"
-        debugPrint(url,"PUT_ORDER_STATUS_URL")
-        let putParams = PutStatusRequestModel(status: status)
-        debugPrint(putParams,"putParams")
-        APIModel.putRequest(strURL: url as NSString, postParams: putParams, postHeaders: headers as NSDictionary) { result in
-            let response = try? JSONDecoder().decode(PutStatusResponseModel.self, from: result as! Data)
-            if response?.status == 200 {
-                completion(true,"")
-            } else {
-                completion(false,response?.message ?? "")
-            }
-        } failureHandler: { error in
-            completion(false,error)
-        }
-    }
 }
 

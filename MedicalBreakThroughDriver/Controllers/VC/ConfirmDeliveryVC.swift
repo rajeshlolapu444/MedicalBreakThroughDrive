@@ -8,10 +8,11 @@
 import UIKit
 import AVFoundation
 import MobileCoreServices
+import SDWebImage
 
 struct MediaItem {
-    let type: MediaType
-    let url: URL
+    var type: MediaType
+    var url: String?
     var thumbnail: UIImage? // Only for videos
 }
 
@@ -35,10 +36,11 @@ class ConfirmDeliveryVC: UIViewController {
     @IBOutlet weak var mediaCountLbl: UILabel!
     @IBOutlet weak var imageListCV: UICollectionView!
     @IBOutlet weak var CollectionViewHeight: NSLayoutConstraint!
+    @IBOutlet weak var notesTextView: UITextView!
     
     var orderData : Order?
     var mediaItems: [MediaItem] = []
-
+    var deliveryStatus : DeliveryStatus = .none
     override func viewDidLoad() {
         super.viewDidLoad()
         self.notesBgView.layer.borderWidth = 1
@@ -58,6 +60,13 @@ class ConfirmDeliveryVC: UIViewController {
     @IBAction func homeBtnAct(_ sender: UIButton) {
         self.navigateToSummary()
     }
+    // MARK: - Setup Collection View
+    func setupCollectionView() {
+        imageListCV.delegate = self
+        imageListCV.dataSource = self
+        imageListCV?.register(UINib(nibName: "ImageListCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "ImageListCollectionViewCell")
+    }
+
     func navigateToSummary() {
         let vc = MAIN.instantiateViewController(withIdentifier: "SummaryPageViewController") as! SummaryPageViewController
         navigationController?.pushViewController(vc, animated: true)
@@ -71,18 +80,21 @@ class ConfirmDeliveryVC: UIViewController {
         self.selectLbl.textColor = .darkGray
         self.deliveredSelectionBgView.isHidden = !self.deliveredSelectionBgView.isHidden
         self.cancelledSelectionBgView.isHidden = !self.cancelledSelectionBgView.isHidden
+        self.deliveryStatus = .none
     }
     @IBAction func deliveredSelectionBtnAct(_ sender: UIButton) {
         self.selectLbl.text = "Delivered"
         self.selectLbl.textColor = .systemGreen
         self.deliveredSelectionBgView.isHidden = true
         self.cancelledSelectionBgView.isHidden = true
+        self.deliveryStatus = .delivered
     }
     @IBAction func cancelledSelectionBtnAct(_ sender: UIButton) {
         self.selectLbl.text = "Cancelled"
         self.selectLbl.textColor = .systemRed
         self.deliveredSelectionBgView.isHidden = true
         self.cancelledSelectionBgView.isHidden = true
+        self.deliveryStatus = .rejected
     }
     func loadData(data: Order) {
         self.orderIdLbl.text = "#\(data.orderID ?? 0)"
@@ -91,29 +103,44 @@ class ConfirmDeliveryVC: UIViewController {
         if let formattedDate = convertDateFormat(dateString: data.createdAt ?? "", from: "yyyy-MM-dd HH:mm:ss") {
             self.timeLbl.text = formattedDate
         }
-        loadImage(from: data.products?.first?.productImage ?? "", into: productImgView)
-    }
-    func loadImage(from urlString: String, into imageView: UIImageView) {
-        guard let url = URL(string: urlString) else { return }
-        
-        URLSession.shared.dataTask(with: url) { data, response, error in
-            if let data = data, let image = UIImage(data: data) {
-                DispatchQueue.main.async {
-                    imageView.image = image
-                }
-            }
-        }.resume()
+        productImgView.setImage(from: data.products?.first?.productImage ?? "")
     }
     
     @IBAction func uploadImageAndVideoBtnAct(_ sender: UIButton) {
         self.openCamera()
     }
-    // MARK: - Setup Collection View
-    func setupCollectionView() {
-        imageListCV.delegate = self
-        imageListCV.dataSource = self
-        imageListCV?.register(UINib(nibName: "ImageListCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "ImageListCollectionViewCell")
+    @IBAction func submitBtnAct(_ sender: UIButton) {
+        switch deliveryStatus {
+        case .delivered:
+            var attachments: [AttechmentRequestModel] = []
+            var att = AttechmentRequestModel()
+            for i in 0..<self.mediaItems.count {
+                if self.mediaItems[i].type == .image {
+                    att.attachment_type = "image"
+                } else {
+                    att.attachment_type = "video"
+                }
+                att.url = self.mediaItems[i].url
+                attachments.append(att)
+            }
+            if attachments.count == 0 {
+                self.showToast(message: "Please upload atleast one attachment")
+            } else {
+                let deliveryParams = ConfirmDeliveryRequestModel(order_id: orderData?.id ?? 0, status: DeliveryStatus.delivered.rawValue, attachments: attachments)
+                debugPrint(deliveryParams,"deliveryParams")
+            }
+        case .rejected:
+            if notesTextView.text == "" {
+                self.showToast(message: "Please enter reason in notes")
+                return
+            }
+            let rejectParams = CancelledDeliveryRequestModel(order_id: orderData?.id ?? 0, status: DeliveryStatus.rejected.rawValue, reason:notesTextView.text ?? "")
+            debugPrint(rejectParams,"rejectParams")
+        case .none:
+            self.showToast(message: "Plese select status")
+        }
     }
+    
 }
 // MARK: - UIImage PickerView Methods
 extension ConfirmDeliveryVC: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
@@ -149,28 +176,29 @@ extension ConfirmDeliveryVC: UIImagePickerControllerDelegate, UINavigationContro
         picker.dismiss(animated: true, completion: nil)
     }
     func saveImageToDocuments(image: UIImage) {
-        guard let imageData = image.jpegData(compressionQuality: 0.8) else { return }
-        
-        let fileName = UUID().uuidString + ".jpg"
-        let fileURL = FileManager.default.temporaryDirectory.appendingPathComponent(fileName)
-        
-        do {
-            try imageData.write(to: fileURL)
-            let mediaItem = MediaItem(type: .image, url: fileURL, thumbnail: nil)
-            mediaItems.append(mediaItem)
-            debugPrint(mediaItems,"mediaItemsss")
-            self.mediaCountLbl.text = "\(mediaItems.count)/10"
-            imageListCV.reloadData()
-            if mediaItems.count > 0 {
-                self.uploadImageBgView.isHidden = true
-                self.imageListCV.isHidden = false
-            } else {
-                self.uploadImageBgView.isHidden = false
-                self.imageListCV.isHidden = true
-            }
-        } catch {
-            print("Failed to save image: \(error)")
-        }
+        self.uploadImageToS3Server(image: image)
+//        guard let imageData = image.jpegData(compressionQuality: 0.8) else { return }
+//        
+//        let fileName = UUID().uuidString + ".jpg"
+//        let fileURL = FileManager.default.temporaryDirectory.appendingPathComponent(fileName)
+//        
+//        do {
+//            try imageData.write(to: fileURL)
+//            let mediaItem = MediaItem(type: .image, url: "\(fileURL)", thumbnail: nil)
+//            mediaItems.append(mediaItem)
+//            debugPrint(mediaItems,"mediaItemsss")
+//            self.mediaCountLbl.text = "\(mediaItems.count)/10"
+//            imageListCV.reloadData()
+//            if mediaItems.count > 0 {
+//                self.uploadImageBgView.isHidden = true
+//                self.imageListCV.isHidden = false
+//            } else {
+//                self.uploadImageBgView.isHidden = false
+//                self.imageListCV.isHidden = true
+//            }
+//        } catch {
+//            print("Failed to save image: \(error)")
+//        }
     }
     func saveVideoToDocuments(videoURL: URL) {
         let fileName = UUID().uuidString + ".mov"
@@ -179,18 +207,19 @@ extension ConfirmDeliveryVC: UIImagePickerControllerDelegate, UINavigationContro
         do {
             try FileManager.default.copyItem(at: videoURL, to: destinationURL)
             let thumbnail = generateThumbnail(for: destinationURL)
-            let mediaItem = MediaItem(type: .video, url: destinationURL, thumbnail: thumbnail)
-            mediaItems.append(mediaItem)
-            debugPrint(mediaItems,"mediaItemsss")
-            self.mediaCountLbl.text = "\(mediaItems.count)/10"
-            imageListCV.reloadData()
-            if mediaItems.count > 0 {
-                self.uploadImageBgView.isHidden = true
-                self.imageListCV.isHidden = false
-            } else {
-                self.uploadImageBgView.isHidden = false
-                self.imageListCV.isHidden = true
-            }
+            self.uploadVideoToS3Server(filePath: videoURL.path, thumbnail: thumbnail ?? UIImage())
+//            let mediaItem = MediaItem(type: .video, url: "\(destinationURL)", thumbnail: thumbnail)
+//            mediaItems.append(mediaItem)
+//            debugPrint(mediaItems,"mediaItemsss")
+//            self.mediaCountLbl.text = "\(mediaItems.count)/10"
+//            imageListCV.reloadData()
+//            if mediaItems.count > 0 {
+//                self.uploadImageBgView.isHidden = true
+//                self.imageListCV.isHidden = false
+//            } else {
+//                self.uploadImageBgView.isHidden = false
+//                self.imageListCV.isHidden = true
+//            }
         } catch {
             print("Failed to save video: \(error)")
         }
@@ -235,8 +264,6 @@ extension ConfirmDeliveryVC: UICollectionViewDelegate, UICollectionViewDataSourc
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ImageListCollectionViewCell", for: indexPath) as! ImageListCollectionViewCell
-//        cell.bgView.layer.borderColor = UIColor.lightGray.cgColor
-//        cell.bgView.layer.borderWidth = 1
         cell.imgView.layer.cornerRadius = 10
         cell.imgView.contentMode = .scaleToFill
         cell.previewImg.tintColor = .lightGray
@@ -253,9 +280,8 @@ extension ConfirmDeliveryVC: UICollectionViewDelegate, UICollectionViewDataSourc
                 let mediaData = self.mediaItems[indexPath.row]
                 cell.takePhotoBtn.isHidden = true
                 cell.deleteImgBtn.isHidden = false
-                //  cell.imgView.image = imageListArray[indexPath.row]
                 if mediaData.type == MediaType.image {
-                    cell.imgView.image = UIImage(contentsOfFile: mediaData.url.path)
+                    cell.imgView.setImage(from: mediaData.url ?? "")
                 } else {
                     cell.imgView.image = mediaData.thumbnail
                 }
@@ -287,7 +313,7 @@ extension ConfirmDeliveryVC: UICollectionViewDelegate, UICollectionViewDataSourc
     }
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let data = mediaItems[indexPath.row]
-        if data.url.absoluteString != "" {
+        if data.url != "" {
             let storyboard = UIStoryboard(name: "Main", bundle: Bundle.main)
             let vc = storyboard.instantiateViewController(identifier: "VideoPerviewViewController") as! VideoPerviewViewController
             vc.mediaData = data
@@ -296,56 +322,68 @@ extension ConfirmDeliveryVC: UICollectionViewDelegate, UICollectionViewDataSourc
         }
     }
 }
+// MARK: - Uploade Server Methods
+extension ConfirmDeliveryVC {
+    func uploadImageToS3Server (image : UIImage)
+    {
+        LoaderView.shared.showLoader(in: self.view)
+        DispatchQueue.global(qos: .background).async {
+            AWSS3Manager.shared.uploadImage(image: image) { [weak self] progress in
+                guard self != nil else { return }
+            } completion: { [weak self] response, error in
+                
+                guard self != nil else { return }
+                
+                if let awsS3ReturnImageUrl = response as? String
+                {
+                    debugPrint("Uploaded Image file url: " + awsS3ReturnImageUrl)
+                    let awsS3ImageUrl = SERVERURL + awsS3ReturnImageUrl
+                    debugPrint(awsS3ImageUrl, "awsS3ImageUrl")
+                    let mediaItem = MediaItem(type: .image, url: awsS3ImageUrl, thumbnail: nil)
+                    self?.mediaItems.append(mediaItem)
+                    self?.mediaCountLbl.text = "\(self?.mediaItems.count ?? 0)/10"
+                    self?.imageListCV.reloadData()
+                    LoaderView.shared.hideLoader()
+                    if self?.mediaItems.count ?? 0 > 0 {
+                        self?.uploadImageBgView.isHidden = true
+                        self?.imageListCV.isHidden = false
+                    } else {
+                        self?.uploadImageBgView.isHidden = false
+                        self?.imageListCV.isHidden = true
+                    }
+                }
+            }
 
-
-//extension ConfirmDeliveryVC: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
-//    func openMediaPicker() {
-//        let picker = UIImagePickerController()
-//        picker.delegate = self
-//        picker.mediaTypes = [kUTTypeImage as String, kUTTypeMovie as String]
-//        picker.videoQuality = .typeHigh
-//        picker.sourceType = .photoLibrary
-//        present(picker, animated: true)
-//    }
-//    // Handle Picked Media
-//    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-//
-//        if let image = info[.originalImage] as? UIImage {
-//            // Save Image and Get URL
-//            if let imageUrl = saveImageToDocumentsDirectory(image: image) {
-//                let media = MediaItem(type: .image, url: imageUrl, thumbnail: nil)
-//                mediaItems.append(media)
-//            }
-//        } else if let videoUrl = info[.mediaURL] as? URL {
-//            // Generate Video Thumbnail
-//            let thumbnail = generateThumbnail(for: videoUrl)
-//            let media = MediaItem(type: .video, url: videoUrl, thumbnail: thumbnail)
-//            mediaItems.append(media)
-//        }
-//
-//        dismiss(animated: true)
-//    }
-//    func saveImageToDocumentsDirectory(image: UIImage) -> URL? {
-//        let fileName = UUID().uuidString + ".jpg"
-//        let fileURL = FileManager.default.temporaryDirectory.appendingPathComponent(fileName)
-//
-//        if let data = image.jpegData(compressionQuality: 0.8) {
-//            try? data.write(to: fileURL)
-//            return fileURL
-//        }
-//        return nil
-//    }
-//    func generateThumbnail(for url: URL) -> UIImage? {
-//        let asset = AVAsset(url: url)
-//        let imageGenerator = AVAssetImageGenerator(asset: asset)
-//        imageGenerator.appliesPreferredTrackTransform = true
-//
-//        do {
-//            let cgImage = try imageGenerator.copyCGImage(at: .zero, actualTime: nil)
-//            return UIImage(cgImage: cgImage)
-//        } catch {
-//            print("Error generating thumbnail: \(error)")
-//            return nil
-//        }
-//    }
-//}
+        }
+    }
+    func uploadVideoToS3Server (filePath : String,thumbnail:UIImage){
+        LoaderView.shared.showLoader(in: self.view)
+        DispatchQueue.global(qos: .background).async {
+            let videoUrl = URL(fileURLWithPath: filePath)
+            AWSS3Manager.shared.uploadVideo(videoUrl: videoUrl, progress: { [weak self] (progress) in
+                debugPrint("Video progress percentage \(Int(progress*100))%")
+                guard self != nil else { return }
+            }) { [weak self] (uploadedFileUrl, error) in
+              
+                if let awsS3Url = uploadedFileUrl as? String {
+                    
+                    let awsS3VideoUrl = SERVERVIDEOURL + awsS3Url
+                    debugPrint("Uploaded file url: " + (awsS3VideoUrl))
+                    debugPrint(awsS3VideoUrl,"awsS3VideoUrl")
+                    let mediaItem = MediaItem(type: .video, url: awsS3VideoUrl, thumbnail: thumbnail)
+                    self?.mediaItems.append(mediaItem)
+                    self?.mediaCountLbl.text = "\(self?.mediaItems.count ?? 0)/10"
+                    self?.imageListCV.reloadData()
+                    LoaderView.shared.hideLoader()
+                    if self?.mediaItems.count ?? 0 > 0 {
+                        self?.uploadImageBgView.isHidden = true
+                        self?.imageListCV.isHidden = false
+                    } else {
+                        self?.uploadImageBgView.isHidden = false
+                        self?.imageListCV.isHidden = true
+                    }
+                }
+            }
+        }
+    }
+}

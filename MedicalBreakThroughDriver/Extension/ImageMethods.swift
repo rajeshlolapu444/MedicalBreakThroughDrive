@@ -8,6 +8,7 @@
 import Foundation
 import UIKit
 import ImageIO
+import SDWebImage
 
 extension UIImage {
     static func gif(name: String) -> UIImage? {
@@ -45,5 +46,21 @@ extension UIImage {
         else { return defaultFrameDuration }
         
         return delayTime > 0 ? delayTime : defaultFrameDuration
+    }
+}
+extension UIImageView {
+    func setImage(from urlString: String?) {
+        guard let urlString = urlString, let url = URL(string: urlString) else {
+            self.image = PlaceHolderImage
+            return
+        }
+        
+        self.sd_setImage(with: url, placeholderImage: PlaceHolderImage, options: .highPriority) { (image, error, _, _) in
+            if let image = image {
+                self.image = image
+            } else {
+                self.image = PlaceHolderImage
+            }
+        }
     }
 }

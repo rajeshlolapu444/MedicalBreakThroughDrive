@@ -9,10 +9,12 @@ import Foundation
 import UIKit
 
 enum DeliveryStatus: String {
-    case accepted = "accepted"
+    //case accepted = "accepted"
     //case started = "started"
-    case finished = "finished"
+    case delivered = "delivered"
+   // case finished = "finished"
     case rejected = "rejected"
+    case none
 }
 enum MediaType {
     case image

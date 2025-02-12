@@ -32,7 +32,7 @@ class VideoPerviewViewController: UIViewController {
     func videoPreview() {
         previewImg.isHidden = true
         viewVideoPlyer.isHidden = false
-        let url = URL.init(string: mediaData?.url.absoluteString ?? "")
+        let url = URL.init(string: mediaData?.url ?? "")
         player = AVPlayer(url: url!)
         player?.rate = 1 //auto play
         let playerFrame = CGRect(x: 0, y: 0, width: viewVideoPlyer.bounds.width, height: viewVideoPlyer.bounds.height)
@@ -49,10 +49,21 @@ class VideoPerviewViewController: UIViewController {
     func imagePreview() {
         previewImg.isHidden = false
         viewVideoPlyer.isHidden = true
-        previewImg.image = UIImage(contentsOfFile: mediaData?.url.path ?? "")
+        previewImg.setImage(from: mediaData?.url ?? "")
     }
     
     @IBAction func backBtnAct(_ sender: UIButton) {
         self.dismiss(animated: true)
     }
+//    func loadImage(from urlString: String, into imageView: UIImageView) {
+//        guard let url = URL(string: urlString) else { return }
+//        
+//        URLSession.shared.dataTask(with: url) { data, response, error in
+//            if let data = data, let image = UIImage(data: data) {
+//                DispatchQueue.main.async {
+//                    imageView.image = image
+//                }
+//            }
+//        }.resume()
+//    }
 }

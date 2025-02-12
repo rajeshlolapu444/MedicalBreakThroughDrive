@@ -24,7 +24,8 @@ struct OrdersData: Codable {
 struct Order: Codable {
     let id, orderID, amount: Int?
     let transactionID: String?
-    let phone, deliveryInstructions: String?
+    let deliveryInstructions: String?
+    let phone: String?
     let status, createdAt: String?
     let customer: Customer?
     let address: Address?

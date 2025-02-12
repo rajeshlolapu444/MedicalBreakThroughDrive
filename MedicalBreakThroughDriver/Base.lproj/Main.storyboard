@@ -1940,7 +1940,22 @@
                                                     </label>
                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="zVB-rV-Ysj">
                                                         <rect key="frame" x="10" y="29.666666666666689" width="354" height="45.333333333333343"/>
+                                                        <subviews>
+                                                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="pTg-gW-QVr">
+                                                                <rect key="frame" x="0.0" y="0.0" width="354" height="45.333333333333336"/>
+                                                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                                <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                                            </textView>
+                                                        </subviews>
                                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                        <constraints>
+                                                            <constraint firstAttribute="bottom" secondItem="pTg-gW-QVr" secondAttribute="bottom" id="5lx-z3-R0F"/>
+                                                            <constraint firstAttribute="trailing" secondItem="pTg-gW-QVr" secondAttribute="trailing" id="Cy2-f6-WPq"/>
+                                                            <constraint firstItem="pTg-gW-QVr" firstAttribute="leading" secondItem="zVB-rV-Ysj" secondAttribute="leading" id="RVl-AI-MV1"/>
+                                                            <constraint firstItem="pTg-gW-QVr" firstAttribute="top" secondItem="zVB-rV-Ysj" secondAttribute="top" id="bxO-YB-run"/>
+                                                        </constraints>
                                                     </view>
                                                 </subviews>
                                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -1985,34 +2000,7 @@
                                                             </userDefinedRuntimeAttribute>
                                                         </userDefinedRuntimeAttributes>
                                                         <connections>
-                                                            <action selector="startDeliveryBtnAct:" destination="xuV-vg-lTi" eventType="touchUpInside" id="4hs-Er-PoZ"/>
-                                                        </connections>
-                                                    </button>
-                                                    <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="c3u-C6-5gU">
-                                                        <rect key="frame" x="0.0" y="0.0" width="240" height="40"/>
-                                                        <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                        <constraints>
-                                                            <constraint firstAttribute="height" constant="40" id="5wj-aq-GKD"/>
-                                                            <constraint firstAttribute="width" constant="240" id="Mpx-1T-q4z"/>
-                                                        </constraints>
-                                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="20"/>
-                                                        <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                        <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
-                                                        <state key="normal" title="Home"/>
-                                                        <userDefinedRuntimeAttributes>
-                                                            <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
-                                                                <real key="value" value="20"/>
-                                                            </userDefinedRuntimeAttribute>
-                                                            <userDefinedRuntimeAttribute type="color" keyPath="borderColor">
-                                                                <color key="value" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                            </userDefinedRuntimeAttribute>
-                                                            <userDefinedRuntimeAttribute type="number" keyPath="borderWidth">
-                                                                <real key="value" value="1"/>
-                                                            </userDefinedRuntimeAttribute>
-                                                        </userDefinedRuntimeAttributes>
-                                                        <connections>
-                                                            <action selector="homeBtnAct:" destination="knN-9l-WPs" eventType="touchUpInside" id="wsq-GA-lCb"/>
-                                                            <action selector="startDeliveryBtnAct:" destination="xuV-vg-lTi" eventType="touchUpInside" id="fuW-n1-RWB"/>
+                                                            <action selector="submitBtnAct:" destination="knN-9l-WPs" eventType="touchUpInside" id="WLV-7v-hSj"/>
                                                         </connections>
                                                     </button>
                                                 </subviews>
@@ -2065,6 +2053,7 @@
                         <outlet property="imageListCV" destination="H0j-vy-Ydi" id="DdZ-Bw-CTg"/>
                         <outlet property="mediaCountLbl" destination="0wy-qZ-5Fd" id="cep-iu-9eg"/>
                         <outlet property="notesBgView" destination="zVB-rV-Ysj" id="CG2-Y2-Wbb"/>
+                        <outlet property="notesTextView" destination="pTg-gW-QVr" id="ihp-Gz-VAz"/>
                         <outlet property="orderIdLbl" destination="AEC-iL-8Lg" id="uky-a4-MrT"/>
                         <outlet property="productImgView" destination="q07-m2-A2Q" id="R7p-id-kZB"/>
                         <outlet property="productNameLbl" destination="EE1-NB-gHZ" id="nyo-0G-RU1"/>

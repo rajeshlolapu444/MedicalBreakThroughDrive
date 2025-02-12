@@ -8,6 +8,8 @@
 import UIKit
 import IQKeyboardManagerSwift
 import GoogleMaps
+import AWSS3
+import AWSCore
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -16,6 +18,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        initializeS3()
         IQKeyboardManager.shared.isEnabled = true
         IQKeyboardManager.shared.enableAutoToolbar = true
         GMSServices.provideAPIKey("AIzaSyD09AGUnxXVmRLRFZ0R4AWVE_qPgyoecjg")
@@ -36,6 +39,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Use this method to release any resources that were specific to the discarded scenes, as they will not return.
     }
 
-
+    func initializeS3() {
+//        let poolId = "us-west-1:83a11d48-4aa8-4f3d-bd86-5225447ff113" // Old
+        _ = "us-west-1:3a1210b2-4a70-47e6-8d06-3fa6de14861f" // New
+//        let credentialsProvider = AWSStaticCredentialsProvider(accessKey: accessKey, secretKey: secretKey)
+        let credentialsProvider = AWSCognitoCredentialsProvider(regionType: .USWest1, identityPoolId: COGNITO_POOL_ID)
+        let configuration = AWSServiceConfiguration(region: .USWest1, credentialsProvider: credentialsProvider)
+        AWSServiceManager.default().defaultServiceConfiguration = configuration
+      //  AWSDDLog.add(AWSDDTTYLogger.sharedInstance) // Console logger
+        if let logger = AWSDDTTYLogger.sharedInstance {
+            AWSDDLog.add(logger)
+        }
+        AWSDDLog.sharedInstance.logLevel = .all
+    }
 }
 

@@ -1,4 +1,7 @@
 PODS:
+  - AWSCore (2.40.1)
+  - AWSS3 (2.40.1):
+    - AWSCore (= 2.40.1)
   - GoogleMaps (9.3.0):
     - GoogleMaps/Maps (= 9.3.0)
   - GoogleMaps/Maps (9.3.0)
@@ -43,14 +46,21 @@ PODS:
     - IQKeyboardCore
   - IQTextView (1.0.5):
     - IQKeyboardToolbar/Placeholderable
+  - SDWebImage (5.20.0):
+    - SDWebImage/Core (= 5.20.0)
+  - SDWebImage/Core (5.20.0)
 
 DEPENDENCIES:
+  - AWSS3
   - GoogleMaps
   - GooglePlaces
   - IQKeyboardManagerSwift
+  - SDWebImage
 
 SPEC REPOS:
   trunk:
+    - AWSCore
+    - AWSS3
     - GoogleMaps
     - GooglePlaces
     - IQKeyboardCore
@@ -61,8 +71,11 @@ SPEC REPOS:
     - IQKeyboardToolbarManager
     - IQTextInputViewNotification
     - IQTextView
+    - SDWebImage
 
 SPEC CHECKSUMS:
+  AWSCore: 29c85b2be07489b459cc17060b6354e9ba0f96a0
+  AWSS3: 29e7d0e5d77af1ce97c91424d7b86aa1b0bf69b6
   GoogleMaps: b58e9627004f47043897eeae830c3ef023678f3b
   GooglePlaces: 310d8c240eb4bf7aaeecec0de71fe75d086dbf4a
   IQKeyboardCore: 28c8bf3bcd8ba5aa1570b318cbc4da94b861711e
@@ -73,7 +86,8 @@ SPEC CHECKSUMS:
   IQKeyboardToolbarManager: 6f4072ac620c2572d4af8c09f42a801f3e4909f7
   IQTextInputViewNotification: f5e954d8881fd9808b744e49e024cc0d4bcfe572
   IQTextView: ae13b4922f22e6f027f62c557d9f4f236b19d5c7
+  SDWebImage: 73c6079366fea25fa4bb9640d5fb58f0893facd8
 
-PODFILE CHECKSUM: 2ed01daf0f7d3c6bfa1d41745a3e86c5d220a275
+PODFILE CHECKSUM: c77730e34e45264f8329881a868b1a9b98396d8c
 
 COCOAPODS: 1.16.2
