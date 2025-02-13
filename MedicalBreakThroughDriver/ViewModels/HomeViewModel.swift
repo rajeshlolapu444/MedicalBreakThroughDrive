@@ -7,6 +7,8 @@
 
 import Foundation
 import UIKit
+import CoreLocation
+
 
 class HomeViewModel {
     static let shared = HomeViewModel()
@@ -26,7 +28,7 @@ class HomeViewModel {
         }
     }
     func getActiveOrdersListAPI(start_date: String?,end_date: String?, completion: @escaping (_ data:[Order]?,_ status:Bool, _ msg:String?) -> Void) {
-        let url = GET_ORDERS_URL + "?start_date=\(start_date ?? "")&end_date=\(end_date ?? "")"
+        let url = GET_ORDERS_URL //+ "?start_date=\(start_date ?? "")&end_date=\(end_date ?? "")"
         debugPrint(url,"GET_ORDERS_URL")
         APIModel.getRequest(strURL:url, postHeaders: ["":""]) { result in
             let response = try? JSONDecoder().decode(OrdersResponseModel.self, from: result as! Data)
@@ -40,7 +42,7 @@ class HomeViewModel {
         }
     }
     func getPastOrdersListAPI(start_date: String?,end_date: String?, completion: @escaping (_ data:[Order]?,_ status:Bool, _ msg:String?) -> Void) {
-        let url = GET_PAST_ORDERS_URL + "?start_date=\(start_date ?? "")&end_date=\(end_date ?? "")"
+        let url = GET_PAST_ORDERS_URL //+ "?start_date=\(start_date ?? "")&end_date=\(end_date ?? "")"
         debugPrint(url,"GET_PAST_ORDERS_URL")
         APIModel.getRequest(strURL:url, postHeaders: ["":""]) { result in
             let response = try? JSONDecoder().decode(OrdersResponseModel.self, from: result as! Data)
@@ -69,6 +71,15 @@ class HomeViewModel {
             debugPrint(error)
             completion(false,error)
         }
+    }
+    func distanceBetweenTwoLocations(lat1: Double, lon1: Double, lat2: Double, lon2: Double) -> Double {
+        let location1 = CLLocation(latitude: lat1, longitude: lon1)
+        let location2 = CLLocation(latitude: lat2, longitude: lon2)
+        
+        let distanceInMeters = location1.distance(from: location2) // Distance in meters
+        let distanceInMiles = distanceInMeters / 1609.34 // Convert to miles
+        
+        return distanceInMiles
     }
 }
 

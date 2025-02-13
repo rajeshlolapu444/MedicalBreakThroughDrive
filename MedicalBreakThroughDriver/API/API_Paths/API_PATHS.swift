@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 //MARK: - Live
-let AppLive = true
+let AppLive = false
 
 let BASEURL = AppLive ? "https://yesdone.com/api/v1/" : "https://beta.yesdone.com/api/v1/"
 let BUCKET_NAME =  AppLive ? "doneappai" : "doneappai-beta"

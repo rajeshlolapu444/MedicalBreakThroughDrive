@@ -14,9 +14,11 @@ class MyOrdersListTableViewCell: UITableViewCell {
     @IBOutlet weak var addressLbl: UILabel!
     @IBOutlet weak var timeLbl: UILabel!
     @IBOutlet weak var productImgView: UIImageView!
+    @IBOutlet weak var contactBgView: UIView!
     @IBOutlet weak var contactLbl: UILabel!
-    @IBOutlet weak var confirmedBtn: UIButton!
-    var confirmedBtnNavi: (() -> Void)?
+    @IBOutlet weak var notesBgView: UIView!
+    @IBOutlet weak var milesBgView: UIView!
+    @IBOutlet weak var milesLbl: UILabel!
     var notesBtn: (() -> Void)?
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -27,9 +29,6 @@ class MyOrdersListTableViewCell: UITableViewCell {
         super.setSelected(selected, animated: animated)
 
         // Configure the view for the selected state
-    }
-    @IBAction func confirmedBtnAct(_ sender: UIButton) {
-        confirmedBtnNavi?()
     }
     @IBAction func notesBtnAct(_ sender: UIButton) {
         self.notesBtn?()
@@ -45,10 +44,17 @@ class MyOrdersListTableViewCell: UITableViewCell {
         productImgView.setImage(from: data.products?.first?.productImage ?? "")
      //   self.confirmedBtn.setTitle(data.status ?? "", for: .normal)
         if data.customer?.phone == nil || data.customer?.phone == "" {
-            self.contactLbl.text = "No Contact"
+            self.contactBgView.isHidden = true
         } else {
+            self.contactBgView.isHidden = false
             self.contactLbl.text = data.customer?.phone
         }
+        let storeLatitude: Double = PersistenceStorage.sharedInstance.storeAddressLatitude ?? 40.730610
+        let storeLongitude: Double = PersistenceStorage.sharedInstance.storeAddressLongitude ?? -73.935242
+        let latitude: Double = data.address?.latitude ?? 0
+        let longitude: Double = data.address?.longitude ?? 0
+        let miles = HomeViewModel.shared.distanceBetweenTwoLocations(lat1: storeLatitude, lon1: storeLongitude, lat2: latitude, lon2: longitude)
+        self.milesLbl.text = String(format: "%.2f", miles) + " miles"
     }
 }
 // MARK: - NibReusable

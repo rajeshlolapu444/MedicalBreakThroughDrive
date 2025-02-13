@@ -153,10 +153,6 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
         cell.selectionStyle = .none
         let orderData = ordersArray[indexPath.row]
         cell.loadData(data: orderData)
-        cell.confirmedBtnNavi = {
-            let orderVC = MAIN.instantiateViewController(withIdentifier: "OrderDetailViewController") as! OrderDetailViewController
-            self.navigationController?.pushViewController(orderVC, animated: true)
-        }
         cell.notesBtn = {
             self.notesPopupView.isHidden = false
             self.notesTitleLbl.text = "Add notes for order #\(orderData.orderID ?? 0)"
@@ -168,6 +164,7 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let orderVC = MAIN.instantiateViewController(withIdentifier: "OrderDetailViewController") as! OrderDetailViewController
         orderVC.orderData = ordersArray[indexPath.row]
+        orderVC.orderType = ordersType
         self.navigationController?.pushViewController(orderVC, animated: true)
     }
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {

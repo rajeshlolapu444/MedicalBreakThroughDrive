@@ -20,7 +20,9 @@ class OrderDetailViewController: UIViewController {
     @IBOutlet weak var instructionsBgView: UIView!
     
     @IBOutlet weak var instructionLbl: UILabel!
+    @IBOutlet weak var startDeliveryBtnStackView: UIStackView!
     var orderData : Order?
+    var orderType : OrdersType?
     override func viewDidLoad() {
         super.viewDidLoad()
         instructionsBgView.layer.cornerRadius = 5
@@ -31,6 +33,7 @@ class OrderDetailViewController: UIViewController {
         if let data = orderData {
             loadData(data: data)
         }
+        self.startDeliveryBtnStackView.isHidden = orderType == .Past
     }
     
     @IBAction func backBtnAct(_ sender: UIButton) {

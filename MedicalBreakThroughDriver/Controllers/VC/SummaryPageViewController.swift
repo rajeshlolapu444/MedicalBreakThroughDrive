@@ -29,9 +29,11 @@ class SummaryPageViewController: UIViewController {
         navigationController?.pushViewController(homeViewController, animated: true)
     }
     @IBAction func profileBtnAct(_ sender: UIButton) {
-      //  let vc = DateSelectionViewController()
-        let vc = ProfileViewController()
-        self.navigationController?.pushViewController(vc, animated: true)
+//        let vc = ProfileViewController()
+//        self.navigationController?.pushViewController(vc, animated: true)
+        popOrPushToXibViewController(ofType: ProfileViewController.self) {
+            return ProfileViewController()
+        }
     }
     @IBAction func routeBtnAct(_ sender: UIButton) {
         let vc = MAIN.instantiateViewController(withIdentifier: "MapViewController") as! MapViewController
@@ -42,11 +44,10 @@ class SummaryPageViewController: UIViewController {
         let vc = MAIN.instantiateViewController(withIdentifier: "HelpViewController") as! HelpViewController
         navigationController?.pushViewController(vc, animated: true)
     }
-    //    func navigationTo<T: UIViewController>(identifier: String, type: T.Type) {
-    //        if let vc = MAIN.instantiateViewController(withIdentifier: identifier) as? T {
-    //            navigationController?.pushViewController(vc, animated: true)
-    //        } else {
-    //            print("Failed to instantiate view controller with identifier: \(identifier)")
-    //        }
-    //    }
+    @IBAction func logoutBtnAct(_ sender: UIButton) {
+        let domain = Bundle.main.bundleIdentifier!
+        UserDefaults.standard.removePersistentDomain(forName: domain)
+        UserDefaults.standard.synchronize()
+        popOrPushToViewController(ofType: LoginViewController.self)
+    }
 }
