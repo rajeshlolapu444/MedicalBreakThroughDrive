@@ -27,7 +27,7 @@ func getCurrentDate() -> String {
     return dateFormatter.string(from: Date())
 }
 
-func convertDateFormat(dateString: String, from inputFormat: String, to outputFormat: String = "dd-MM-yyyy", timeZone: TimeZone = .current) -> String? {
+func convertDateFormat(dateString: String, from inputFormat: String, to outputFormat: String = "MMM dd, yyyy", timeZone: TimeZone = .current) -> String? {
     let dateFormatter = DateFormatter()
     dateFormatter.dateFormat = inputFormat
     dateFormatter.timeZone = timeZone
@@ -76,28 +76,6 @@ extension UIViewController
     }
 }
 
-func getNextDay(from dateString: String, inputFormat: String = "yyyy-MM-dd HH:mm:ss Z", outputFormat: String = "dd-MM-yyyy", timeZone: TimeZone = .current) -> (fullDate: String, formattedDate: String)? {
-    let dateFormatter = DateFormatter()
-    dateFormatter.dateFormat = inputFormat
-    dateFormatter.timeZone = timeZone
-    
-    // Convert string to Date
-    guard let date = dateFormatter.date(from: dateString) else { return nil }
-    
-    // Add 1 day
-    guard let nextDay = Calendar.current.date(byAdding: .day, value: 1, to: date) else { return nil }
-    
-    // Convert back to full date string
-    let fullDateString = dateFormatter.string(from: nextDay)
-    
-    // Convert to formatted output
-    let outputFormatter = DateFormatter()
-    outputFormatter.dateFormat = outputFormat
-    outputFormatter.timeZone = timeZone
-    let formattedDateString = outputFormatter.string(from: nextDay)
-    
-    return (fullDateString, formattedDateString)
-}
 func formatDate(_ date: Date, format: String = "dd-MM-yyyy", timeZone: TimeZone = .current) -> String {
     let dateFormatter = DateFormatter()
     dateFormatter.dateFormat = format

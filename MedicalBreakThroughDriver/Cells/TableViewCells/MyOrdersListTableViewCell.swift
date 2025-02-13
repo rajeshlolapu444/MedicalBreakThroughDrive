@@ -42,26 +42,14 @@ class MyOrdersListTableViewCell: UITableViewCell {
         if let formattedDate = convertDateFormat(dateString: data.createdAt ?? "", from: "yyyy-MM-dd HH:mm:ss") {
             self.timeLbl.text = formattedDate
         }
-        loadImage(from: data.products?.first?.productImage ?? "", into: productImgView)
+        productImgView.setImage(from: data.products?.first?.productImage ?? "")
      //   self.confirmedBtn.setTitle(data.status ?? "", for: .normal)
         if data.customer?.phone == nil || data.customer?.phone == "" {
-            self.contactLbl.text = "No Cantact"
+            self.contactLbl.text = "No Contact"
         } else {
             self.contactLbl.text = data.customer?.phone
         }
     }
-    func loadImage(from urlString: String, into imageView: UIImageView) {
-        guard let url = URL(string: urlString) else { return }
-        
-        URLSession.shared.dataTask(with: url) { data, response, error in
-            if let data = data, let image = UIImage(data: data) {
-                DispatchQueue.main.async {
-                    imageView.image = image
-                }
-            }
-        }.resume()
-    }
-
 }
 // MARK: - NibReusable
 extension MyOrdersListTableViewCell: NibReusable { }

@@ -24,20 +24,10 @@ class ProfileViewController: UIViewController {
         self.lastNameTF.text = data?.lastName
         self.emailTF.text = data?.email
         self.phoneNumberTF.text = data?.phone
-        loadImage(from: data?.profileImage ?? "", into: profileImgView)
+        profileImgView.setImage(from: data?.profileImage ?? "")
     }
     @IBAction func backBtnAct(_ sender: UIButton) {
         self.navigationController?.popViewController(animated: true)
     }
-    func loadImage(from urlString: String, into imageView: UIImageView) {
-        guard let url = URL(string: urlString) else { return }
-        
-        URLSession.shared.dataTask(with: url) { data, response, error in
-            if let data = data, let image = UIImage(data: data) {
-                DispatchQueue.main.async {
-                    imageView.image = image
-                }
-            }
-        }.resume()
-    }
+
 }

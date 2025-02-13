@@ -83,29 +83,34 @@ class LoginViewController: UIViewController {
         self.navigationController?.pushViewController(vc, animated: true)
     }
     func loginAPICall(){
-        let loginParams = LoginRequestModel(email: self.emailTF?.text ?? "", password: self.passwordTF?.text ?? "")
-        debugPrint(loginParams,"loginParams")
         LoaderView.shared.showLoader(in: self.view)
-        APIModel.postRequest(strURL: LOGIN_URL as NSString, postParams: loginParams, postHeaders: ["":""]) { result in
-            let loginResponse = try? JSONDecoder().decode(LoginResponseModel.self, from: result as! Data)
-            if loginResponse?.status == 200{
-                UserDefaults.standard.setValue(loginResponse?.data?.accessToken ?? "", forKey: k_token)
-                headers.updateValue("Bearer " + (loginResponse?.data?.accessToken ?? ""), forKey: "Authorization")
-                debugPrint(headers,"headerss")
-                PersistenceStorage.sharedInstance.loginResponseData = loginResponse?.data
+        let loginParams = LoginRequestModel(email: self.emailTF?.text ?? "", password: self.passwordTF?.text ?? "")
+        LoginViewModel.shared.loginAPICall(params: loginParams) { status, msg in
+            if status {
+                LoginViewModel.shared.getStoreCoordinates()
+                self.profileDataApiCall()
+                self.showToast(message: msg ?? "")
+            } else {
                 LoaderView.shared.hideLoader()
-                self.navigateToSummary()
+                self.showToast(message: msg ?? "")
             }
-             else {
-                LoaderView.shared.hideLoader()
-                 self.showToast(message: (loginResponse?.message ?? ""))
-            }
-        } failureHandler: { error in
-            debugPrint(error)
-            self.showToast(message:error)
-            LoaderView.shared.hideLoader()
         }
     }
+    func profileDataApiCall() {
+        ProfileViewModel.shared.getDriverProfileAPI { status, msg in
+            if status {
+                if let data = PersistenceStorage.sharedInstance.driverProfileData {
+                    debugPrint(data, "driverProfileData")
+                    self.navigateToSummary()
+                    LoaderView.shared.hideLoader()
+                }
+            } else {
+                self.showToast(message: msg ?? "")
+                LoaderView.shared.hideLoader()
+            }
+        }
+    }
+
     func navigateToHome() {
         let homeViewController = MAIN.instantiateViewController(withIdentifier: "HomeViewController") as! HomeViewController
         navigationController?.pushViewController(homeViewController, animated: true)
@@ -113,30 +118,5 @@ class LoginViewController: UIViewController {
     func navigateToSummary() {
         let vc = MAIN.instantiateViewController(withIdentifier: "SummaryPageViewController") as! SummaryPageViewController
         navigationController?.pushViewController(vc, animated: true)
-    }
-}
-
-// MARK: - LoginRequestModel
-struct LoginRequestModel: Encodable {
-    let email, password: String?
-}
-// MARK: - LoginResponseModel
-struct LoginResponseModel: Codable {
-    let message : String?
-    let status : Int?
-    let data : LoginResponseDataModel?
-
-    enum CodingKeys: String, CodingKey {
-
-        case message = "message"
-        case status = "status"
-        case data = "data"
-    }
-}
-struct LoginResponseDataModel: Codable {
-    let accessToken : String?
-   
-    enum CodingKeys: String, CodingKey {
-        case accessToken = "access_token"
     }
 }

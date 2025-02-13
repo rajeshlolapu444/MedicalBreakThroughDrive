@@ -53,7 +53,7 @@ struct Address: Codable {
     let addressLine1: String?
     let addressLine2: String?
     let city, state, country, postalCode: String?
-    let latitude, longitude: String?
+    let latitude, longitude: Double?
 
     enum CodingKeys: String, CodingKey {
         case id

@@ -11,18 +11,6 @@ class SummaryPageViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        profileDataApiCall()
-    }
-    func profileDataApiCall() {
-        ProfileViewModel.shared.getDriverProfileAPI { status, msg in
-            if status {
-                if let data = PersistenceStorage.sharedInstance.driverProfileData {
-                    debugPrint(data, "driverProfileData")
-                }
-            } else {
-                self.showToast(message: msg ?? "")
-            }
-        }
     }
     @IBAction func activeOrdersBtnAct(_ sender: UIButton) {
         let homeViewController = MAIN.instantiateViewController(withIdentifier: "HomeViewController") as! HomeViewController
@@ -32,7 +20,7 @@ class SummaryPageViewController: UIViewController {
     }
     @IBAction func pastOrdersBtnAct(_ sender: UIButton) {
         let homeViewController = MAIN.instantiateViewController(withIdentifier: "HomeViewController") as! HomeViewController
-        homeViewController.topTitle = "Past Orders"
+        homeViewController.topTitle = "History"
         homeViewController.ordersType = .Past
         navigationController?.pushViewController(homeViewController, animated: true)
     }

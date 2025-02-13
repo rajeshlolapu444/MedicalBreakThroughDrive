@@ -10,9 +10,12 @@ import UIKit
 class HomeViewController: UIViewController {
     
     @IBOutlet weak var titleLbl: UILabel!
+    @IBOutlet weak var startDateBgView: UIView!
+    @IBOutlet weak var endDateBgView: UIView!
+    @IBOutlet weak var startDateTitleLbl: UILabel!
     @IBOutlet weak var noOrdersLbl: UILabel!
-    @IBOutlet weak var monthLabel: UILabel!
-    @IBOutlet weak var yearLabel: UILabel!
+    @IBOutlet weak var startDateLabel: UILabel!
+    @IBOutlet weak var endDateLabel: UILabel!
     @IBOutlet weak var ordersListTableView: UITableView!
     @IBOutlet weak var notesPopupView: UIView!
     @IBOutlet weak var notesTitleLbl: UILabel!
@@ -36,18 +39,26 @@ class HomeViewController: UIViewController {
         setupTableView()
         debugPrint(PersistenceStorage.sharedInstance.loginResponseData?.accessToken ?? "", "accessToken")
         self.notesPoupViewSetup()
-        self.monthLabel.text = formatDate(Date(), format: "dd-MM-yyyy")
-        self.yearLabel.text = formatDate(Date(), format: "dd-MM-yyyy")
+        self.startDateLabel.text = formatDate(Date(), format: "MMM dd, yyyy")
+        self.endDateLabel.text = formatDate(Date(), format: "MMM dd, yyyy")
         startDate = Date()
        // endDate = Date()
         if ordersType == .Active {
-            self.getActiveOrdersList(startDate: self.monthLabel.text ?? "", endDate: self.yearLabel.text ?? "")
+            let sDate = formatDate(Date(), format: "dd-MM-yyyy")
+            let eDate = formatDate(Date(), format: "dd-MM-yyyy")
+            self.getActiveOrdersList(startDate: sDate, endDate: eDate)
             self.notesSaveBtn.isHidden = false
             self.notesTextView.isUserInteractionEnabled = true
+            self.endDateBgView.isHidden = true
+            startDateTitleLbl.text = "Date"
         } else {
-            self.getPastOrdersList(startDate: self.monthLabel.text ?? "", endDate: self.yearLabel.text ?? "")
+            let sDate = formatDate(Date(), format: "dd-MM-yyyy")
+            let eDate = formatDate(Date(), format: "dd-MM-yyyy")
+            self.getPastOrdersList(startDate: sDate, endDate: eDate)
             self.notesSaveBtn.isHidden = true
             self.notesTextView.isUserInteractionEnabled = false
+            self.endDateBgView.isHidden = false
+            startDateTitleLbl.text = "Start Date :"
         }
     }
     override func viewWillAppear(_ animated: Bool) {
@@ -71,14 +82,6 @@ class HomeViewController: UIViewController {
         ordersListTableView.delegate = self
         ordersListTableView.dataSource = self
         ordersListTableView.register(MyOrdersListTableViewCell.self)
-    }
-    func updateMonthYearLabels(for date: Date) {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "MMMM"
-        monthLabel.text = dateFormatter.string(from: date)
-        
-        dateFormatter.dateFormat = "yyyy"
-        yearLabel.text = dateFormatter.string(from: date)
     }
     @IBAction func monthBtnAct(_ sender: UIButton) {
        // pickerContainerView.isHidden = false
@@ -158,6 +161,7 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
             self.notesPopupView.isHidden = false
             self.notesTitleLbl.text = "Add notes for order #\(orderData.orderID ?? 0)"
             self.selectedOrderID = orderData.id ?? 0
+            self.notesTextView.text = orderData.deliveryDetails?.notes ?? ""
         }
         return cell
     }
@@ -187,9 +191,18 @@ extension HomeViewController: UIPickerViewDelegate, UIPickerViewDataSource {
                //datePicker.minimumDate = Date()
                if let endDate = endDate {
                    datePicker.maximumDate = endDate // Ensure end date is after start date
-                   datePicker.minimumDate = Date()
+                   let dateFormatter = DateFormatter()
+                   dateFormatter.dateFormat = "dd-MM-yyyy"
+                   if let minDate = dateFormatter.date(from: "01-01-2013") {
+                       datePicker.minimumDate = minDate
+                   }
                } else {
-                   datePicker.minimumDate = Date()
+                   let dateFormatter = DateFormatter()
+                   dateFormatter.dateFormat = "dd-MM-yyyy"
+                   if let minDate = dateFormatter.date(from: "01-01-2013") {
+                       datePicker.minimumDate = minDate
+                   }
+                   datePicker.maximumDate = Date()
                }
            } else {
                // If End Date is selected, allow selecting current date to future dates
@@ -210,10 +223,18 @@ extension HomeViewController: UIPickerViewDelegate, UIPickerViewDataSource {
                let selectedDate = datePicker.date
                if isStartDate {
                    self.startDate = selectedDate
-                   self.monthLabel.text = formatDate(selectedDate, format: "dd-MM-yyyy")
+                   self.startDateLabel.text = formatDate(selectedDate, format: "MMM dd, yyyy")
                } else {
                    self.endDate = selectedDate
-                   self.yearLabel.text = formatDate(selectedDate, format: "dd-MM-yyyy")
+                   self.endDateLabel.text = formatDate(selectedDate, format: "MMM dd, yyyy")
+               }
+               let startDateString = formatDate(self.startDate ?? Date(), format: "dd-MM-yyyy")
+               let endDateString = formatDate(self.endDate ?? Date(), format: "dd-MM-yyyy")
+
+               if self.ordersType == .Active {
+                   self.getActiveOrdersList(startDate: startDateString, endDate: endDateString)
+               } else {
+                   self.getPastOrdersList(startDate: startDateString, endDate: endDateString)
                }
            }))
            
@@ -258,6 +279,5 @@ extension HomeViewController: UIPickerViewDelegate, UIPickerViewDataSource {
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         endDate = availableEndDates[row]
-        self.yearLabel.text = formatDate(endDate ?? Date(), format: "dd-MM-yyyy")
     }
 }

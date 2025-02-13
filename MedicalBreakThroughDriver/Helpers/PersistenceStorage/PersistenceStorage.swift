@@ -37,4 +37,20 @@ class PersistenceStorage {
             UserDefaults.standard.set(data, forKey: "driverProfileData")
         }
     }
+    var storeAddressLatitude: Double? {
+        set (newValue){
+            defaults.set(newValue, forKey: "storeAddressLatitude")
+        }
+        get {
+            return defaults.object(forKey: "storeAddressLatitude") as? Double
+        }
+    }
+    var storeAddressLongitude: Double? {
+        set (newValue){
+            defaults.set(newValue, forKey: "storeAddressLongitude")
+        }
+        get {
+            return defaults.object(forKey: "storeAddressLongitude") as? Double
+        }
+    }
 }

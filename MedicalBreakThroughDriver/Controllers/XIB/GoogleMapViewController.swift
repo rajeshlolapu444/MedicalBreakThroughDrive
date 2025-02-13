@@ -16,7 +16,8 @@ class GoogleMapViewController: UIViewController, CLLocationManagerDelegate {
     var mapView: GMSMapView!
     var locationManager = CLLocationManager()
     var currentLocation: CLLocation?
-    
+    let storeLatitude: Double = PersistenceStorage.sharedInstance.storeAddressLatitude ?? 40.730610
+    let storeLongitude: Double = PersistenceStorage.sharedInstance.storeAddressLongitude ?? -73.935242
     var destinations: [CLLocationCoordinate2D] = [
         CLLocationCoordinate2D(latitude: 17.452938, longitude: 78.380981), // Destination 1
         CLLocationCoordinate2D(latitude: 17.496602, longitude: 78.367925), // Destination 2
@@ -30,13 +31,14 @@ class GoogleMapViewController: UIViewController, CLLocationManagerDelegate {
         // Initialize map
         self.nextBtn.isHidden = isfromHome
         if !isfromHome {
-            let latitude = Double(orderData?.address?.latitude ?? "17.452938") ?? 17.452938
-            let longitude = Double(orderData?.address?.longitude ?? "78.380981") ?? 78.380981
+            let latitude = orderData?.address?.latitude ?? 17.452938
+            let longitude = orderData?.address?.longitude ?? 78.380981
             self.destinations = [
                 CLLocationCoordinate2D(latitude: latitude, longitude: longitude), // Destination 1
             ]
         }
-        let camera = GMSCameraPosition.camera(withLatitude: 37.7749, longitude: -122.4194, zoom: 10)
+       // let camera = GMSCameraPosition.camera(withLatitude: 37.7749, longitude: -122.4194, zoom: 10)
+        let camera = GMSCameraPosition.camera(withLatitude: storeLatitude, longitude:storeLongitude, zoom: 10)
         mapView = GMSMapView(frame: self.mapContainerView.frame, camera: camera)
         self.mapContainerView.addSubview(mapView)
         // Ensure the map resizes properly
@@ -74,7 +76,8 @@ class GoogleMapViewController: UIViewController, CLLocationManagerDelegate {
     // Get current location
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         guard let location = locations.last else { return }
-        currentLocation = location
+        currentLocation = CLLocation(latitude: storeLatitude, longitude:storeLongitude)
+        let ll = currentLocation ?? CLLocation(latitude: 40.730610, longitude: -73.935242)
         locationManager.stopUpdatingLocation() // Stop updating to save battery
         // Show a marker for the user's current location
 //           let marker = GMSMarker(position: location.coordinate)
@@ -82,7 +85,7 @@ class GoogleMapViewController: UIViewController, CLLocationManagerDelegate {
 //        marker.icon = UIImage(named: "current_location_icon") // Replace with your custom icon
 //           marker.map = mapView
         // Show a circle for the user's current location (as a dot)
-            let circle = GMSCircle(position: location.coordinate, radius: 50) // 20 is the radius in meters
+        let circle = GMSCircle(position: ll.coordinate, radius: 50) // 20 is the radius in meters
         circle.fillColor = UIColor.red // Blue with some transparency
         circle.strokeColor = UIColor.blue // Stroke color for border
             circle.strokeWidth = 4.0 // Border thickness

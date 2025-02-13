@@ -26,7 +26,7 @@ class HomeViewModel {
         }
     }
     func getActiveOrdersListAPI(start_date: String?,end_date: String?, completion: @escaping (_ data:[Order]?,_ status:Bool, _ msg:String?) -> Void) {
-        let url = GET_ORDERS_URL //+ "?start_date=\(start_date ?? "")&end_date=\(end_date ?? "")"
+        let url = GET_ORDERS_URL + "?start_date=\(start_date ?? "")&end_date=\(end_date ?? "")"
         debugPrint(url,"GET_ORDERS_URL")
         APIModel.getRequest(strURL:url, postHeaders: ["":""]) { result in
             let response = try? JSONDecoder().decode(OrdersResponseModel.self, from: result as! Data)
@@ -40,7 +40,7 @@ class HomeViewModel {
         }
     }
     func getPastOrdersListAPI(start_date: String?,end_date: String?, completion: @escaping (_ data:[Order]?,_ status:Bool, _ msg:String?) -> Void) {
-        let url = GET_PAST_ORDERS_URL //+ "?start_date=\(start_date ?? "")&end_date=\(end_date ?? "")"
+        let url = GET_PAST_ORDERS_URL + "?start_date=\(start_date ?? "")&end_date=\(end_date ?? "")"
         debugPrint(url,"GET_PAST_ORDERS_URL")
         APIModel.getRequest(strURL:url, postHeaders: ["":""]) { result in
             let response = try? JSONDecoder().decode(OrdersResponseModel.self, from: result as! Data)
