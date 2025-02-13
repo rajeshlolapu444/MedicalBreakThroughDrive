@@ -47,7 +47,8 @@ class MyOrdersListTableViewCell: UITableViewCell {
             self.contactBgView.isHidden = true
         } else {
             self.contactBgView.isHidden = false
-            self.contactLbl.text = data.customer?.phone
+            let usFormate = formatPhoneNumberUSA(data.customer?.phone ?? "")
+            self.contactLbl.text = usFormate
         }
         let storeLatitude: Double = PersistenceStorage.sharedInstance.storeAddressLatitude ?? 40.730610
         let storeLongitude: Double = PersistenceStorage.sharedInstance.storeAddressLongitude ?? -73.935242

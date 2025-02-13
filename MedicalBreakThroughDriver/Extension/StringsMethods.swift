@@ -39,6 +39,24 @@ func convertDateFormat(dateString: String, from inputFormat: String, to outputFo
     dateFormatter.dateFormat = outputFormat
     return dateFormatter.string(from: date)
 }
+func formatPhoneNumberUSA(_ phoneNumber: String) -> String? {
+    let cleanedPhoneNumber = phoneNumber.components(separatedBy: CharacterSet.decimalDigits.inverted).joined()
+    
+    let mask = "(XXX) XXX-XXXX"
+    var result = ""
+    var index = cleanedPhoneNumber.startIndex
+
+    for char in mask where index < cleanedPhoneNumber.endIndex {
+        if char == "X" {
+            result.append(cleanedPhoneNumber[index])
+            index = cleanedPhoneNumber.index(after: index)
+        } else {
+            result.append(char)
+        }
+    }
+    
+    return result
+}
 
 extension String {
     func isValidEmail() -> Bool {

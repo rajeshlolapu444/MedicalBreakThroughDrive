@@ -6,9 +6,11 @@
 //
 
 import UIKit
+import CoreLocation
 
 class HomeViewController: UIViewController {
     
+    @IBOutlet weak var routeBtnBgView: UIView!
     @IBOutlet weak var titleLbl: UILabel!
     @IBOutlet weak var startDateBgView: UIView!
     @IBOutlet weak var endDateBgView: UIView!
@@ -43,23 +45,8 @@ class HomeViewController: UIViewController {
         self.endDateLabel.text = formatDate(Date(), format: "MMM dd, yyyy")
         startDate = Date()
        // endDate = Date()
-        if ordersType == .Active {
-            let sDate = formatDate(Date(), format: "dd-MM-yyyy")
-            let eDate = formatDate(Date(), format: "dd-MM-yyyy")
-            self.getActiveOrdersList(startDate: sDate, endDate: eDate)
-            self.notesSaveBtn.isHidden = false
-            self.notesTextView.isUserInteractionEnabled = true
-            self.endDateBgView.isHidden = true
-            startDateTitleLbl.text = "Date"
-        } else {
-            let sDate = formatDate(Date(), format: "dd-MM-yyyy")
-            let eDate = formatDate(Date(), format: "dd-MM-yyyy")
-            self.getPastOrdersList(startDate: sDate, endDate: eDate)
-            self.notesSaveBtn.isHidden = true
-            self.notesTextView.isUserInteractionEnabled = false
-            self.endDateBgView.isHidden = false
-            startDateTitleLbl.text = "Start Date :"
-        }
+        orderTypeSetup()
+        
     }
     override func viewWillAppear(_ animated: Bool) {
         self.notesPopupView.isHidden = true
@@ -68,14 +55,47 @@ class HomeViewController: UIViewController {
         self.notesTextViewBgView.layer.borderColor = UIColor.lightGray.cgColor
         self.notesTextViewBgView.layer.borderWidth = 1
     }
+    func orderTypeSetup() {
+        if ordersType == .Active {
+            let sDate = formatDate(Date(), format: "dd-MM-yyyy")
+            let eDate = formatDate(Date(), format: "dd-MM-yyyy")
+            self.getActiveOrdersList(startDate: sDate, endDate: eDate)
+            self.notesSaveBtn.isHidden = false
+            self.notesTextView.isUserInteractionEnabled = true
+            self.endDateBgView.isHidden = true
+            startDateTitleLbl.text = "Date"
+            self.routeBtnBgView.isHidden = false
+        } else {
+            let sDate = formatDate(Date(), format: "dd-MM-yyyy")
+            let eDate = formatDate(Date(), format: "dd-MM-yyyy")
+            self.getPastOrdersList(startDate: sDate, endDate: eDate)
+            self.notesSaveBtn.isHidden = true
+            self.notesTextView.isUserInteractionEnabled = false
+            self.endDateBgView.isHidden = false
+            startDateTitleLbl.text = "Start Date :"
+            self.routeBtnBgView.isHidden = true
+        }
+    }
 
     @IBAction func backBtnAct(_ sender: UIButton) {
         self.navigationController?.popViewController(animated: true)
     }
-    @IBAction func calendarBtnAct(_ sender: UIButton) {
-        let vc = GoogleMapViewController()
-        vc.isfromHome = true
-        self.navigationController?.pushViewController(vc, animated: true)
+    @IBAction func routeBtnAct(_ sender: UIButton) {
+        if ordersArray.count > 0 {
+            var destinations = [CLLocationCoordinate2D]()
+            for i in 0..<ordersArray.count {
+                let lat = ordersArray[i].address?.latitude ?? 0.0
+                let longi = ordersArray[i].address?.longitude ?? 0.0
+                let coordinate = CLLocationCoordinate2D(latitude: lat, longitude:longi)
+                destinations.append(coordinate)
+            }
+            let vc = GoogleMapViewController()
+            vc.isfromHome = true
+            vc.destinations = destinations
+            self.navigationController?.pushViewController(vc, animated: true)
+        } else {
+            
+        }
     }
     // MARK: - Setup Table View
     func setupTableView() {
@@ -153,6 +173,7 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
         cell.selectionStyle = .none
         let orderData = ordersArray[indexPath.row]
         cell.loadData(data: orderData)
+        cell.milesBgView.isHidden = !(ordersType == .Active)
         cell.notesBtn = {
             self.notesPopupView.isHidden = false
             self.notesTitleLbl.text = "Add notes for order #\(orderData.orderID ?? 0)"
@@ -212,7 +233,7 @@ extension HomeViewController: UIPickerViewDelegate, UIPickerViewDataSource {
            
            alertVC.view.addSubview(datePicker)
            
-           let alert = UIAlertController(title: isStartDate ? "Select Start Date" : "Select End Date", message: nil, preferredStyle: .alert)
+        let alert = UIAlertController(title: isStartDate ? (ordersType == .Active ? "Select Date" : "Select Start Date") : "Select End Date", message: nil, preferredStyle: .alert)
            
            alert.setValue(alertVC, forKey: "contentViewController") // Embed picker in alert
            
