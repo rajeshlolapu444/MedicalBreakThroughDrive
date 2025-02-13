@@ -49,10 +49,11 @@ class LoginViewModel {
                 print("Latitude: \(coordinate.latitude), Longitude: \(coordinate.longitude)")
                 PersistenceStorage.sharedInstance.storeAddressLatitude = coordinate.latitude
                 PersistenceStorage.sharedInstance.storeAddressLongitude = coordinate.longitude
+                //Latitude: 34.4391609, Longitude: -118.5729441
             } else {
                 print("Error fetching coordinates: \(error?.localizedDescription ?? "Unknown error")")
-                PersistenceStorage.sharedInstance.storeAddressLatitude = 40.730610
-                PersistenceStorage.sharedInstance.storeAddressLongitude = -73.935242
+                PersistenceStorage.sharedInstance.storeAddressLatitude = 34.4391609
+                PersistenceStorage.sharedInstance.storeAddressLongitude = -118.5729441
             }
         }
     }

@@ -36,6 +36,7 @@ class ConfirmDeliveryVC: UIViewController {
     @IBOutlet weak var mediaCountLbl: UILabel!
     @IBOutlet weak var imageListCV: UICollectionView!
     @IBOutlet weak var CollectionViewHeight: NSLayoutConstraint!
+    @IBOutlet weak var addressLbl: UILabel!
     @IBOutlet weak var notesTextView: UITextView!
     
     var orderData : Order?
@@ -49,8 +50,8 @@ class ConfirmDeliveryVC: UIViewController {
             loadData(data: data)
             self.deliveredSelectionBgView.isHidden = true
             self.cancelledSelectionBgView.isHidden = true
-            self.statusSelectionView.layer.borderColor = UIColor.black.cgColor
-            self.statusSelectionView.layer.borderWidth = 1
+           // self.statusSelectionView.layer.borderColor = UIColor.black.cgColor
+            //self.statusSelectionView.layer.borderWidth = 1
         }
         self.notesTextView.text = orderData?.deliveryDetails?.notes ?? ""
         setupCollectionView()
@@ -120,9 +121,10 @@ class ConfirmDeliveryVC: UIViewController {
         self.orderIdLbl.text = "#\(data.orderID ?? 0)"
         self.productNameLbl.text = data.products?.first?.productName
         self.customerNameLbl.text = data.customer?.name
-        if let formattedDate = convertDateFormat(dateString: data.createdAt ?? "", from: "yyyy-MM-dd HH:mm:ss") {
+        if let formattedDate = convertDateFormat(dateString: data.orderTracking?.date ?? "", from: "yyyy-MM-dd") {
             self.timeLbl.text = formattedDate
         }
+        self.addressLbl.text = "\(data.address?.addressLine1 ?? ""), \(data.address?.city ?? ""),\(data.address?.state ?? ""), \(data.address?.country ?? ""),\(data.address?.postalCode ?? "")"
         productImgView.setImage(from: data.products?.first?.productImage ?? "")
     }
     
@@ -130,47 +132,24 @@ class ConfirmDeliveryVC: UIViewController {
         self.openCamera()
     }
     @IBAction func submitBtnAct(_ sender: UIButton) {
-        switch deliveryStatus {
-        case .delivered:
-            var attachments: [AttechmentRequestModel] = []
-            var att = AttechmentRequestModel()
-            for i in 0..<self.mediaItems.count {
-                if self.mediaItems[i].type == .image {
-                    att.attachment_type = "image"
-                } else {
-                    att.attachment_type = "video"
-                }
-                att.url = self.mediaItems[i].url
-                attachments.append(att)
-            }
-            if attachments.count == 0 {
-                self.showToast(message: "Please upload atleast one attachment")
+        var attachments: [AttechmentRequestModel] = []
+        var att = AttechmentRequestModel()
+        for i in 0..<self.mediaItems.count {
+            if self.mediaItems[i].type == .image {
+                att.attachment_type = "image"
             } else {
-                let deliveryParams = ConfirmDeliveryRequestModel(order_id: orderData?.id ?? 0, status: DeliveryStatus.delivered.rawValue, attachments: attachments)
-                debugPrint(deliveryParams,"deliveryParams")
-                LoaderView.shared.showLoader(in: self.view)
-                ConfirmViewModel.shared.putOrdersConfirmAPI(parms: deliveryParams) { status, msg in
-                    if status {
-                        self.showToast(message: msg ?? "")
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-                            LoaderView.shared.hideLoader()
-                            self.navigateToSummary()
-                        }
-                    } else {
-                        self.showToast(message: msg ?? "")
-                        LoaderView.shared.hideLoader()
-                    }
-                }
+                att.attachment_type = "video"
             }
-        case .rejected:
-            if notesTextView.text == "" {
-                self.showToast(message: "Please enter reason in notes")
-                return
-            }
-            let rejectParams = CancelledDeliveryRequestModel(order_id: orderData?.id ?? 0, status: DeliveryStatus.rejected.rawValue, reason:notesTextView.text ?? "")
-            debugPrint(rejectParams,"rejectParams")
+            att.url = self.mediaItems[i].url
+            attachments.append(att)
+        }
+        if attachments.count == 0 {
+            self.showToast(message: "Please upload atleast one attachment")
+        } else {
+            let deliveryParams = ConfirmDeliveryRequestModel(order_id: orderData?.id ?? 0, status: DeliveryStatus.delivered.rawValue, attachments: attachments)
+            debugPrint(deliveryParams,"deliveryParams")
             LoaderView.shared.showLoader(in: self.view)
-            ConfirmViewModel.shared.putOrdersCancellAPI(parms: rejectParams) { status, msg in
+            ConfirmViewModel.shared.putOrdersConfirmAPI(parms: deliveryParams) { status, msg in
                 if status {
                     self.showToast(message: msg ?? "")
                     DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
@@ -182,9 +161,33 @@ class ConfirmDeliveryVC: UIViewController {
                     LoaderView.shared.hideLoader()
                 }
             }
-        case .none:
-            self.showToast(message: "Plese select status")
         }
+//        switch deliveryStatus {
+//        case .delivered:
+//            ////
+//        case .rejected:
+//            if notesTextView.text == "" {
+//                self.showToast(message: "Please enter reason in notes")
+//                return
+//            }
+//            let rejectParams = CancelledDeliveryRequestModel(order_id: orderData?.id ?? 0, status: DeliveryStatus.rejected.rawValue, reason:notesTextView.text ?? "")
+//            debugPrint(rejectParams,"rejectParams")
+//            LoaderView.shared.showLoader(in: self.view)
+//            ConfirmViewModel.shared.putOrdersCancellAPI(parms: rejectParams) { status, msg in
+//                if status {
+//                    self.showToast(message: msg ?? "")
+//                    DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+//                        LoaderView.shared.hideLoader()
+//                        self.navigateToSummary()
+//                    }
+//                } else {
+//                    self.showToast(message: msg ?? "")
+//                    LoaderView.shared.hideLoader()
+//                }
+//            }
+//        case .none:
+//            self.showToast(message: "Plese select status")
+//        }
     }
     
 }
