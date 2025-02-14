@@ -25,6 +25,9 @@ class OrderDetailViewController: UIViewController {
     @IBOutlet weak var instructionsStackView: UIStackView!
     @IBOutlet weak var instructionLbl: UILabel!
     @IBOutlet weak var startDeliveryBtnStackView: UIStackView!
+    
+    @IBOutlet weak var attachmentsCV: UICollectionView!
+    
     var orderData : Order?
     var orderType : OrdersType?
     override func viewDidLoad() {
@@ -41,7 +44,7 @@ class OrderDetailViewController: UIViewController {
         self.instructionsStackView.isHidden = orderType == .Past
         self.notesStackView.isHidden = orderType == .Active
         self.attachmentsStackView.isHidden = orderType == .Active
-        
+        setupCollectionView()
     }
     
     @IBAction func backBtnAct(_ sender: UIButton) {
@@ -54,6 +57,13 @@ class OrderDetailViewController: UIViewController {
         vc.orderData = self.orderData
         self.navigationController?.pushViewController(vc, animated: true)
     }
+    // MARK: - Setup Collection View
+    func setupCollectionView() {
+        attachmentsCV.delegate = self
+        attachmentsCV.dataSource = self
+        attachmentsCV?.register(UINib(nibName: "ImageListCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "ImageListCollectionViewCell")
+    }
+
     func loadData(data: Order) {
         self.orderIdLbl.text = "#\(data.orderID ?? 0)"
         self.productNameLbl.text = data.products?.first?.productName
@@ -65,7 +75,9 @@ class OrderDetailViewController: UIViewController {
         if data.customer?.phone == "" || data.customer?.phone == nil {
             self.mobileNumberLbl.text = "N/A"
         } else {
-            self.mobileNumberLbl.text = data.customer?.phone ?? "N/A"
+            let usFormate = formatPhoneNumberUSA(data.customer?.phone ?? "")
+            self.mobileNumberLbl.text = usFormate
+
         }
         if data.deliveryInstructions == "" || data.deliveryInstructions == nil {
             //self.instructionLbl.text = "N/A"
@@ -74,5 +86,32 @@ class OrderDetailViewController: UIViewController {
         }
         productImgView.setImage(from: data.products?.first?.productImage ?? "")
         
+    }
+}
+// MARK: - Collection View Methods
+extension OrderDetailViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return 10
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ImageListCollectionViewCell", for: indexPath) as! ImageListCollectionViewCell
+        cell.imgView.layer.cornerRadius = 10
+        cell.imgView.contentMode = .scaleToFill
+        cell.previewImg.tintColor = .lightGray
+        cell.deleteImgBtn.isHidden = true
+        cell.takePhotoBtn.isHidden = true
+
+        return cell
+    }
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        let itemsPerRow: CGFloat = 5  // Show 7 items
+        let spacing: CGFloat = 0      // Adjust spacing if needed
+        let totalSpacingorderData = spacing * (itemsPerRow - 1)
+        let totalSpacing = spacing * (itemsPerRow - 1)
+        let itemWidth = (collectionView.frame.width - totalSpacing) / itemsPerRow
+        return CGSize(width: itemWidth, height: itemWidth)
+    }
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
     }
 }

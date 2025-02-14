@@ -36,7 +36,12 @@ class ProfileViewController: UIViewController {
         self.firstNameTF.text = data?.firstName
         self.lastNameTF.text = data?.lastName
         self.emailTF.text = data?.email
-        self.phoneNumberTF.text = data?.phone
+        if data?.phone == "" || data?.phone == nil {
+            self.phoneNumberTF.text = "N/A"
+        } else {
+            let usFormate = formatPhoneNumberUSA(data?.phone ?? "")
+            self.phoneNumberTF.text = usFormate
+        }
         profileImgView.setImage(from: data?.profileImage ?? "")
     }
     @IBAction func backBtnAct(_ sender: UIButton) {
