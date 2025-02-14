@@ -17,8 +17,12 @@ class OrderDetailViewController: UIViewController {
     @IBOutlet weak var mobileNumberLbl: UILabel!
     @IBOutlet weak var productImgView: UIImageView!
 
+    @IBOutlet weak var notesStackView: UIStackView!
+    @IBOutlet weak var notesLbl: UILabel!
     @IBOutlet weak var instructionsBgView: UIView!
+    @IBOutlet weak var attachmentsStackView: UIStackView!
     
+    @IBOutlet weak var instructionsStackView: UIStackView!
     @IBOutlet weak var instructionLbl: UILabel!
     @IBOutlet weak var startDeliveryBtnStackView: UIStackView!
     var orderData : Order?
@@ -34,6 +38,10 @@ class OrderDetailViewController: UIViewController {
             loadData(data: data)
         }
         self.startDeliveryBtnStackView.isHidden = orderType == .Past
+        self.instructionsStackView.isHidden = orderType == .Past
+        self.notesStackView.isHidden = orderType == .Active
+        self.attachmentsStackView.isHidden = orderType == .Active
+        
     }
     
     @IBAction func backBtnAct(_ sender: UIButton) {
@@ -41,16 +49,6 @@ class OrderDetailViewController: UIViewController {
     }
     
     @IBAction func startDeliveryBtnAct(_ sender: UIButton) {
-//        HomeViewModel.shared.putOrdersStatusAPI(orderId: orderData?.orderID ?? 0, status: DeliveryStatus.accepted.rawValue) { status, msg in
-//            if status {
-//                self.showToast(message: msg ?? "")
-//            } else {
-//                self.showToast(message: msg ?? "")
-//            }
-//        }
-//        let vc = MAIN.instantiateViewController(withIdentifier: "MapViewController") as! MapViewController
-//        vc.orderData = self.orderData
-//        self.navigationController?.pushViewController(vc, animated: true)
         let vc = GoogleMapViewController()
         vc.isfromHome = false
         vc.orderData = self.orderData
