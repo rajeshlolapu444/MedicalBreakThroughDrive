@@ -29,11 +29,12 @@ class SummaryPageViewController: UIViewController {
         navigationController?.pushViewController(homeViewController, animated: true)
     }
     @IBAction func profileBtnAct(_ sender: UIButton) {
-//        let vc = ProfileViewController()
-//        self.navigationController?.pushViewController(vc, animated: true)
-        popOrPushToXibViewController(ofType: ProfileViewController.self) {
-            return ProfileViewController()
-        }
+        let vc = ProfileViewController()
+        vc.isProfile = true
+        self.navigationController?.pushViewController(vc, animated: true)
+//        popOrPushToXibViewController(ofType: ProfileViewController.self) {
+//            return ProfileViewController()
+//        }
     }
     @IBAction func routeBtnAct(_ sender: UIButton) {
         let vc = MAIN.instantiateViewController(withIdentifier: "MapViewController") as! MapViewController
@@ -43,6 +44,12 @@ class SummaryPageViewController: UIViewController {
     @IBAction func helpBtnAct(_ sender: UIButton) {
         let vc = MAIN.instantiateViewController(withIdentifier: "HelpViewController") as! HelpViewController
         navigationController?.pushViewController(vc, animated: true)
+    }
+    @IBAction func changePasswordBtnAct(_ sender: UIButton) {
+        let vc = ProfileViewController()
+        vc.isProfile = false
+        self.navigationController?.pushViewController(vc, animated: true)
+
     }
     @IBAction func logoutBtnAct(_ sender: UIButton) {
         let domain = Bundle.main.bundleIdentifier!

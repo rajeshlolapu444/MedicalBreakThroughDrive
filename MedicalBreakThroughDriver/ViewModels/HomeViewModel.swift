@@ -27,34 +27,47 @@ class HomeViewModel {
             completion([],false,error)
         }
     }
-    func getActiveOrdersListAPI(start_date: String?,end_date: String?, completion: @escaping (_ data:[Order]?,_ status:Bool, _ msg:String?) -> Void) {
-        let url = GET_ORDERS_URL + "?date=\(start_date ?? "")" //+ "?start_date=\(start_date ?? "")&end_date=\(end_date ?? "")"
-        debugPrint(url,"GET_ORDERS_URL")
-        APIModel.getRequest(strURL:url, postHeaders: ["":""]) { result in
-            let response = try? JSONDecoder().decode(OrdersResponseModel.self, from: result as! Data)
-            if response?.status == 200 {
-                completion(response?.data?.orders,true,"")
-            } else {
-                completion([],false,response?.message ?? "")
+
+    func getActiveOrdersListAPI(start_date: String?, end_date: String?, page: Int, completion: @escaping (_ data: [Order]?, _ status: Bool, _ msg: String?) -> Void) {
+        let url = GET_ORDERS_URL + "?date=\(start_date ?? "")&page=\(page)"
+        debugPrint(url, "GET_Active_ORDERS_URL")
+        
+        APIModel.getRequest(strURL: url, postHeaders: ["":""]) { result in
+            do {
+                let response = try JSONDecoder().decode(OrdersResponseModel.self, from: result as! Data)
+                if response.status == 200 {
+                    completion(response.data?.orders, true, "")
+                } else {
+                    completion([], false, response.message ?? "")
+                }
+            } catch {
+                completion([], false, "Failed to parse response")
             }
         } failure: { error in
-            completion([],false,error)
+            completion([], false, error)
         }
     }
-    func getPastOrdersListAPI(start_date: String?,end_date: String?, completion: @escaping (_ data:[Order]?,_ status:Bool, _ msg:String?) -> Void) {
-        let url = GET_PAST_ORDERS_URL + "?start_date=\(start_date ?? "")&end_date=\(end_date ?? "")"
-        debugPrint(url,"GET_PAST_ORDERS_URL")
-        APIModel.getRequest(strURL:url, postHeaders: ["":""]) { result in
-            let response = try? JSONDecoder().decode(OrdersResponseModel.self, from: result as! Data)
-            if response?.status == 200 {
-                completion(response?.data?.orders,true,"")
-            } else {
-                completion([],false,response?.message ?? "")
+    
+    func getPastOrdersListAPI(start_date: String?, end_date: String?, page: Int, completion: @escaping (_ data: [Order]?, _ status: Bool, _ msg: String?) -> Void) {
+        let url = GET_PAST_ORDERS_URL + "?start_date=\(start_date ?? "")&end_date=\(end_date ?? "")&page=\(page)"
+        debugPrint(url, "GET_PAST_ORDERS_URL")
+        
+        APIModel.getRequest(strURL: url, postHeaders: ["":""]) { result in
+            do {
+                let response = try JSONDecoder().decode(OrdersResponseModel.self, from: result as! Data)
+                if response.status == 200 {
+                    completion(response.data?.orders, true, "")
+                } else {
+                    completion([], false, response.message ?? "")
+                }
+            } catch {
+                completion([], false, "Failed to parse response")
             }
         } failure: { error in
-            completion([],false,error)
+            completion([], false, error)
         }
     }
+    
     func notesAPICall(id:Int?,notes:String?,completion: @escaping (_ status:Bool, _ msg:String?) -> Void){
         let notesParams = NotesRequestModel(order_id: id ?? 0, notes: notes ?? "")
         debugPrint(notesParams,"notesParams")

@@ -35,6 +35,10 @@ class HomeViewController: UIViewController {
     var availableEndDates: [Date] = []
     var ordersType: OrdersType?
     var selectedOrderID : Int?
+    
+    var currentPage:Int = 1
+    var isFetching = false
+    var hasMoreData = true
     override func viewDidLoad() {
         super.viewDidLoad()
         self.titleLbl.text = topTitle
@@ -46,7 +50,6 @@ class HomeViewController: UIViewController {
         startDate = Date()
        // endDate = Date()
         orderTypeSetup()
-        
     }
     override func viewWillAppear(_ animated: Bool) {
         self.notesPopupView.isHidden = true
@@ -56,24 +59,86 @@ class HomeViewController: UIViewController {
         self.notesTextViewBgView.layer.borderWidth = 1
     }
     func orderTypeSetup() {
+        let sDate = formatDate(Date(), format: "dd-MM-yyyy")
+        let eDate = formatDate(Date(), format: "dd-MM-yyyy")
+
         if ordersType == .Active {
-            let sDate = formatDate(Date(), format: "dd-MM-yyyy")
-            let eDate = formatDate(Date(), format: "dd-MM-yyyy")
-            self.getActiveOrdersList(startDate: sDate, endDate: eDate)
+            fetchActiveOrders(startDate: sDate, endDate: eDate)
             self.notesSaveBtn.isHidden = false
             self.notesTextView.isUserInteractionEnabled = true
             self.endDateBgView.isHidden = true
             startDateTitleLbl.text = "Date"
+            startDateTitleLbl.isHidden = true
             self.routeBtnBgView.isHidden = false
         } else {
-            let sDate = formatDate(Date(), format: "dd-MM-yyyy")
-            let eDate = formatDate(Date(), format: "dd-MM-yyyy")
-            self.getPastOrdersList(startDate: sDate, endDate: eDate)
+            fetchPastOrders(startDate: sDate, endDate: eDate)
             self.notesSaveBtn.isHidden = true
             self.notesTextView.isUserInteractionEnabled = false
             self.endDateBgView.isHidden = false
+            startDateTitleLbl.isHidden = false
             startDateTitleLbl.text = "Start Date :"
             self.routeBtnBgView.isHidden = true
+        }
+    }
+
+    func fetchPastOrders(startDate: String?, endDate: String?) {
+        guard !isFetching else { return }
+        isFetching = true
+        LoaderView.shared.showLoader(in: self.view)
+        HomeViewModel.shared.getPastOrdersListAPI(start_date: startDate, end_date: endDate, page: currentPage) { newOrders, status, msg in
+            DispatchQueue.main.async {
+                if status, let newOrders = newOrders {
+                    if newOrders.isEmpty {
+                        self.hasMoreData = false
+                        LoaderView.shared.hideLoader()
+                    } else {
+                        self.ordersArray.append(contentsOf: newOrders)
+                        self.currentPage += 1
+                        LoaderView.shared.hideLoader()
+                    }
+                } else {
+                    self.hasMoreData = false
+                    LoaderView.shared.hideLoader()
+                }
+                LoaderView.shared.hideLoader()
+                self.isFetching = false
+                self.ordersListTableView.reloadData()
+                if self.ordersArray.count == 0 {
+                    self.noOrdersLbl.isHidden = false
+                } else {
+                    self.noOrdersLbl.isHidden = true
+                }
+            }
+        }
+    }
+    func fetchActiveOrders(startDate: String?, endDate: String?) {
+        guard !isFetching else { return }
+        isFetching = true
+        LoaderView.shared.showLoader(in: self.view)
+        HomeViewModel.shared.getActiveOrdersListAPI(start_date: startDate, end_date: endDate, page: currentPage) { newOrders, status, msg in
+            DispatchQueue.main.async {
+                if status, let newOrders = newOrders {
+                    if newOrders.isEmpty {
+                        self.hasMoreData = false
+                        LoaderView.shared.hideLoader()
+                    } else {
+                        self.ordersArray.append(contentsOf: newOrders)
+                        self.currentPage += 1
+                        LoaderView.shared.hideLoader()
+                    }
+                } else {
+                    self.hasMoreData = false
+                    LoaderView.shared.hideLoader()
+                }
+                LoaderView.shared.hideLoader()
+                self.isFetching = false
+                self.ordersListTableView.reloadData()
+                if self.ordersArray.count == 0 {
+                    self.noOrdersLbl.isHidden = false
+                } else {
+                    self.noOrdersLbl.isHidden = true
+                }
+            }
         }
     }
 
@@ -114,38 +179,6 @@ class HomeViewController: UIViewController {
        // clikedYear = true
         //pickerViewSetup()
         showDatePicker(isStartDate: false)
-    }
-    func getActiveOrdersList(startDate: String,endDate: String){
-        LoaderView.shared.showLoader(in: self.view)
-        HomeViewModel.shared.getActiveOrdersListAPI(start_date: startDate, end_date: endDate) { data, status, msg in
-            if status {
-                LoaderView.shared.hideLoader()
-                self.ordersArray = data ?? []
-                debugPrint(self.ordersArray,"ordersArray")
-                self.noOrdersLbl.isHidden = !self.ordersArray.isEmpty
-                self.ordersListTableView.reloadData()
-            } else {
-                self.noOrdersLbl.isHidden = false
-                self.showToast(message: msg ?? "")
-                LoaderView.shared.hideLoader()
-            }
-        }
-    }
-    func getPastOrdersList(startDate: String,endDate: String){
-        LoaderView.shared.showLoader(in: self.view)
-        HomeViewModel.shared.getPastOrdersListAPI(start_date: startDate, end_date: endDate) { data, status, msg in
-            if status {
-                LoaderView.shared.hideLoader()
-                self.ordersArray = data ?? []
-                debugPrint(self.ordersArray,"ordersArray")
-                self.noOrdersLbl.isHidden = !self.ordersArray.isEmpty
-                self.ordersListTableView.reloadData()
-            } else {
-                self.noOrdersLbl.isHidden = false
-                self.showToast(message: msg ?? "")
-                LoaderView.shared.hideLoader()
-            }
-        }
     }
     @IBAction func notePopupCloseBtnAct(_ sender: UIButton) {
         self.notesPopupView.isHidden = true
@@ -191,7 +224,35 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return UITableView.automaticDimension
     }
-    
+    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+        if !hasMoreData {
+            let footerView = UIView(frame: CGRect(x: 0, y: 0, width: tableView.frame.width, height: 50))
+            let label = UILabel(frame: footerView.bounds)
+            label.isHidden = ordersArray.count == 0
+            label.text = "No more data"
+            label.textColor = .gray
+            label.textAlignment = .center
+            footerView.addSubview(label)
+            return footerView
+        }
+        return nil
+    }
+
+    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        return hasMoreData ? 0 : 50
+    }
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let offsetY = scrollView.contentOffset.y
+        let contentHeight = scrollView.contentSize.height
+        let tableViewHeight = scrollView.frame.height
+
+        if offsetY > contentHeight - tableViewHeight - 100, hasMoreData {
+            let startDateString = formatDate(self.startDate ?? Date(), format: "dd-MM-yyyy")
+            let endDateString = formatDate(self.endDate ?? Date(), format: "dd-MM-yyyy")
+            fetchPastOrders(startDate: startDateString, endDate: endDateString)
+        }
+    }
+
 }
 
 extension HomeViewController: UIPickerViewDelegate, UIPickerViewDataSource {
@@ -250,9 +311,17 @@ extension HomeViewController: UIPickerViewDelegate, UIPickerViewDataSource {
                let endDateString = formatDate(self.endDate ?? Date(), format: "dd-MM-yyyy")
 
                if self.ordersType == .Active {
-                   self.getActiveOrdersList(startDate: startDateString, endDate: endDateString)
+                   self.ordersArray.removeAll()
+                   self.currentPage = 1
+                   self.isFetching = false
+                   self.hasMoreData = true
+                   self.fetchActiveOrders(startDate: startDateString, endDate: endDateString)
                } else {
-                   self.getPastOrdersList(startDate: startDateString, endDate: endDateString)
+                   self.ordersArray.removeAll()
+                   self.currentPage = 1
+                   self.isFetching = false
+                   self.hasMoreData = true
+                   self.fetchPastOrders(startDate: startDateString, endDate: endDateString)
                }
            }))
            
@@ -260,13 +329,6 @@ extension HomeViewController: UIPickerViewDelegate, UIPickerViewDataSource {
            
            present(alert, animated: true)
        }
-              
-//       // Format Date
-//       func formatDate(_ date: Date) -> String {
-//           let formatter = DateFormatter()
-//           formatter.dateFormat = "yyyy-MM-dd"
-//           return formatter.string(from: date)
-//       }
     func updateAvailableEndDates() {
         guard let startDate = startDate else { return }
         
