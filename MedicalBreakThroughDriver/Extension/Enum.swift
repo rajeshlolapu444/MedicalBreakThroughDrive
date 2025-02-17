@@ -14,6 +14,7 @@ enum DeliveryStatus: String {
     case delivered = "delivered"
    // case finished = "finished"
     case rejected = "rejected"
+    case installed = "installed"
     case none
 }
 enum MediaType {

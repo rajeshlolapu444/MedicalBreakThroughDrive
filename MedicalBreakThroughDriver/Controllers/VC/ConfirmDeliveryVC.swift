@@ -112,7 +112,7 @@ class ConfirmDeliveryVC: UIViewController {
         self.selectLbl.textColor = .systemRed
         self.deliveredSelectionBgView.isHidden = true
         self.cancelledSelectionBgView.isHidden = true
-        self.deliveryStatus = .rejected
+        self.deliveryStatus = .installed
         self.mediaCountLbl.isHidden = true
         self.uploadImageBgView.isHidden = true
         self.imageListCV.isHidden = true
@@ -132,50 +132,18 @@ class ConfirmDeliveryVC: UIViewController {
         self.openCamera()
     }
     @IBAction func submitBtnAct(_ sender: UIButton) {
-        var attachments: [AttechmentRequestModel] = []
-        var att = AttechmentRequestModel()
-        for i in 0..<self.mediaItems.count {
-            if self.mediaItems[i].type == .image {
-                att.attachment_type = "image"
-            } else {
-                att.attachment_type = "video"
+        switch deliveryStatus {
+        case .delivered:
+            self.submitApiCall(status: DeliveryStatus.delivered.rawValue)
+        case .installed:
+            self.submitApiCall(status: DeliveryStatus.installed.rawValue)
+        case .rejected:
+            if notesTextView.text == "" {
+                self.showToast(message: "Notes required")
+                return
             }
-            att.url = self.mediaItems[i].url
-            attachments.append(att)
-        }
-        if notesTextView.text == "" {
-            self.showToast(message: "Please enter reason in notes")
-            return
-        }
-        if attachments.count == 0 {
-            self.showToast(message: "Please upload atleast one attachment")
-        } else {
-            let deliveryParams = ConfirmDeliveryRequestModel(order_id: orderData?.id ?? 0, status: DeliveryStatus.delivered.rawValue, attachments: attachments, reason: notesTextView.text ?? "")
-            debugPrint(deliveryParams,"deliveryParams")
-            LoaderView.shared.showLoader(in: self.view)
-            ConfirmViewModel.shared.putOrdersConfirmAPI(parms: deliveryParams) { status, msg in
-                if status {
-                    self.showToast(message: msg ?? "")
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-                        LoaderView.shared.hideLoader()
-                        self.navigateToSummary()
-                    }
-                } else {
-                    self.showToast(message: msg ?? "")
-                    LoaderView.shared.hideLoader()
-                }
-            }
-        }
-//        switch deliveryStatus {
-//        case .delivered:
-//            ////
-//        case .rejected:
-//            if notesTextView.text == "" {
-//                self.showToast(message: "Please enter reason in notes")
-//                return
-//            }
-//            let rejectParams = CancelledDeliveryRequestModel(order_id: orderData?.id ?? 0, status: DeliveryStatus.rejected.rawValue, reason:notesTextView.text ?? "")
-//            debugPrint(rejectParams,"rejectParams")
+//            let rejectParams = CancelledDeliveryRequestModel(order_id: orderData?.id ?? 0, status: DeliveryStatus.installed.rawValue, reason:notesTextView.text ?? "")
+//            debugPrint(rejectParams,"installedParams")
 //            LoaderView.shared.showLoader(in: self.view)
 //            ConfirmViewModel.shared.putOrdersCancellAPI(parms: rejectParams) { status, msg in
 //                if status {
@@ -189,11 +157,46 @@ class ConfirmDeliveryVC: UIViewController {
 //                    LoaderView.shared.hideLoader()
 //                }
 //            }
-//        case .none:
-//            self.showToast(message: "Plese select status")
-//        }
+        case .none:
+            self.showToast(message: "Plese select status")
+        }
     }
-    
+    func submitApiCall(status:String) {
+        var attachments: [AttechmentRequestModel] = []
+        var att = AttechmentRequestModel()
+        for i in 0..<self.mediaItems.count {
+            if self.mediaItems[i].type == .image {
+                att.attachment_type = "image"
+            } else {
+                att.attachment_type = "video"
+            }
+            att.url = self.mediaItems[i].url
+            attachments.append(att)
+        }
+        if notesTextView.text == "" {
+            self.showToast(message: "Notes required")
+            return
+        }
+        if attachments.count == 0 {
+            self.showToast(message: "Please upload atleast one attachment")
+        } else {
+            let params = ConfirmDeliveryRequestModel(order_id: orderData?.id ?? 0, status: status, attachments: attachments, reason: self.notesTextView.text ?? "")
+            debugPrint(params,"params")
+            LoaderView.shared.showLoader(in: self.view)
+            ConfirmViewModel.shared.putOrdersConfirmAPI(parms: params) { status, msg in
+                if status {
+                    self.showToast(message: msg ?? "")
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+                        LoaderView.shared.hideLoader()
+                        self.navigateToSummary()
+                    }
+                } else {
+                    self.showToast(message: msg ?? "")
+                    LoaderView.shared.hideLoader()
+                }
+            }
+        }
+    }
 }
 // MARK: - UIImage PickerView Methods
 extension ConfirmDeliveryVC: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
