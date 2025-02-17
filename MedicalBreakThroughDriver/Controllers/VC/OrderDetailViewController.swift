@@ -84,6 +84,11 @@ class OrderDetailViewController: UIViewController {
         } else {
             self.instructionLbl.text = data.deliveryInstructions ?? "N/A"
         }
+        if data.deliveryDetails?.notes == "" || data.deliveryDetails?.notes == nil {
+            self.notesLbl.text = "No notes"
+        } else {
+            self.notesLbl.text = data.deliveryDetails?.notes ?? ""
+        }
         productImgView.setImage(from: data.products?.first?.productImage ?? "")
         
     }
@@ -91,16 +96,23 @@ class OrderDetailViewController: UIViewController {
 // MARK: - Collection View Methods
 extension OrderDetailViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 10
+        return orderData?.deliveryImages?.count ?? 0
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ImageListCollectionViewCell", for: indexPath) as! ImageListCollectionViewCell
+        let mediaData = self.orderData?.deliveryImages?[indexPath.row]
         cell.imgView.layer.cornerRadius = 10
         cell.imgView.contentMode = .scaleToFill
         cell.previewImg.tintColor = .lightGray
         cell.deleteImgBtn.isHidden = true
         cell.takePhotoBtn.isHidden = true
+        cell.imgView.setImage(from: mediaData?.url ?? "")
+        if mediaData?.type == "image" {
+            cell.previewImg.image = UIImage(systemName: "arrow.up.left.and.arrow.down.right")
+        } else {
+            cell.previewImg.image = UIImage(systemName: "play.circle.fill")
+        }
 
         return cell
     }
@@ -113,5 +125,15 @@ extension OrderDetailViewController: UICollectionViewDelegate, UICollectionViewD
         return CGSize(width: itemWidth, height: itemWidth)
     }
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let mediaData = self.orderData?.deliveryImages?[indexPath.row]
+        guard let data = mediaData else { return }
+        if data.url != "" {
+            let mType = data.type == "image" ? MediaType.image : MediaType.video
+            let storyboard = UIStoryboard(name: "Main", bundle: Bundle.main)
+            let vc = storyboard.instantiateViewController(identifier: "VideoPerviewViewController") as! VideoPerviewViewController
+            vc.mediaData = MediaItem(type: mType,url:data.url, thumbnail: nil)
+            vc.modalPresentationStyle = .fullScreen
+            self.present(vc, animated: true)
+        }
     }
 }

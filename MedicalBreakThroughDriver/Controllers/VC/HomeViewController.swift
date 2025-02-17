@@ -164,6 +164,10 @@ class HomeViewController: UIViewController {
     }
     // MARK: - Setup Table View
     func setupTableView() {
+        //ordersListTableView.contentInsetAdjustmentBehavior = .never
+        ordersListTableView.contentInset = .zero
+        ordersListTableView.sectionHeaderHeight = 0
+        //ordersListTableView.translatesAutoresizingMaskIntoConstraints = false
         ordersListTableView.delegate = self
         ordersListTableView.dataSource = self
         ordersListTableView.register(MyOrdersListTableViewCell.self)
@@ -205,8 +209,7 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(for: indexPath, with: MyOrdersListTableViewCell.self)
         cell.selectionStyle = .none
         let orderData = ordersArray[indexPath.row]
-        cell.loadData(data: orderData)
-        cell.milesBgView.isHidden = !(ordersType == .Active)
+        cell.loadData(data: orderData,ordersType:ordersType ?? .Active)
         cell.notesBtn = {
             self.notesPopupView.isHidden = false
             self.notesTitleLbl.text = "Add notes for order #\(orderData.orderID ?? 0)"
@@ -258,12 +261,12 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
 extension HomeViewController: UIPickerViewDelegate, UIPickerViewDataSource {
     func showDatePicker(isStartDate: Bool) {
            let alertVC = UIViewController()
-           alertVC.preferredContentSize = CGSize(width: 340, height: 250) // Adjust height to prevent overlap
+           alertVC.preferredContentSize = CGSize(width: 340, height: 260) // Adjust height to prevent overlap
            
            let datePicker = UIDatePicker()
-           datePicker.datePickerMode = .date
+        datePicker.datePickerMode = .date
         datePicker.preferredDatePickerStyle = .wheels
-           datePicker.frame = CGRect(x: 0, y: 0, width: 270, height: 200) // Set proper size
+           datePicker.frame = CGRect(x: 0, y: 0, width: 270, height: 210) // Set proper size
            
            if isStartDate {
                // If Start Date is selected, allow selecting current date to future dates

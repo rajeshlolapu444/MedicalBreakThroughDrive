@@ -33,6 +33,7 @@ struct Order: Codable {
     let products: [Product]?
     let deliveryDetails: DeliveryDetails?
     let orderTracking: OrderTracking?
+    let deliveryImages: [DeliveryImages]?
 
     enum CodingKeys: String, CodingKey {
         case id
@@ -46,6 +47,7 @@ struct Order: Codable {
         case customer, address, products
         case deliveryDetails = "delivery_details"
         case orderTracking = "order_tracking"
+        case deliveryImages = "delivery_images"
     }
 }
 
@@ -85,12 +87,13 @@ struct DeliveryDetails: Codable {
     let id, deliveryPersonID: Int?
     let status: String?
     let notes: String?
-    let images: [Image]?
+   // let images: [Image]?
 
     enum CodingKeys: String, CodingKey {
         case id
         case deliveryPersonID = "delivery_person_id"
-        case status, notes, images
+        case status, notes
+        //images
     }
 }
 // MARK: - Image
@@ -105,7 +108,7 @@ struct Image: Codable {
 }
 
 
-// MARK: - Image
+// MARK: - OrderTracking
 struct OrderTracking: Codable {
     let id: Int?
     let pro_number: String?
@@ -115,6 +118,18 @@ struct OrderTracking: Codable {
         case id
         case pro_number
         case date
+    }
+}
+// MARK: - DeliveryImages
+struct DeliveryImages: Codable {
+    let id: Int?
+    let url: String?
+    let type: String?
+
+    enum CodingKeys: String, CodingKey {
+        case id
+        case url
+        case type
     }
 }
 

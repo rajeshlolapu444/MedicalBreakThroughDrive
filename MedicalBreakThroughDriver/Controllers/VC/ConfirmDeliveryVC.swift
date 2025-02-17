@@ -108,7 +108,7 @@ class ConfirmDeliveryVC: UIViewController {
         }
     }
     @IBAction func cancelledSelectionBtnAct(_ sender: UIButton) {
-        self.selectLbl.text = "Cancelled"
+        self.selectLbl.text = "Installed"
         self.selectLbl.textColor = .systemRed
         self.deliveredSelectionBgView.isHidden = true
         self.cancelledSelectionBgView.isHidden = true
@@ -143,10 +143,14 @@ class ConfirmDeliveryVC: UIViewController {
             att.url = self.mediaItems[i].url
             attachments.append(att)
         }
+        if notesTextView.text == "" {
+            self.showToast(message: "Please enter reason in notes")
+            return
+        }
         if attachments.count == 0 {
             self.showToast(message: "Please upload atleast one attachment")
         } else {
-            let deliveryParams = ConfirmDeliveryRequestModel(order_id: orderData?.id ?? 0, status: DeliveryStatus.delivered.rawValue, attachments: attachments)
+            let deliveryParams = ConfirmDeliveryRequestModel(order_id: orderData?.id ?? 0, status: DeliveryStatus.delivered.rawValue, attachments: attachments, reason: notesTextView.text ?? "")
             debugPrint(deliveryParams,"deliveryParams")
             LoaderView.shared.showLoader(in: self.view)
             ConfirmViewModel.shared.putOrdersConfirmAPI(parms: deliveryParams) { status, msg in

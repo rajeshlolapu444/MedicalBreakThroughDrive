@@ -57,6 +57,8 @@ class GoogleMapViewController: UIViewController, CLLocationManagerDelegate {
         
         // Show markers for all destinations
         showDestinationMarkers()
+        // Add zoom buttons
+           addZoomControls()
     }
     @IBAction func backBtnAct(_ sender: UIButton) {
         self.navigationController?.popViewController(animated: true)
@@ -165,5 +167,46 @@ class GoogleMapViewController: UIViewController, CLLocationManagerDelegate {
         polyline.strokeWidth = 5
         polyline.strokeColor = .blue
         polyline.map = mapView
+    }
+}
+
+extension GoogleMapViewController {
+    func addZoomControls() {
+        // Zoom In (+) Button
+        let zoomInButton = UIButton(type: .system)
+        zoomInButton.frame = CGRect(x: self.view.frame.width - 65, y: self.view.frame.height - 230, width: 40, height: 40)
+        zoomInButton.setTitle("+", for: .normal)
+        zoomInButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 30)
+        zoomInButton.backgroundColor = UIColor.white
+        zoomInButton.layer.cornerRadius = 20
+        zoomInButton.layer.shadowColor = UIColor.black.cgColor
+        zoomInButton.layer.shadowOpacity = 0.3
+        zoomInButton.layer.shadowOffset = CGSize(width: 2, height: 2)
+        zoomInButton.addTarget(self, action: #selector(zoomIn), for: .touchUpInside)
+        self.view.addSubview(zoomInButton)
+
+        // Zoom Out (-) Button
+        let zoomOutButton = UIButton(type: .system)
+        zoomOutButton.frame = CGRect(x: self.view.frame.width - 65, y: self.view.frame.height - 180, width: 40, height: 40)
+        zoomOutButton.setTitle("-", for: .normal)
+        zoomOutButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 30)
+        zoomOutButton.backgroundColor = UIColor.white
+        zoomOutButton.layer.cornerRadius = 20
+        zoomOutButton.layer.shadowColor = UIColor.black.cgColor
+        zoomOutButton.layer.shadowOpacity = 0.3
+        zoomOutButton.layer.shadowOffset = CGSize(width: 2, height: 2)
+        zoomOutButton.addTarget(self, action: #selector(zoomOut), for: .touchUpInside)
+        self.view.addSubview(zoomOutButton)
+    }
+    @objc func zoomIn() {
+        let zoomLevel = mapView.camera.zoom + 1
+        let cameraUpdate = GMSCameraUpdate.zoom(to: zoomLevel)
+        mapView.animate(with: cameraUpdate)
+    }
+
+    @objc func zoomOut() {
+        let zoomLevel = mapView.camera.zoom - 1
+        let cameraUpdate = GMSCameraUpdate.zoom(to: zoomLevel)
+        mapView.animate(with: cameraUpdate)
     }
 }
