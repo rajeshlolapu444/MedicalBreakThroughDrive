@@ -35,3 +35,7 @@ let GET_DRIVER_DETAILS_URL = BASEURL + "drivers/driver"
 let POST_NOTES_URL = BASEURL + "drivers/notes"
 
 let PUT_ORDER_Confirm_URL = BASEURL + "drivers/confirmDelivery"
+
+//https://beta.yesdone.com/api/v1/drivers/changePassword
+
+let Change_Password_URL = BASEURL + "drivers/changePassword"

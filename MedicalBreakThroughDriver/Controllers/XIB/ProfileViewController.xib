@@ -17,9 +17,12 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ProfileViewController" customModule="MedicalBreakThroughDriver" customModuleProvider="target">
             <connections>
                 <outlet property="changePasswordStackView" destination="0HI-LP-MDM" id="qij-8s-fcj"/>
+                <outlet property="confirmPasswordTF" destination="39s-db-1Hf" id="Fy3-6P-egQ"/>
                 <outlet property="emailTF" destination="fac-ZJ-hwX" id="jhC-6I-dUj"/>
                 <outlet property="firstNameTF" destination="Ehe-ra-R8s" id="edo-JJ-VAS"/>
                 <outlet property="lastNameTF" destination="LGe-PJ-7Ee" id="blS-b0-c52"/>
+                <outlet property="newPasswordTF" destination="IHU-fJ-FWv" id="azR-7X-RcD"/>
+                <outlet property="oldPasswordTF" destination="eUo-TB-GqD" id="mHj-TH-KBf"/>
                 <outlet property="phoneNumberTF" destination="ghg-fU-Rvd" id="OqM-Jd-xiN"/>
                 <outlet property="profileImgView" destination="fwg-6N-SO5" id="M5p-uO-2LX"/>
                 <outlet property="profileStackView" destination="kgI-Yz-y6c" id="GNe-Y4-0vk"/>
@@ -423,6 +426,9 @@
                                                     <integer key="value" value="20"/>
                                                 </userDefinedRuntimeAttribute>
                                             </userDefinedRuntimeAttributes>
+                                            <connections>
+                                                <action selector="changePasswordBtnAct:" destination="-1" eventType="touchUpInside" id="Eav-mD-USM"/>
+                                            </connections>
                                         </button>
                                     </subviews>
                                     <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -457,7 +463,7 @@
         <image name="left" width="16" height="16"/>
         <image name="logo" width="1034" height="171"/>
         <systemColor name="opaqueSeparatorColor">
-            <color red="0.77647058820000003" green="0.77647058820000003" blue="0.7843137255" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.77647058823529413" green="0.77647058823529413" blue="0.78431372549019607" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
     </resources>
 </document>

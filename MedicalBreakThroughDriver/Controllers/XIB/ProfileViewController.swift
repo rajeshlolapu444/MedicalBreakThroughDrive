@@ -18,6 +18,12 @@ class ProfileViewController: UIViewController {
     @IBOutlet weak var emailTF: UITextField!
     @IBOutlet weak var phoneNumberTF: UITextField!
     var isProfile = false
+    
+    
+    @IBOutlet weak var oldPasswordTF: UITextField!
+    @IBOutlet weak var newPasswordTF: UITextField!
+    @IBOutlet weak var confirmPasswordTF: UITextField!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupData()
@@ -48,4 +54,44 @@ class ProfileViewController: UIViewController {
         self.navigationController?.popViewController(animated: true)
     }
 
+    @IBAction func changePasswordBtnAct(_ sender: UIButton) {
+        self.changePasswordAPiCall()
+    }
+}
+
+extension ProfileViewController {
+    func changePasswordAPiCall() {
+        if oldPasswordTF.text == "" {
+            self.showToast(message: "Please enter old password.")
+            return
+        } else if newPasswordTF.text == "" {
+            self.showToast(message: "Please enter new password.")
+            return
+        } else if confirmPasswordTF.text == ""{
+            self.showToast(message: "Please enter confirm password.")
+            return
+        } else {
+            if newPasswordTF.text != confirmPasswordTF.text {
+                self.showToast(message: "New password and confirm password does not match.")
+                return
+            }
+        }
+        let oldPassword = oldPasswordTF.text?.replacingOccurrences(of: " ", with: "") ?? ""
+        let newPassword = newPasswordTF.text?.replacingOccurrences(of: " ", with: "") ?? ""
+        let confirmPassword = confirmPasswordTF.text?.replacingOccurrences(of: " ", with: "") ?? ""
+        LoaderView.shared.showLoader(in: self.view)
+        let params = ChangePasswordRequestModel(old_password: oldPassword, new_password: newPassword, new_password_confirmation: confirmPassword)
+        ProfileViewModel.shared.changePasswordAPICall(params: params) { status, msg in
+            LoaderView.shared.hideLoader()
+            self.showToast(message: msg ?? "")
+            if status {
+                let domain = Bundle.main.bundleIdentifier!
+                UserDefaults.standard.removePersistentDomain(forName: domain)
+                UserDefaults.standard.synchronize()
+                Timer.scheduledTimer(withTimeInterval: 1.0, repeats: false) { _ in
+                    self.popOrPushToViewController(ofType: LoginViewController.self)
+                }
+            }
+        }
+    }
 }

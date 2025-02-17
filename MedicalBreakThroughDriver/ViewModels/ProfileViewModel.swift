@@ -27,38 +27,23 @@ class ProfileViewModel {
             completion(false,error)
         }
     }
+    func changePasswordAPICall(params:ChangePasswordRequestModel,completion: @escaping (_ status:Bool, _ msg:String?) -> Void){
+        debugPrint(params,"params")
+        debugPrint(Change_Password_URL,"Change_Password_URL")
+        APIModel.postRequest(strURL: Change_Password_URL as NSString, postParams: params, postHeaders: ["":""]) { result in
+            let response = try? JSONDecoder().decode(ChangePasswordResponseModel.self, from: result as! Data)
+            if response?.status == 200{
+                completion(true,response?.message ?? "")
+            }
+            else {
+                completion(false,response?.message ?? "")
+            }
+        } failureHandler: { error in
+            debugPrint(error)
+            completion(false,error)
+        }
+    }
 }
 
-// MARK: - Driver Profile ResponseModel
-struct DriverProfileResponseModel: Codable {
-    let message: String?
-       let status: Int?
-       let data: DriverProfileModel?
-   }
 
-   // MARK: - Driver Profile Model
-   struct DriverProfileModel: Codable {
-       let id: Int?
-       let firstName, lastName, name, email: String?
-       let phone,profileImage: String?
-       let department: Department?
 
-       enum CodingKeys: String, CodingKey {
-           case id
-           case firstName = "first_name"
-           case lastName = "last_name"
-           case name, email, phone, department
-           case profileImage = "profile_image"
-       }
-   }
-
-   // MARK: - Department
-   struct Department: Codable {
-       let id: Int?
-       let name, aliasName: String?
-
-       enum CodingKeys: String, CodingKey {
-           case id, name
-           case aliasName = "alias_name"
-       }
-   }
