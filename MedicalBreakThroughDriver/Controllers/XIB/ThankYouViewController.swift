@@ -12,10 +12,10 @@ class ThankYouViewController: UIViewController {
     @IBOutlet weak var imgView: UIImageView!
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.imgView.layer.cornerRadius = 120
-        self.imgView.clipsToBounds = true
-        self.imgView.layer.borderWidth = 2
-        self.imgView.layer.borderColor = UIColor.darkGray.cgColor
+//        self.imgView.layer.cornerRadius = 120
+//        self.imgView.clipsToBounds = true
+//        self.imgView.layer.borderWidth = 2
+//        self.imgView.layer.borderColor = UIColor.darkGray.cgColor
     }
     @IBAction func backBtnAct(_ sender: UIButton) {
         self.navigationController?.popViewController(animated: true)

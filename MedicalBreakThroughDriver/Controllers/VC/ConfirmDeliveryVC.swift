@@ -70,7 +70,10 @@ class ConfirmDeliveryVC: UIViewController {
     }
 
     func navigateToSummary() {
-        //let vc = MAIN.instantiateViewController(withIdentifier: "SummaryPageViewController") as! SummaryPageViewController
+        let vc = MAIN.instantiateViewController(withIdentifier: "SummaryPageViewController") as! SummaryPageViewController
+        navigationController?.pushViewController(vc, animated: true)
+    }
+    func navigateToThankYou() {
         let vc = ThankYouViewController()
         navigationController?.pushViewController(vc, animated: true)
     }
@@ -178,8 +181,8 @@ class ConfirmDeliveryVC: UIViewController {
         }
     }
     func submitApiCall(status:String) {
-        self.navigateToSummary()
-        return
+//        self.navigateToThankYou()
+//        return
         var attachments: [AttechmentRequestModel] = []
         var att = AttechmentRequestModel()
         for i in 0..<self.mediaItems.count {
@@ -206,7 +209,7 @@ class ConfirmDeliveryVC: UIViewController {
                     self.showToast(message: msg ?? "")
                     DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
                         LoaderView.shared.hideLoader()
-                        self.navigateToSummary()
+                        self.navigateToThankYou()
                     }
                 } else {
                     self.showToast(message: msg ?? "")
