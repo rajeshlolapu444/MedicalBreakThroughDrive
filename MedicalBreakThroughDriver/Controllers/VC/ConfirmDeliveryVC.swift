@@ -70,7 +70,8 @@ class ConfirmDeliveryVC: UIViewController {
     }
 
     func navigateToSummary() {
-        let vc = MAIN.instantiateViewController(withIdentifier: "SummaryPageViewController") as! SummaryPageViewController
+        //let vc = MAIN.instantiateViewController(withIdentifier: "SummaryPageViewController") as! SummaryPageViewController
+        let vc = ThankYouViewController()
         navigationController?.pushViewController(vc, animated: true)
     }
     func navigateToHome() {
@@ -108,14 +109,29 @@ class ConfirmDeliveryVC: UIViewController {
         }
     }
     @IBAction func cancelledSelectionBtnAct(_ sender: UIButton) {
+        
         self.selectLbl.text = "Installed"
-        self.selectLbl.textColor = .systemRed
+        self.selectLbl.textColor = .systemGreen
         self.deliveredSelectionBgView.isHidden = true
         self.cancelledSelectionBgView.isHidden = true
-        self.deliveryStatus = .installed
-        self.mediaCountLbl.isHidden = true
-        self.uploadImageBgView.isHidden = true
-        self.imageListCV.isHidden = true
+        self.deliveryStatus = .delivered
+        self.mediaCountLbl.isHidden = false
+        if mediaItems.count > 0 {
+            self.uploadImageBgView.isHidden = true
+            self.imageListCV.isHidden = false
+        } else {
+            self.uploadImageBgView.isHidden = false
+            self.imageListCV.isHidden = true
+        }
+//        
+//        self.selectLbl.text = "Installed"
+//        self.selectLbl.textColor = .systemRed
+//        self.deliveredSelectionBgView.isHidden = true
+//        self.cancelledSelectionBgView.isHidden = true
+//        self.deliveryStatus = .installed
+//        self.mediaCountLbl.isHidden = true
+//        self.uploadImageBgView.isHidden = true
+//        self.imageListCV.isHidden = true
     }
     func loadData(data: Order) {
         self.orderIdLbl.text = "#\(data.orderID ?? 0)"
@@ -162,6 +178,8 @@ class ConfirmDeliveryVC: UIViewController {
         }
     }
     func submitApiCall(status:String) {
+        self.navigateToSummary()
+        return
         var attachments: [AttechmentRequestModel] = []
         var att = AttechmentRequestModel()
         for i in 0..<self.mediaItems.count {
