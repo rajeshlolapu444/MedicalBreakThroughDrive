@@ -52,8 +52,7 @@ class OrderDetailViewController: UIViewController {
     }
     
     @IBAction func startDeliveryBtnAct(_ sender: UIButton) {
-        let vc = GoogleMapViewController()
-        vc.isfromHome = false
+        let vc = MapGoogleViewController()
         vc.orderData = self.orderData
         self.navigationController?.pushViewController(vc, animated: true)
     }
