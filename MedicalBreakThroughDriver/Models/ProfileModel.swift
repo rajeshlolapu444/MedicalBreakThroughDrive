@@ -43,6 +43,15 @@ struct DriverProfileResponseModel: Codable {
    }
 
 
+// MARK: - Update Profile Request Model
+struct UpdateProfileRequestModel: Encodable {
+    let first_name: String?
+    let last_name: String?
+    let phone: String?
+    let profile_image: String?
+}
+
+
 // MARK: - Change Password Request Model
 struct ChangePasswordRequestModel: Encodable {
     let old_password: String?

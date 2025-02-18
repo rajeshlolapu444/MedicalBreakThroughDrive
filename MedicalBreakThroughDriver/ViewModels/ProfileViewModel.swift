@@ -27,6 +27,22 @@ class ProfileViewModel {
             completion(false,error)
         }
     }
+    
+    func updatePutAPICall(params:UpdateProfileRequestModel,completion: @escaping (_ status:Bool, _ msg:String?) -> Void){
+        debugPrint(params,"params")
+        debugPrint(Update_Profile_URL,"Update_Profile_URL")
+        APIModel.putRequest(strURL: Update_Profile_URL as NSString, postParams: params, postHeaders: headers as NSDictionary) { result in
+            let response = try? JSONDecoder().decode(ChangePasswordResponseModel.self, from: result as! Data)
+            if response?.status == 200 {
+                completion(true,response?.message ?? "")
+            } else {
+                completion(false,response?.message ?? "")
+            }
+        } failureHandler: { error in
+            completion(false,error)
+        }
+    }
+    
     func changePasswordAPICall(params:ChangePasswordRequestModel,completion: @escaping (_ status:Bool, _ msg:String?) -> Void){
         debugPrint(params,"params")
         debugPrint(Change_Password_URL,"Change_Password_URL")
