@@ -39,7 +39,7 @@ class MapGoogleViewController: UIViewController, MKMapViewDelegate, CLLocationMa
        // addDestinationMarker()
         zoomInButton.addTarget(self, action: #selector(zoomInAction), for: .touchUpInside)
         zoomOutButton.addTarget(self, action: #selector(zoomOutAction), for: .touchUpInside)
-        
+        nextBtn.addTarget(self, action: #selector(nextBtnAct), for: .touchUpInside)
     }
     @IBAction func backBtnAct(_ sender: UIButton) {
         self.navigationController?.popViewController(animated: true)
@@ -56,6 +56,11 @@ class MapGoogleViewController: UIViewController, MKMapViewDelegate, CLLocationMa
             mapView.topAnchor.constraint(equalTo: mapContainerView.topAnchor),
             mapView.bottomAnchor.constraint(equalTo: mapContainerView.bottomAnchor)
         ])
+    }
+    @objc func nextBtnAct() {
+        let vc = MAIN.instantiateViewController(withIdentifier: "ConfirmDeliveryVC") as! ConfirmDeliveryVC
+        vc.orderData = orderData
+        self.navigationController?.pushViewController(vc, animated: true)
     }
     func setupLocationManager() {
         locationManager.delegate = self
