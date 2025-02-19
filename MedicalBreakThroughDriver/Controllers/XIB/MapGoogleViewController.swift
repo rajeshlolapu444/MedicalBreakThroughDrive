@@ -18,6 +18,7 @@ class MapGoogleViewController: UIViewController, MKMapViewDelegate, CLLocationMa
     @IBOutlet weak var zoomInButton: UIButton!
     @IBOutlet weak var zoomOutButton: UIButton!
     
+    var isFromHome : Bool = false
     let mapView = MKMapView()
     let locationManager = CLLocationManager()
     // Set your destination coordinates
@@ -29,7 +30,10 @@ class MapGoogleViewController: UIViewController, MKMapViewDelegate, CLLocationMa
     var orderData : Order?
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        if !isFromHome {
+            destinations = [
+                CLLocationCoordinate2D(latitude: orderData?.address?.latitude ?? 17.48581167804096, longitude: orderData?.address?.latitude ?? 78.39512477322054)]
+        }
         setupMapView()
         setupLocationManager()
        // addDestinationMarker()

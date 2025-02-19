@@ -64,9 +64,10 @@ class MyOrdersListTableViewCell: UITableViewCell {
 //        let latitude: Double = data.address?.latitude ?? 0
 //        let longitude: Double = data.address?.longitude ?? 0
 //        let miles = HomeViewModel.shared.calculateDistance(lat1: storeLatitude, lon1: storeLongitude, lat2: latitude, lon2: longitude)
-//        self.milesBgView.isHidden = !(ordersType == .Active)
 //        self.milesLbl.text = String(format: "%.2f", miles) + " miles"
         self.milesLbl.text =  (data.address?.distance_in_miles ?? "") + " miles"
+        self.milesBgView.isHidden = !(ordersType == .Active)
+
 
     }
 }

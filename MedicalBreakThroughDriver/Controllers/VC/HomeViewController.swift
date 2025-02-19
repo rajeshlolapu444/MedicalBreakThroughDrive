@@ -167,7 +167,8 @@ class HomeViewController: UIViewController {
                 destinations.append(coordinate)
             }
             let vc = MapGoogleViewController()
-            //vc.destinations = destinations
+            vc.destinations = destinations
+            vc.isFromHome = true
             self.navigationController?.pushViewController(vc, animated: true)
         } else {
             
