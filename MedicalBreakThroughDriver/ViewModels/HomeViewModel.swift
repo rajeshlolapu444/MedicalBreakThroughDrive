@@ -27,11 +27,12 @@ class HomeViewModel {
             completion([],false,error)
         }
     }
-
+    
     func getActiveOrdersListAPI(start_date: String?, end_date: String?, page: Int, completion: @escaping (_ data: [Order]?, _ status: Bool, _ msg: String?) -> Void) {
-        let url = GET_ORDERS_URL + "?date=\(start_date ?? "")&page=\(page)"
+        let coordinates = PersistenceStorage.sharedInstance.currentLocationCoordinates ?? CLLocationCoordinate2D()
+        let param = "&latitude=\(coordinates.latitude)&longitude=\(coordinates.longitude)"
+        let url = GET_ORDERS_URL + "?date=\(start_date ?? "")&\(end_date ?? "")" + param + "&page=\(page)"
         debugPrint(url, "GET_Active_ORDERS_URL")
-        
         APIModel.getRequest(strURL: url, postHeaders: ["":""]) { result in
             do {
                 let response = try JSONDecoder().decode(OrdersResponseModel.self, from: result as! Data)

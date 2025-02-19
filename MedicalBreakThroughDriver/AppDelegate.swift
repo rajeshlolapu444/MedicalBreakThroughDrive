@@ -21,6 +21,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         IQKeyboardManager.shared.isEnabled = true
         IQKeyboardManager.shared.enableAutoToolbar = true
        // GMSServices.provideAPIKey("AIzaSyD09AGUnxXVmRLRFZ0R4AWVE_qPgyoecjg")
+        LocationManager.shared.requestLocationOnLaunch()
         return true
     }
 

@@ -112,34 +112,46 @@ class HomeViewController: UIViewController {
         }
     }
     func fetchActiveOrders(startDate: String?, endDate: String?) {
-        guard !isFetching else { return }
-        isFetching = true
-        LoaderView.shared.showLoader(in: self.view)
-        HomeViewModel.shared.getActiveOrdersListAPI(start_date: startDate, end_date: endDate, page: currentPage) { newOrders, status, msg in
-            DispatchQueue.main.async {
-                if status, let newOrders = newOrders {
-                    if newOrders.isEmpty {
-                        self.hasMoreData = false
-                        LoaderView.shared.hideLoader()
-                    } else {
-                        self.ordersArray.append(contentsOf: newOrders)
-                        self.currentPage += 1
-                        LoaderView.shared.hideLoader()
-                    }
+        // Check if we need to request location again
+               let shouldRequest = UserDefaults.standard.bool(forKey: "RequestLocationOnHomePage")
+        if shouldRequest {
+            UserDefaults.standard.set(false, forKey: "RequestLocationOnHomePage") // Reset flag
+            LocationManager.shared.requestLocationOnHomePage { coordinate in
+                if let coordinate = coordinate {
+                    print("Latitude: \(coordinate.latitude), Longitude: \(coordinate.longitude)")
                 } else {
-                    self.hasMoreData = false
-                    LoaderView.shared.hideLoader()
-                }
-                LoaderView.shared.hideLoader()
-                self.isFetching = false
-                self.ordersListTableView.reloadData()
-                if self.ordersArray.count == 0 {
-                    self.noOrdersLbl.isHidden = false
-                } else {
-                    self.noOrdersLbl.isHidden = true
+                    print("Location access denied")
                 }
             }
         }
+            guard !self.isFetching else { return }
+            self.isFetching = true
+            LoaderView.shared.showLoader(in: self.view)
+            HomeViewModel.shared.getActiveOrdersListAPI(start_date: startDate, end_date: endDate, page: self.currentPage) { newOrders, status, msg in
+                DispatchQueue.main.async {
+                    if status, let newOrders = newOrders {
+                        if newOrders.isEmpty {
+                            self.hasMoreData = false
+                            LoaderView.shared.hideLoader()
+                        } else {
+                            self.ordersArray.append(contentsOf: newOrders)
+                            self.currentPage += 1
+                            LoaderView.shared.hideLoader()
+                        }
+                    } else {
+                        self.hasMoreData = false
+                        LoaderView.shared.hideLoader()
+                    }
+                    LoaderView.shared.hideLoader()
+                    self.isFetching = false
+                    self.ordersListTableView.reloadData()
+                    if self.ordersArray.count == 0 {
+                        self.noOrdersLbl.isHidden = false
+                    } else {
+                        self.noOrdersLbl.isHidden = true
+                    }
+                }
+            }
     }
 
     @IBAction func backBtnAct(_ sender: UIButton) {

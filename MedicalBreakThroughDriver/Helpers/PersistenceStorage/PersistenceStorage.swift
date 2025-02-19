@@ -7,12 +7,13 @@
 
 import Foundation
 import UIKit
+import CoreLocation
 
 class PersistenceStorage {
     
     static let sharedInstance = PersistenceStorage()
     let defaults = UserDefaults.standard
-    
+    private static let locationKey = "currentLocationCoordinates"
     var loginResponseData: LoginResponseDataModel? {
         get {
             guard let data = UserDefaults.standard.data(forKey: "loginResponseData") else {
@@ -51,6 +52,22 @@ class PersistenceStorage {
         }
         get {
             return defaults.object(forKey: "storeAddressLongitude") as? Double
+        }
+    }
+    var currentLocationCoordinates: CLLocationCoordinate2D? {
+        get {
+            guard let coordinates = defaults.object(forKey: "currentLocationCoordinates") as? [String: Double] else {
+                return nil
+            }
+            if let latitude = coordinates["latitude"], let longitude = coordinates["longitude"] {
+                return CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+            }
+            return nil
+        }
+        set {
+            guard let newValue = newValue else { return }
+            let coordinates: [String: Double] = ["latitude": newValue.latitude, "longitude": newValue.longitude]
+            defaults.set(coordinates, forKey: "currentLocationCoordinates")
         }
     }
 }
