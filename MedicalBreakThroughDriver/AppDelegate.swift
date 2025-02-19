@@ -21,7 +21,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         initializeS3()
         IQKeyboardManager.shared.isEnabled = true
         IQKeyboardManager.shared.enableAutoToolbar = true
-        GMSServices.provideAPIKey("AIzaSyD09AGUnxXVmRLRFZ0R4AWVE_qPgyoecjg")
+       // GMSServices.provideAPIKey("AIzaSyD09AGUnxXVmRLRFZ0R4AWVE_qPgyoecjg")
         return true
     }
 

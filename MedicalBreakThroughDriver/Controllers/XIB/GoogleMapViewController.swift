@@ -125,42 +125,42 @@ class GoogleMapViewController: UIViewController, CLLocationManagerDelegate {
         }
         // Show route: Current Location → Nearest → Second Nearest → Third
         if let first = sortedDestinations.first {
-            getRoute(from: currentLocation.coordinate, to: first) {
-                if let second = sortedDestinations.dropFirst().first {
-                    self.getRoute(from: first, to: second) {
-                        if let third = sortedDestinations.dropFirst(2).first {
-                            self.getRoute(from: second, to: third, completion: nil)
-                        }
-                    }
-                }
-            }
+//            getRoute(from: currentLocation.coordinate, to: first) {
+//                if let second = sortedDestinations.dropFirst().first {
+//                    self.getRoute(from: first, to: second) {
+//                        if let third = sortedDestinations.dropFirst(2).first {
+//                            self.getRoute(from: second, to: third, completion: nil)
+//                        }
+//                    }
+//                }
+//            }
         }
     }
-    func getRoute(from start: CLLocationCoordinate2D, to end: CLLocationCoordinate2D, completion: (() -> Void)?) {
-        let apiKey = "AIzaSyD09AGUnxXVmRLRFZ0R4AWVE_qPgyoecjg"
-        let urlString = "https://maps.googleapis.com/maps/api/directions/json?origin=\(start.latitude),\(start.longitude)&destination=\(end.latitude),\(end.longitude)&key=\(apiKey)"
-        
-        guard let url = URL(string: urlString) else { return }
-        
-        URLSession.shared.dataTask(with: url) { data, response, error in
-            guard let data = data, error == nil else { return }
-            
-            do {
-                let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
-                if let routes = json?["routes"] as? [[String: Any]], let route = routes.first,
-                   let overviewPolyline = route["overview_polyline"] as? [String: Any],
-                   let points = overviewPolyline["points"] as? String {
-                    
-                    DispatchQueue.main.async {
-                        self.drawRoute(with: points)
-                        completion?()
-                    }
-                }
-            } catch {
-                print("Error parsing JSON:", error)
-            }
-        }.resume()
-    }
+//    func getRoute(from start: CLLocationCoordinate2D, to end: CLLocationCoordinate2D, completion: (() -> Void)?) {
+//        let apiKey = "AIzaSyD09AGUnxXVmRLRFZ0R4AWVE_qPgyoecjg"
+//        let urlString = "https://maps.googleapis.com/maps/api/directions/json?origin=\(start.latitude),\(start.longitude)&destination=\(end.latitude),\(end.longitude)&key=\(apiKey)"
+//        
+//        guard let url = URL(string: urlString) else { return }
+//        
+//        URLSession.shared.dataTask(with: url) { data, response, error in
+//            guard let data = data, error == nil else { return }
+//            
+//            do {
+//                let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
+//                if let routes = json?["routes"] as? [[String: Any]], let route = routes.first,
+//                   let overviewPolyline = route["overview_polyline"] as? [String: Any],
+//                   let points = overviewPolyline["points"] as? String {
+//                    
+//                    DispatchQueue.main.async {
+//                        self.drawRoute(with: points)
+//                        completion?()
+//                    }
+//                }
+//            } catch {
+//                print("Error parsing JSON:", error)
+//            }
+//        }.resume()
+//    }
     func drawRoute(with encodedPath: String) {
         let path = GMSPath(fromEncodedPath: encodedPath)
         let polyline = GMSPolyline(path: path)

@@ -10,6 +10,7 @@ import GoogleMaps
 import GooglePlaces
 import CoreLocation
 //17.43772636828794,78.39512477322054
+//17.48581167804096, 78.35855975339823
 class MapGoogleViewController: UIViewController {
     @IBOutlet weak var mapContainerView: UIView!
     @IBOutlet weak var nextBtn: UIButton!
@@ -17,7 +18,7 @@ class MapGoogleViewController: UIViewController {
     @IBOutlet weak var zoomInButton: UIButton!
     @IBOutlet weak var zoomOutButton: UIButton!
     var isTracking = false
-    var destinationCoordinate: CLLocationCoordinate2D? = CLLocationCoordinate2D(latitude: 17.43772636828794, longitude: 78.39512477322054) // Example destination
+    var destinationCoordinate: CLLocationCoordinate2D? = CLLocationCoordinate2D(latitude: 17.48581167804096, longitude: 78.35855975339823) // Example destination
     var mapView: GMSMapView!
     var locationManager = CLLocationManager()
     var currentLocationMarker: GMSMarker?
@@ -30,7 +31,7 @@ class MapGoogleViewController: UIViewController {
         zoomBgView.layer.borderWidth = 1
         zoomBgView.layer.borderColor = UIColor.darkGray.cgColor
            // Initialize map
-           let camera = GMSCameraPosition.camera(withLatitude: 17.43772636828794, longitude: 78.39512477322054, zoom: 10)
+           let camera = GMSCameraPosition.camera(withLatitude: 17.48581167804096, longitude: 78.35855975339823, zoom: 10)
         let lat = orderData?.address?.latitude ?? 0
         let longi = orderData?.address?.longitude ?? 0
        // destinationCoordinate = CLLocationCoordinate2D(latitude: lat, longitude: longi)
@@ -84,34 +85,34 @@ class MapGoogleViewController: UIViewController {
         }
 
     }
-    func fetchRoute(from source: CLLocationCoordinate2D, to destination: CLLocationCoordinate2D) {
-        let apiKey = "AIzaSyD09AGUnxXVmRLRFZ0R4AWVE_qPgyoecjg"
-        
-        let urlString = "https://maps.googleapis.com/maps/api/directions/json?origin=\(source.latitude),\(source.longitude)&destination=\(destination.latitude),\(destination.longitude)&mode=driving&key=\(apiKey)"
-        
-        guard let url = URL(string: urlString) else { return }
-        
-        URLSession.shared.dataTask(with: url) { data, response, error in
-            guard let data = data, error == nil else {
-                print("Error fetching directions: \(error?.localizedDescription ?? "Unknown error")")
-                return
-            }
-            
-            do {
-                let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
-                if let routes = json?["routes"] as? [[String: Any]], let firstRoute = routes.first,
-                   let overviewPolyline = firstRoute["overview_polyline"] as? [String: Any],
-                   let polylinePoints = overviewPolyline["points"] as? String {
-                    
-                    DispatchQueue.main.async {
-                        self.drawRoute(with: polylinePoints)
-                    }
-                }
-            } catch {
-                print("Failed to parse JSON: \(error.localizedDescription)")
-            }
-        }.resume()
-    }
+//    func fetchRoute(from source: CLLocationCoordinate2D, to destination: CLLocationCoordinate2D) {
+//        let apiKey = "AIzaSyD09AGUnxXVmRLRFZ0R4AWVE_qPgyoecjg"
+//        
+//        let urlString = "https://maps.googleapis.com/maps/api/directions/json?origin=\(source.latitude),\(source.longitude)&destination=\(destination.latitude),\(destination.longitude)&mode=driving&key=\(apiKey)"
+//        
+//        guard let url = URL(string: urlString) else { return }
+//        
+//        URLSession.shared.dataTask(with: url) { data, response, error in
+//            guard let data = data, error == nil else {
+//                print("Error fetching directions: \(error?.localizedDescription ?? "Unknown error")")
+//                return
+//            }
+//            
+//            do {
+//                let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
+//                if let routes = json?["routes"] as? [[String: Any]], let firstRoute = routes.first,
+//                   let overviewPolyline = firstRoute["overview_polyline"] as? [String: Any],
+//                   let polylinePoints = overviewPolyline["points"] as? String {
+//                    
+//                    DispatchQueue.main.async {
+//                        self.drawRoute(with: polylinePoints)
+//                    }
+//                }
+//            } catch {
+//                print("Failed to parse JSON: \(error.localizedDescription)")
+//            }
+//        }.resume()
+//    }
     func adjustMapZoomToFitMarkers(currentLocation: CLLocationCoordinate2D, destinations: CLLocationCoordinate2D) {
         var bounds = GMSCoordinateBounds(coordinate: currentLocation, coordinate: currentLocation)
 
@@ -142,7 +143,7 @@ extension MapGoogleViewController: CLLocationManagerDelegate {
             
             // Fetch new route from current location
             if let destination = destinationCoordinate {
-                fetchRoute(from: location.coordinate, to: destination)
+               // fetchRoute(from: location.coordinate, to: destination)
                 
                 // Check if the user has arrived
                 if hasReachedDestination(userLocation: location.coordinate, destination: destination) {
@@ -155,7 +156,7 @@ extension MapGoogleViewController: CLLocationManagerDelegate {
             
             let userLocation = location.coordinate
             if let destination = destinationCoordinate {
-                fetchRoute(from: userLocation, to: destination) // Fetch the route before tracking starts
+              //  fetchRoute(from: userLocation, to: destination) // Fetch the route before tracking starts
                 // Adjust zoom to fit all markers
                     adjustMapZoomToFitMarkers(currentLocation: userLocation, destinations: destination)
             }
