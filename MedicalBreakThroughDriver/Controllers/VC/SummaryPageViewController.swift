@@ -37,9 +37,9 @@ class SummaryPageViewController: UIViewController {
 //        }
     }
     @IBAction func routeBtnAct(_ sender: UIButton) {
-        let vc = MAIN.instantiateViewController(withIdentifier: "MapViewController") as! MapViewController
-        vc.isfromSummary = true
-        self.navigationController?.pushViewController(vc, animated: true)
+//        let vc = MAIN.instantiateViewController(withIdentifier: "MapViewController") as! MapViewController
+//        vc.isfromSummary = true
+//        self.navigationController?.pushViewController(vc, animated: true)
     }
     @IBAction func helpBtnAct(_ sender: UIButton) {
         let vc = MAIN.instantiateViewController(withIdentifier: "HelpViewController") as! HelpViewController

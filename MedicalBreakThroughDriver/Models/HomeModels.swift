@@ -58,6 +58,7 @@ struct Address: Codable {
     let addressLine2: String?
     let city, state, country, postalCode: String?
     let latitude, longitude: Double?
+    let distance_in_miles: String?
 
     enum CodingKeys: String, CodingKey {
         case id
@@ -66,6 +67,7 @@ struct Address: Codable {
         case city, state, country
         case postalCode = "postal_code"
         case latitude, longitude
+        case distance_in_miles
     }
 }
 

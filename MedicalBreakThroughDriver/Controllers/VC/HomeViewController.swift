@@ -154,9 +154,8 @@ class HomeViewController: UIViewController {
                 let coordinate = CLLocationCoordinate2D(latitude: lat, longitude:longi)
                 destinations.append(coordinate)
             }
-            let vc = GoogleMapViewController()
-            vc.isfromHome = true
-            vc.destinations = destinations
+            let vc = MapGoogleViewController()
+            //vc.destinations = destinations
             self.navigationController?.pushViewController(vc, animated: true)
         } else {
             
