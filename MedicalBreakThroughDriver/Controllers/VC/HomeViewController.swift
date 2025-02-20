@@ -61,8 +61,6 @@ class HomeViewController: UIViewController {
         setupTableView()
         debugPrint(PersistenceStorage.sharedInstance.loginResponseData?.accessToken ?? "", "accessToken")
         self.notesPoupViewSetup()
-        self.startDateLabel.text = formatDate(Date(), format: "MMM dd, yyyy")
-        self.endDateLabel.text = formatDate(Date(), format: "MMM dd, yyyy")
         startDate = Date()
        // endDate = Date()
         orderTypeSetup()
@@ -77,8 +75,10 @@ class HomeViewController: UIViewController {
     func orderTypeSetup() {
         let sDate = formatDate(Date(), format: "dd-MM-yyyy")
         let eDate = formatDate(Date(), format: "dd-MM-yyyy")
+                 
 
         if ordersType == .Active {
+            self.startDateLabel.text = formatDate(Date(), format: "MMM dd, yyyy")
             fetchActiveOrders(startDate: sDate, endDate: eDate)
             self.notesSaveBtn.isHidden = false
             self.notesTextView.isUserInteractionEnabled = true
@@ -87,11 +87,13 @@ class HomeViewController: UIViewController {
             startDateTitleLbl.isHidden = true
             self.routeBtnBgView.isHidden = false
         } else {
-            fetchPastOrders(startDate: sDate, endDate: eDate)
+            self.startDateLabel.text = "Start Date"
+            self.endDateLabel.text = "End Date"
+            fetchPastOrders(startDate: "", endDate: "")
             self.notesSaveBtn.isHidden = true
             self.notesTextView.isUserInteractionEnabled = false
             self.endDateBgView.isHidden = false
-            startDateTitleLbl.isHidden = false
+            startDateTitleLbl.isHidden = true
             startDateTitleLbl.text = "Start Date :"
             self.routeBtnBgView.isHidden = true
         }
@@ -293,7 +295,11 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
             if ordersType == .Active {
                 self.fetchActiveOrders(startDate: startDateString, endDate: endDateString)
             } else {
-                self.fetchPastOrders(startDate: startDateString, endDate: endDateString)
+                if self.endDateLabel.text == "End Date" || self.startDateLabel.text == "Start Date"{
+                    self.fetchPastOrders(startDate: "", endDate: "")
+                } else {
+                    self.fetchPastOrders(startDate: startDateString, endDate: endDateString)
+                }
             }
         }
     }
@@ -366,7 +372,11 @@ extension HomeViewController: UIPickerViewDelegate, UIPickerViewDataSource {
                    self.currentPage = 1
                    self.isFetching = false
                    self.hasMoreData = true
-                   self.fetchPastOrders(startDate: startDateString, endDate: endDateString)
+                   if self.endDateLabel.text == "End Date" || self.startDateLabel.text == "Start Date"{
+                       //self.showToast(message: "Please selecte start and end dates")
+                   } else {
+                       self.fetchPastOrders(startDate: startDateString, endDate: endDateString)
+                   }
                }
            }))
            

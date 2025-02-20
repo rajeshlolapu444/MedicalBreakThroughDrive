@@ -112,7 +112,8 @@ class ProfileViewController: UIViewController {
             if status {
                 ProfileViewModel.shared.getDriverProfileAPI { status, msg in
                     LoaderView.shared.hideLoader()
-                    self.navigationController?.popViewController(animated: true)
+                    //self.navigationController?.popViewController(animated: true)
+                    self.conditionsForHide(isHide: true)
                 }
             }
         }
