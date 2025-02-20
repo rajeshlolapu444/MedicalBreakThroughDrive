@@ -30,16 +30,14 @@ class MapGoogleViewController: UIViewController, MKMapViewDelegate, CLLocationMa
     var orderData : Order?
     override func viewDidLoad() {
         super.viewDidLoad()
-        if !isFromHome {
-            destinations = [
-                CLLocationCoordinate2D(latitude: orderData?.address?.latitude ?? 17.48581167804096, longitude: orderData?.address?.latitude ?? 78.39512477322054)]
-        }
         setupMapView()
         setupLocationManager()
        // addDestinationMarker()
         zoomInButton.addTarget(self, action: #selector(zoomInAction), for: .touchUpInside)
         zoomOutButton.addTarget(self, action: #selector(zoomOutAction), for: .touchUpInside)
         nextBtn.addTarget(self, action: #selector(nextBtnAct), for: .touchUpInside)
+        nextBtn.setTitle("Start", for: .normal)
+        nextBtn.isHidden = isFromHome
     }
     @IBAction func backBtnAct(_ sender: UIButton) {
         self.navigationController?.popViewController(animated: true)
@@ -58,9 +56,36 @@ class MapGoogleViewController: UIViewController, MKMapViewDelegate, CLLocationMa
         ])
     }
     @objc func nextBtnAct() {
-        let vc = MAIN.instantiateViewController(withIdentifier: "ConfirmDeliveryVC") as! ConfirmDeliveryVC
-        vc.orderData = orderData
-        self.navigationController?.pushViewController(vc, animated: true)
+        if nextBtn.titleLabel?.text == "Next" {
+            let vc = MAIN.instantiateViewController(withIdentifier: "ConfirmDeliveryVC") as! ConfirmDeliveryVC
+            vc.orderData = orderData
+            self.navigationController?.pushViewController(vc, animated: true)
+            
+        } else {
+            let lat = orderData?.address?.latitude ?? 0
+            let long = orderData?.address?.longitude ?? 0
+            if lat != 0 && long != 0 && orderData?.address?.latitude != nil && orderData?.address?.longitude != nil {
+                self.openGoogleMaps(destinationLat: orderData?.address?.latitude ?? 0, destinationLng: orderData?.address?.longitude ?? 0 )
+            } else {
+                self.showToast(message: "No Location Found")
+            }
+        }
+    }
+    func openGoogleMaps(destinationLat: Double, destinationLng: Double) {
+        nextBtn.setTitle("Next", for: .normal)
+        let urlString = "comgooglemaps://?saddr=&daddr=\(destinationLat),\(destinationLng)&directionsmode=driving"
+
+        if let url = URL(string: urlString) {
+            if UIApplication.shared.canOpenURL(url) {
+                UIApplication.shared.open(url, options: [:], completionHandler: nil)
+            } else {
+                // If Google Maps is not installed, open in Safari using Google Maps web
+                let webURLString = "https://www.google.com/maps/dir/?api=1&destination=\(destinationLat),\(destinationLng)"
+                if let webURL = URL(string: webURLString) {
+                    UIApplication.shared.open(webURL, options: [:], completionHandler: nil)
+                }
+            }
+        }
     }
     func setupLocationManager() {
         locationManager.delegate = self
