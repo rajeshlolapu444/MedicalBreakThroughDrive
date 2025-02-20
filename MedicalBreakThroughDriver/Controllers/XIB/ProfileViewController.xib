@@ -9,7 +9,7 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <customFonts key="customFonts">
-        <array key="goldplay_semi_bold_600.ttf">
+        <array key="Goldplay SemiBold.ttf">
             <string>Goldplay-SemiBold</string>
         </array>
     </customFonts>
@@ -128,9 +128,9 @@
                     </constraints>
                 </view>
                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="QNr-qt-sHT">
-                    <rect key="frame" x="30" y="149" width="333" height="540"/>
+                    <rect key="frame" x="30" y="149" width="333" height="270"/>
                     <subviews>
-                        <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="kgI-Yz-y6c">
+                        <stackView hidden="YES" opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="kgI-Yz-y6c">
                             <rect key="frame" x="0.0" y="0.0" width="333" height="540"/>
                             <subviews>
                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="W6q-Bd-G89">
@@ -417,7 +417,7 @@
                                 </view>
                             </subviews>
                         </stackView>
-                        <stackView hidden="YES" opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="0HI-LP-MDM">
+                        <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="0HI-LP-MDM">
                             <rect key="frame" x="0.0" y="0.0" width="333" height="270"/>
                             <subviews>
                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="iCJ-FM-f5n">

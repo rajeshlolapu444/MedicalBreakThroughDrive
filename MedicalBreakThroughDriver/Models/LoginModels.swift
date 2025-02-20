@@ -31,3 +31,21 @@ struct LoginResponseDataModel: Codable {
         case accessToken = "access_token"
     }
 }
+
+// MARK: - ForgotPasswordRequestModel
+struct ForgotPasswordRequestModel: Encodable {
+    let email: String?
+}
+// MARK: - ForgotPasswordResponseModel
+struct ForgotPasswordResponseModel: Codable {
+    let message : String?
+    let status : Int?
+    let success : Bool?
+
+    enum CodingKeys: String, CodingKey {
+
+        case message = "message"
+        case status = "status"
+        case success = "success"
+    }
+}

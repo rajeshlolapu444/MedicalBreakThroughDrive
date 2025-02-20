@@ -39,6 +39,7 @@ class LoginViewController: UIViewController {
         // "luiscurbside@medicalbreakthrough.com"
         emailTF.text = "alrickdelivery@medicalbreakthrough.com"
          //emailTF.text = "carlos@medicalbreakthrough.com"
+        //emailTF.text = "guynewhampshire@medicalbreakthrough.com"
         //emailTF.text = "freddyinstall@medicalbreakthrough.com"
         passwordTF.text = "apple@123"
         configureEyeButton()
@@ -82,7 +83,8 @@ class LoginViewController: UIViewController {
     
     @IBAction func forgotPasswordBtnAct(_ sender: UIButton) {
         let vc = ForgotPasswordViewController()
-        self.navigationController?.pushViewController(vc, animated: true)
+        vc.emailStr = self.emailTF?.text ?? ""
+       // self.navigationController?.pushViewController(vc, animated: true)
     }
     func loginAPICall(){
         LoaderView.shared.showLoader(in: self.view)

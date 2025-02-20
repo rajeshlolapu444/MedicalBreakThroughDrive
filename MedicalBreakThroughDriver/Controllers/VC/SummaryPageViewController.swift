@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import CoreLocation
 
 class SummaryPageViewController: UIViewController {
     
@@ -52,9 +53,11 @@ class SummaryPageViewController: UIViewController {
 
     }
     @IBAction func logoutBtnAct(_ sender: UIButton) {
+        let coordinates = PersistenceStorage.sharedInstance.currentLocationCoordinates ?? CLLocationCoordinate2D()
         let domain = Bundle.main.bundleIdentifier!
         UserDefaults.standard.removePersistentDomain(forName: domain)
         UserDefaults.standard.synchronize()
+        PersistenceStorage.sharedInstance.currentLocationCoordinates = coordinates
         popOrPushToViewController(ofType: LoginViewController.self)
     }
 }

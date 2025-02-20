@@ -41,6 +41,20 @@ class HomeViewController: UIViewController {
     var hasMoreData = true
     override func viewDidLoad() {
         super.viewDidLoad()
+        // Check if we need to request location again
+        let shouldRequest = UserDefaults.standard.bool(forKey: "RequestLocationOnHomePage")
+        if shouldRequest {
+            UserDefaults.standard.set(false, forKey: "RequestLocationOnHomePage") // Reset flag
+            LocationManager.shared.requestLocationOnHomePage { coordinate in
+                if let coordinate = coordinate {
+                    print("Latitude: \(coordinate.latitude), Longitude: \(coordinate.longitude)")
+                } else {
+                    print("Location access denied")
+                }
+            }
+        }
+
+        
         self.titleLbl.text = topTitle
         setupTableView()
         debugPrint(PersistenceStorage.sharedInstance.loginResponseData?.accessToken ?? "", "accessToken")
@@ -112,18 +126,6 @@ class HomeViewController: UIViewController {
         }
     }
     func fetchActiveOrders(startDate: String?, endDate: String?) {
-        // Check if we need to request location again
-               let shouldRequest = UserDefaults.standard.bool(forKey: "RequestLocationOnHomePage")
-        if shouldRequest {
-            UserDefaults.standard.set(false, forKey: "RequestLocationOnHomePage") // Reset flag
-            LocationManager.shared.requestLocationOnHomePage { coordinate in
-                if let coordinate = coordinate {
-                    print("Latitude: \(coordinate.latitude), Longitude: \(coordinate.longitude)")
-                } else {
-                    print("Location access denied")
-                }
-            }
-        }
             guard !self.isFetching else { return }
             self.isFetching = true
             LoaderView.shared.showLoader(in: self.view)
@@ -264,7 +266,11 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
         if offsetY > contentHeight - tableViewHeight - 100, hasMoreData {
             let startDateString = formatDate(self.startDate ?? Date(), format: "dd-MM-yyyy")
             let endDateString = formatDate(self.endDate ?? Date(), format: "dd-MM-yyyy")
-            fetchPastOrders(startDate: startDateString, endDate: endDateString)
+            if ordersType == .Active {
+                self.fetchActiveOrders(startDate: startDateString, endDate: endDateString)
+            } else {
+                self.fetchPastOrders(startDate: startDateString, endDate: endDateString)
+            }
         }
     }
 

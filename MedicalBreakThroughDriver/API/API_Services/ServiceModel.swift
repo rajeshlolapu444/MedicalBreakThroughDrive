@@ -47,21 +47,21 @@ class ServiceModel: NSObject {
         task = URLSession.shared.dataTask(with: request as URLRequest) {(data, response, error) in
             DispatchQueue.main.async(){
                 if response != nil {
-                    let statusCode = (response as! HTTPURLResponse).statusCode
-                    if statusCode == 401 {
-                        failureHandler("unAuthorized")
-                    }
-                    if statusCode == 500 {
-                        failureHandler("unAuthorized")
-                    }
-                    if statusCode == 422 {
-                        failureHandler("Something went wrong. Please try again later.")
-                    }
-                    else if error != nil
-                    {
-                        return
-                    }
-                    else {
+//                    let statusCode = (response as! HTTPURLResponse).statusCode
+//                    if statusCode == 401 {
+//                        failureHandler("unAuthorized")
+//                    }
+//                    if statusCode == 500 {
+//                        failureHandler("unAuthorized")
+//                    }
+//                    if statusCode == 422 {
+//                        failureHandler("Something went wrong. Please try again later.")
+//                    }
+//                    else if error != nil
+//                    {
+//                        return
+//                    }
+//                    else {
                         do {
                             let parsedData = try JSONSerialization.jsonObject(with: data!, options:.mutableContainers) as! [String:Any]
                             debugPrint(parsedData)
@@ -70,7 +70,7 @@ class ServiceModel: NSObject {
                             debugPrint("error=\(error)")
                             return
                         }
-                    }
+                  //  }
                 }
             }
         }

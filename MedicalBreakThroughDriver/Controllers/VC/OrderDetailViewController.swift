@@ -10,6 +10,7 @@ import CoreLocation
 
 class OrderDetailViewController: UIViewController {
 
+    @IBOutlet weak var noAttachmentsLbl: UILabel!
     @IBOutlet weak var orderIdLbl: UILabel!
     @IBOutlet weak var productNameLbl: UILabel!
     @IBOutlet weak var customerNameLbl: UILabel!
@@ -37,14 +38,17 @@ class OrderDetailViewController: UIViewController {
         instructionsBgView.layer.borderWidth = 1
         instructionsBgView.layer.borderColor = UIColor.clear.cgColor
         productImgView.layer.cornerRadius = 5
-        // Do any additional setup after loading the view.
-        if let data = orderData {
-            loadData(data: data)
-        }
+        
         self.startDeliveryBtnStackView.isHidden = orderType == .Past
         self.instructionsStackView.isHidden = orderType == .Past
         self.notesStackView.isHidden = orderType == .Active
         self.attachmentsStackView.isHidden = orderType == .Active
+
+        if let data = orderData {
+            loadData(data: data)
+            debugPrint(data,"orderDataDetails")
+        }
+        
         setupCollectionView()
     }
     
@@ -87,7 +91,7 @@ class OrderDetailViewController: UIViewController {
 
         }
         if data.deliveryInstructions == "" || data.deliveryInstructions == nil {
-            //self.instructionLbl.text = "N/A"
+            self.instructionLbl.text = "N/A"
         } else {
             self.instructionLbl.text = data.deliveryInstructions ?? "N/A"
         }
@@ -97,6 +101,13 @@ class OrderDetailViewController: UIViewController {
             self.notesLbl.text = data.deliveryDetails?.notes ?? ""
         }
         productImgView.setImage(from: data.products?.first?.productImage ?? "")
+        if data.deliveryImages?.count ?? 0 == 0 {
+            self.noAttachmentsLbl.isHidden = false
+            self.attachmentsCV.isHidden = true
+        } else {
+            self.noAttachmentsLbl.isHidden = true
+            self.attachmentsCV.isHidden = false
+        }
         
     }
 }
@@ -117,8 +128,10 @@ extension OrderDetailViewController: UICollectionViewDelegate, UICollectionViewD
         cell.imgView.setImage(from: mediaData?.url ?? "")
         if mediaData?.type == "image" {
             cell.previewImg.image = UIImage(systemName: "arrow.up.left.and.arrow.down.right")
-        } else {
+        } else if mediaData?.type == "video"{
             cell.previewImg.image = UIImage(systemName: "play.circle.fill")
+        } else {
+            cell.previewImg.image = UIImage(systemName: "arrow.up.left.and.arrow.down.right")
         }
 
         return cell
@@ -135,7 +148,7 @@ extension OrderDetailViewController: UICollectionViewDelegate, UICollectionViewD
         let mediaData = self.orderData?.deliveryImages?[indexPath.row]
         guard let data = mediaData else { return }
         if data.url != "" {
-            let mType = data.type == "image" ? MediaType.image : MediaType.video
+            let mType = data.type == "video" ? MediaType.video : MediaType.image
             let storyboard = UIStoryboard(name: "Main", bundle: Bundle.main)
             let vc = storyboard.instantiateViewController(identifier: "VideoPerviewViewController") as! VideoPerviewViewController
             vc.mediaData = MediaItem(type: mType,url:data.url, thumbnail: nil)

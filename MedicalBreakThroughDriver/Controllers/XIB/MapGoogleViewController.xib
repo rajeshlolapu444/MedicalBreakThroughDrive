@@ -13,6 +13,7 @@
             <connections>
                 <outlet property="mapContainerView" destination="YeK-TB-LaZ" id="qHr-Si-3u4"/>
                 <outlet property="nextBtn" destination="iaP-Tg-R9C" id="SE2-Tr-7p6"/>
+                <outlet property="titleLbl" destination="a3k-NB-5pi" id="ZHU-Pd-rTq"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
                 <outlet property="zoomBgView" destination="DWy-mg-uck" id="83y-ym-nxm"/>
                 <outlet property="zoomInButton" destination="sag-9q-F03" id="xjX-zH-jxR"/>

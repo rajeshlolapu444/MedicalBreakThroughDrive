@@ -9,7 +9,7 @@ import UIKit
 import AVFoundation
 import MobileCoreServices
 import SDWebImage
-
+import AWSS3
 struct MediaItem {
     var type: MediaType
     var url: String?
@@ -31,6 +31,7 @@ class ConfirmDeliveryVC: UIViewController {
     @IBOutlet weak var deliveredSelectionBgView: UIView!
     @IBOutlet weak var cancelledSelectionBgView: UIView!
     @IBOutlet weak var statusSelectionView: UIView!
+    @IBOutlet weak var statusSelectionSubView: UIView!
     
     @IBOutlet weak var uploadImageBgView: UIView!
     @IBOutlet weak var mediaCountLbl: UILabel!
@@ -42,10 +43,14 @@ class ConfirmDeliveryVC: UIViewController {
     var orderData : Order?
     var mediaItems: [MediaItem] = []
     var deliveryStatus : DeliveryStatus = .none
+    let placeholderText = "Add your Notes..."
     override func viewDidLoad() {
         super.viewDidLoad()
         self.notesBgView.layer.borderWidth = 1
         self.notesBgView.layer.borderColor = UIColor.lightGray.cgColor
+        self.statusSelectionSubView.layer.borderWidth = 1
+        self.statusSelectionSubView.layer.borderColor = UIColor.lightGray.cgColor
+        self.setupTextView()
         if let data = orderData {
             loadData(data: data)
             self.deliveredSelectionBgView.isHidden = true
@@ -53,8 +58,8 @@ class ConfirmDeliveryVC: UIViewController {
            // self.statusSelectionView.layer.borderColor = UIColor.black.cgColor
             //self.statusSelectionView.layer.borderWidth = 1
         }
-        self.notesTextView.text = orderData?.deliveryDetails?.notes ?? ""
         setupCollectionView()
+        
     }
     @IBAction func backBtnAct(_ sender: UIButton) {
         self.navigationController?.popViewController(animated: true)
@@ -67,6 +72,17 @@ class ConfirmDeliveryVC: UIViewController {
         imageListCV.delegate = self
         imageListCV.dataSource = self
         imageListCV?.register(UINib(nibName: "ImageListCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "ImageListCollectionViewCell")
+    }
+    func setupTextView() {
+        notesTextView.delegate = self
+        let notes = orderData?.deliveryDetails?.notes ?? ""
+        if notes == "" {
+            notesTextView.text = placeholderText
+            notesTextView.textColor = UIColor.lightGray
+        } else {
+            notesTextView.textColor = UIColor.black
+            self.notesTextView.text = orderData?.deliveryDetails?.notes ?? ""
+        }
     }
 
     func navigateToSummary() {
@@ -461,6 +477,64 @@ extension ConfirmDeliveryVC {
                     }
                 }
             }
+        }
+    }
+}
+extension ConfirmDeliveryVC:UITextViewDelegate
+{
+    func textViewDidBeginEditing(_ textView: UITextView) {
+        if textView.text == placeholderText {
+            textView.text = ""
+            textView.textColor = UIColor.black
+        }
+    }
+    
+    func textViewDidEndEditing(_ textView: UITextView) {
+        if textView.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            textView.text = placeholderText
+            textView.textColor = UIColor.lightGray
+        }
+    }
+}
+extension ConfirmDeliveryVC
+{
+    func chh (imageUrl: URL)
+    {
+        uploadImageToS3(imagePath: imageUrl, bucketName: "your-s3-bucket-name") { result in
+            switch result {
+            case .success(let url):
+                print("Image uploaded successfully: \(url)")
+            case .failure(let error):
+                print("Upload failed: \(error.localizedDescription)")
+            }
+        }
+    }
+    func uploadImageToS3(imagePath: URL, bucketName: String, completion: @escaping (Result<URL, Error>) -> Void) {
+        let s3BucketName = bucketName
+        let fileName = "uploads/\(UUID().uuidString).jpg" // Unique file name
+        let uploadRequest = AWSS3TransferUtilityUploadExpression()
+        
+        let transferUtility = AWSS3TransferUtility.default()
+        
+        transferUtility.uploadFile(
+            imagePath,
+            bucket: s3BucketName,
+            key: fileName,
+            contentType: "image/jpeg",
+            expression: uploadRequest,
+            completionHandler: { task, error in
+                if let error = error {
+                    completion(.failure(error))
+                    return
+                }
+                let url = URL(string: "https://\(s3BucketName).s3.amazonaws.com/\(fileName)")
+                completion(.success(url!))
+            }
+        ).continueWith { task in
+            if let error = task.error {
+                completion(.failure(error))
+            }
+            return nil
         }
     }
 }

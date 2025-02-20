@@ -12,6 +12,7 @@ import CoreLocation
 //17.43772636828794,78.39512477322054
 //17.48581167804096, 78.35855975339823
 class MapGoogleViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDelegate {
+    @IBOutlet weak var titleLbl: UILabel!
     @IBOutlet weak var mapContainerView: UIView!
     @IBOutlet weak var nextBtn: UIButton!
     @IBOutlet weak var zoomBgView: UIView!
@@ -38,6 +39,8 @@ class MapGoogleViewController: UIViewController, MKMapViewDelegate, CLLocationMa
         nextBtn.addTarget(self, action: #selector(nextBtnAct), for: .touchUpInside)
         nextBtn.setTitle("Start", for: .normal)
         nextBtn.isHidden = isFromHome
+        self.titleLbl.text = isFromHome ? "Route" : "Delivery Direction"
+        
     }
     @IBAction func backBtnAct(_ sender: UIButton) {
         self.navigationController?.popViewController(animated: true)
