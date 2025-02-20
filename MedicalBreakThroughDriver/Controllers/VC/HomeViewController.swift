@@ -49,6 +49,7 @@ class HomeViewController: UIViewController {
             LocationManager.shared.requestLocationOnHomePage { coordinate in
                 if let coordinate = coordinate {
                     print("Latitude: \(coordinate.latitude), Longitude: \(coordinate.longitude)")
+                    PersistenceStorage.sharedInstance.currentLocationCoordinates = coordinate
                 } else {
                     print("Location access denied")
                 }
@@ -215,6 +216,14 @@ class HomeViewController: UIViewController {
             self.showToast(message: "The notes field is required")
         }
     }
+    func callNumber(number:String) {
+            let phoneNumber = number // Change this to your number
+            if let url = URL(string: "tel://\(phoneNumber)"), UIApplication.shared.canOpenURL(url) {
+                UIApplication.shared.open(url)
+            } else {
+                print("Cannot open dialer")
+            }
+        }
 }
 // MARK: - Table View Methods
 extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
@@ -227,6 +236,9 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
         cell.selectionStyle = .none
         let orderData = ordersArray[indexPath.row]
         cell.loadData(data: orderData,ordersType:ordersType ?? .Active)
+        cell.numberBtn = {
+            self.callNumber(number: orderData.customer?.phone ?? "")
+        }
         cell.notesBtn = {
             self.notesPopupView.isHidden = false
             self.notesTitleLbl.text = "Add notes for order #\(orderData.orderID ?? 0)"

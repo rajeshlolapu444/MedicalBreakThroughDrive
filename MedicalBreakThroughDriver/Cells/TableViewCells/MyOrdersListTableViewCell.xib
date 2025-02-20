@@ -135,10 +135,23 @@
                                                         <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         <nil key="highlightedColor"/>
                                                     </label>
+                                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="O93-Go-8fF">
+                                                        <rect key="frame" x="0.0" y="0.0" width="85.333333333333329" height="20"/>
+                                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                        <state key="normal" title="Button"/>
+                                                        <buttonConfiguration key="configuration" style="plain" title=" "/>
+                                                        <connections>
+                                                            <action selector="callNumberBtnAct:" destination="KGk-i7-Jjw" eventType="touchUpInside" id="21D-I6-kgZ"/>
+                                                        </connections>
+                                                    </button>
                                                 </subviews>
                                                 <color key="backgroundColor" white="0.66666666666666663" alpha="0.29623724489795916" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <constraints>
                                                     <constraint firstItem="sZQ-Z6-mII" firstAttribute="leading" secondItem="vyH-h5-dJO" secondAttribute="trailing" constant="2" id="QNW-IK-3ck"/>
+                                                    <constraint firstItem="O93-Go-8fF" firstAttribute="leading" secondItem="fpQ-ce-Cwc" secondAttribute="leading" id="QUe-zS-Tt7"/>
+                                                    <constraint firstAttribute="bottom" secondItem="O93-Go-8fF" secondAttribute="bottom" id="SsE-jP-FaJ"/>
+                                                    <constraint firstAttribute="trailing" secondItem="O93-Go-8fF" secondAttribute="trailing" id="Tis-Tq-8e3"/>
+                                                    <constraint firstItem="O93-Go-8fF" firstAttribute="top" secondItem="fpQ-ce-Cwc" secondAttribute="top" id="Xl3-6W-RcM"/>
                                                     <constraint firstItem="vyH-h5-dJO" firstAttribute="leading" secondItem="fpQ-ce-Cwc" secondAttribute="leading" constant="2" id="aLk-Gx-1ay"/>
                                                     <constraint firstAttribute="trailing" secondItem="sZQ-Z6-mII" secondAttribute="trailing" constant="10" id="kDT-4R-8mA"/>
                                                     <constraint firstItem="vyH-h5-dJO" firstAttribute="centerY" secondItem="fpQ-ce-Cwc" secondAttribute="centerY" id="kRQ-CQ-0Bc"/>
@@ -262,6 +275,7 @@
             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
             <connections>
                 <outlet property="addressLbl" destination="56e-Ah-wKz" id="3ys-io-eg1"/>
+                <outlet property="callNumberBtn" destination="O93-Go-8fF" id="1FB-2w-0Hx"/>
                 <outlet property="contactBgView" destination="fpQ-ce-Cwc" id="tcl-TR-Gss"/>
                 <outlet property="contactLbl" destination="sZQ-Z6-mII" id="HZ9-xW-bp6"/>
                 <outlet property="customerNameLbl" destination="m3h-RL-Lou" id="Ngj-fy-Zwj"/>

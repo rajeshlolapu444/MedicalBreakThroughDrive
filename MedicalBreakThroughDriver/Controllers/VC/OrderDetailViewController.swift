@@ -23,6 +23,8 @@ class OrderDetailViewController: UIViewController {
     @IBOutlet weak var notesLbl: UILabel!
     @IBOutlet weak var instructionsBgView: UIView!
     @IBOutlet weak var attachmentsStackView: UIStackView!
+    @IBOutlet weak var statusStackView: UIStackView!
+    @IBOutlet weak var statusLbl: UILabel!
     
     @IBOutlet weak var instructionsStackView: UIStackView!
     @IBOutlet weak var instructionLbl: UILabel!
@@ -43,6 +45,7 @@ class OrderDetailViewController: UIViewController {
         self.instructionsStackView.isHidden = orderType == .Past
         self.notesStackView.isHidden = orderType == .Active
         self.attachmentsStackView.isHidden = orderType == .Active
+        self.statusStackView.isHidden = orderType == .Active
 
         if let data = orderData {
             loadData(data: data)
@@ -96,11 +99,12 @@ class OrderDetailViewController: UIViewController {
             self.instructionLbl.text = data.deliveryInstructions ?? "N/A"
         }
         if data.deliveryDetails?.notes == "" || data.deliveryDetails?.notes == nil {
-            self.notesLbl.text = "No notes"
+            self.notesLbl.text = "N/A"
         } else {
             self.notesLbl.text = data.deliveryDetails?.notes ?? ""
         }
         productImgView.setImage(from: data.products?.first?.productImage ?? "")
+        self.statusLbl.text = data.orderTracking?.pro_number?.capitalized ?? ""
         if data.deliveryImages?.count ?? 0 == 0 {
             self.noAttachmentsLbl.isHidden = false
             self.attachmentsCV.isHidden = true

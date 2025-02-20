@@ -19,7 +19,9 @@ class MyOrdersListTableViewCell: UITableViewCell {
     @IBOutlet weak var notesBgView: UIView!
     @IBOutlet weak var milesBgView: UIView!
     @IBOutlet weak var milesLbl: UILabel!
+    @IBOutlet weak var callNumberBtn: UIButton!
     var notesBtn: (() -> Void)?
+    var numberBtn: (() -> Void)?
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
@@ -29,6 +31,9 @@ class MyOrdersListTableViewCell: UITableViewCell {
         super.setSelected(selected, animated: animated)
 
         // Configure the view for the selected state
+    }
+    @IBAction func callNumberBtnAct(_ sender: UIButton) {
+        self.numberBtn?()
     }
     @IBAction func notesBtnAct(_ sender: UIButton) {
         self.notesBtn?()
