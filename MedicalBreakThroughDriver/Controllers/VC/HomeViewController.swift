@@ -39,6 +39,7 @@ class HomeViewController: UIViewController {
     var currentPage:Int = 1
     var isFetching = false
     var hasMoreData = true
+    let placeholderTextView = "Add your Notes..."
     override func viewDidLoad() {
         super.viewDidLoad()
         // Check if we need to request location again
@@ -202,7 +203,7 @@ class HomeViewController: UIViewController {
         self.notesPopupView.isHidden = true
     }
     @IBAction func notesSaveBtnAct(_ sender: UIButton) {
-        if notesTextView.text != "" {
+        if notesTextView.text != "" && notesTextView.text != placeholderTextView{
             HomeViewModel.shared.notesAPICall(id: self.selectedOrderID, notes: notesTextView.text ?? "") { status, msg in
                 self.showToast(message: msg ?? "")
                 if status {
@@ -210,6 +211,8 @@ class HomeViewController: UIViewController {
                     self.notesPopupView.isHidden = true
                 }
             }
+        } else {
+            self.showToast(message: "The notes field is required")
         }
     }
 }
@@ -228,7 +231,16 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
             self.notesPopupView.isHidden = false
             self.notesTitleLbl.text = "Add notes for order #\(orderData.orderID ?? 0)"
             self.selectedOrderID = orderData.id ?? 0
-            self.notesTextView.text = orderData.deliveryDetails?.notes ?? ""
+            self.notesTextView.delegate = self
+            let notes = orderData.deliveryDetails?.notes ?? ""
+            if notes == "" {
+                self.notesTextView.text = self.placeholderTextView
+                self.notesTextView.textColor = UIColor.lightGray
+            } else {
+                self.notesTextView.textColor = UIColor.black
+                self.notesTextView.text = orderData.deliveryDetails?.notes ?? ""
+            }
+            
         }
         return cell
     }
@@ -380,5 +392,21 @@ extension HomeViewController: UIPickerViewDelegate, UIPickerViewDataSource {
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         endDate = availableEndDates[row]
+    }
+}
+extension HomeViewController:UITextViewDelegate
+{
+    func textViewDidBeginEditing(_ textView: UITextView) {
+        if textView.text == placeholderTextView {
+            textView.text = ""
+            textView.textColor = UIColor.black
+        }
+    }
+    
+    func textViewDidEndEditing(_ textView: UITextView) {
+        if textView.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            textView.text = placeholderTextView
+            textView.textColor = UIColor.lightGray
+        }
     }
 }

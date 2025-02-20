@@ -405,6 +405,7 @@ extension ConfirmDeliveryVC: UICollectionViewDelegate, UICollectionViewDataSourc
         return CGSize(width: itemWidth, height: itemWidth)
     }
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        if indexPath.row >= mediaItems.count { return }
         let data = mediaItems[indexPath.row]
         if data.url != "" {
             let storyboard = UIStoryboard(name: "Main", bundle: Bundle.main)
