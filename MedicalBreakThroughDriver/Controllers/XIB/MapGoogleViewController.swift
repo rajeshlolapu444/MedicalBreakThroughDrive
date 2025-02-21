@@ -29,6 +29,7 @@ class MapGoogleViewController: UIViewController, MKMapViewDelegate, CLLocationMa
             //CLLocationCoordinate2D(latitude: 17.48581167804096, longitude: 78.35855975339823) // Sacramento
         ]
     var orderData : Order?
+    var ordersArray: [Order] = []
     override func viewDidLoad() {
         super.viewDidLoad()
         setupMapView()
@@ -153,6 +154,14 @@ class MapGoogleViewController: UIViewController, MKMapViewDelegate, CLLocationMa
             let annotation = MKPointAnnotation()
             annotation.coordinate = location
             annotation.title = "Destination \(index + 1)"
+            if isFromHome {
+                let data = "\(ordersArray[index].customer?.name ?? ""),\n\(ordersArray[index].address?.addressLine1 ?? ""), \(ordersArray[index].address?.city ?? ""),\(ordersArray[index].address?.state ?? ""), \(ordersArray[index].address?.country ?? ""),\(ordersArray[index].address?.postalCode ?? "")"
+                annotation.title = data
+            } else {
+                let data = "\(orderData?.customer?.name ?? ""),\n\(orderData?.address?.addressLine1 ?? ""), \(orderData?.address?.city ?? ""),\(orderData?.address?.state ?? ""), \(orderData?.address?.country ?? ""),\(orderData?.address?.postalCode ?? "")"
+                annotation.title = data
+            }
+            
             mapView.addAnnotation(annotation)
         }
     }

@@ -77,10 +77,11 @@ class HomeViewController: UIViewController {
                  
 
         if ordersType == .Active {
-            startDate = Date()
+            //startDate = Date()
            // endDate = Date()
-            self.startDateLabel.text = formatDate(Date(), format: "MMM dd, yyyy")
-            fetchActiveOrders(startDate: sDate, endDate: eDate)
+            self.startDateLabel.text = "Date"
+            //self.startDateLabel.text = formatDate(Date(), format: "MMM dd, yyyy")
+            fetchActiveOrders(startDate: "", endDate: eDate)
             self.notesSaveBtn.isHidden = false
             self.notesTextView.isUserInteractionEnabled = true
             self.endDateBgView.isHidden = true
@@ -178,6 +179,7 @@ class HomeViewController: UIViewController {
             }
             let vc = MapGoogleViewController()
             vc.destinations = destinations
+            vc.ordersArray = ordersArray
             vc.isFromHome = true
             self.navigationController?.pushViewController(vc, animated: true)
         } else {
@@ -298,9 +300,13 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
             let startDateString = formatDate(self.startDate ?? Date(), format: "dd-MM-yyyy")
             let endDateString = formatDate(self.endDate ?? Date(), format: "dd-MM-yyyy")
             if ordersType == .Active {
-                self.fetchActiveOrders(startDate: startDateString, endDate: endDateString)
+                if self.startDateLabel.text == "Date"{
+                    self.fetchActiveOrders(startDate: "", endDate: "")
+                } else {
+                    self.fetchActiveOrders(startDate: startDateString, endDate: endDateString)
+                }
             } else {
-                if self.endDateLabel.text == "End Date" || self.startDateLabel.text == "Start Date"{
+                if self.endDateLabel.text == "End Date" || self.startDateLabel.text == "Start Date" || self.startDateLabel.text == "Date"{
                     self.fetchPastOrders(startDate: "", endDate: "")
                 } else {
                     self.fetchPastOrders(startDate: startDateString, endDate: endDateString)
@@ -320,38 +326,56 @@ extension HomeViewController: UIPickerViewDelegate, UIPickerViewDataSource {
         datePicker.datePickerMode = .date
         datePicker.preferredDatePickerStyle = .wheels
            datePicker.frame = CGRect(x: 0, y: 0, width: 270, height: 210) // Set proper size
-           if isStartDate {
-               // If Start Date is selected, allow selecting current date to future dates
-               //datePicker.minimumDate = Date()
-               if let endDate = endDate {
-                   datePicker.maximumDate = endDate // Ensure end date is after start date
-                   let dateFormatter = DateFormatter()
-                   dateFormatter.dateFormat = "dd-MM-yyyy"
-                   if let minDate = dateFormatter.date(from: "01-01-2013") {
-                       datePicker.minimumDate = minDate
-                   }
-               } else {
-                   let dateFormatter = DateFormatter()
-                   dateFormatter.dateFormat = "dd-MM-yyyy"
-                   if let minDate = dateFormatter.date(from: "01-01-2013") {
-                       datePicker.minimumDate = minDate
-                   }
-                   datePicker.maximumDate = Date()
-               }
-           } else {
-               // If End Date is selected, allow selecting current date to future dates
-               if let startDate = startDate {
-                   datePicker.minimumDate = startDate // Ensure end date is after start date
-                   datePicker.maximumDate = Date()
-               } else {
-                   let dateFormatter = DateFormatter()
-                   dateFormatter.dateFormat = "dd-MM-yyyy"
-                   if let minDate = dateFormatter.date(from: "01-01-2013") {
-                       datePicker.minimumDate = minDate
-                   }
-                   datePicker.maximumDate = Date()
-               }
-           }
+      
+        if ordersType == .Active {
+            if isStartDate {
+                // If Start Date is selected, allow selecting current date to future dates
+                let dateFormatter = DateFormatter()
+                dateFormatter.dateFormat = "dd-MM-yyyy"
+                if let minDate = dateFormatter.date(from: "01-01-2013") {
+                    datePicker.minimumDate = minDate
+                }
+                datePicker.date = startDate ?? datePicker.date
+            } else {
+            }
+        } else {
+            if isStartDate {
+                // If Start Date is selected, allow selecting current date to future dates
+                //datePicker.minimumDate = Date()
+                if let endDate = endDate {
+                    datePicker.maximumDate = endDate // Ensure end date is after start date
+                    let dateFormatter = DateFormatter()
+                    dateFormatter.dateFormat = "dd-MM-yyyy"
+                    if let minDate = dateFormatter.date(from: "01-01-2013") {
+                        datePicker.minimumDate = minDate
+                    }
+                    datePicker.date = startDate ?? endDate
+                } else {
+                    let dateFormatter = DateFormatter()
+                    dateFormatter.dateFormat = "dd-MM-yyyy"
+                    if let minDate = dateFormatter.date(from: "01-01-2013") {
+                        datePicker.minimumDate = minDate
+                    }
+                    datePicker.maximumDate = Date()
+                }
+                datePicker.date = startDate ?? datePicker.date
+            } else {
+                // If End Date is selected, allow selecting current date to future dates
+                if let startDate = startDate {
+                    datePicker.minimumDate = startDate // Ensure end date is after start date
+                    datePicker.maximumDate = Date()
+                    datePicker.date = endDate ?? startDate
+                } else {
+                    let dateFormatter = DateFormatter()
+                    dateFormatter.dateFormat = "dd-MM-yyyy"
+                    if let minDate = dateFormatter.date(from: "01-01-2013") {
+                        datePicker.minimumDate = minDate
+                    }
+                    datePicker.maximumDate = Date()
+                    datePicker.date = endDate ?? datePicker.date
+                }
+            }
+        }
            
            alertVC.view.addSubview(datePicker)
            
@@ -382,7 +406,7 @@ extension HomeViewController: UIPickerViewDelegate, UIPickerViewDataSource {
                    self.currentPage = 1
                    self.isFetching = false
                    self.hasMoreData = true
-                   if self.endDateLabel.text == "End Date" || self.startDateLabel.text == "Start Date"{
+                   if self.endDateLabel.text == "End Date" || self.startDateLabel.text == "Start Date" || self.startDateLabel.text == "Date"{
                        //self.showToast(message: "Please selecte start and end dates")
                    } else {
                        self.fetchPastOrders(startDate: startDateString, endDate: endDateString)
