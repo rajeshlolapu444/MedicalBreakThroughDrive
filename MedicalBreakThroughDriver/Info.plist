@@ -8,10 +8,10 @@
 	<string>We need your location to provide better service.</string>
 	<key>UIAppFonts</key>
 	<array>
-		<string>poppins_bold.ttf</string>
-		<string>poppins_medium.ttf</string>
-		<string>poppins_regular.ttf</string>
-		<string>poppins_semibold.ttf</string>
+		<string>Poppins-Regular.ttf</string>
+		<string>Poppins-Bold.ttf</string>
+		<string>Poppins-SemiBold.ttf</string>
+		<string>Poppins-Medium.ttf</string>
 	</array>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
