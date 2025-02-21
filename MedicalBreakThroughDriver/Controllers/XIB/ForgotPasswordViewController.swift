@@ -27,9 +27,10 @@ class ForgotPasswordViewController: UIViewController {
         super.viewDidLoad()
         self.emailTF.text = emailStr
         self.registerEmailTF.text = emailStr
-        emailStackView.isHidden = true
-        otpStackView.isHidden = false
+        emailStackView.isHidden = false
+        otpStackView.isHidden = true
         self.otpConfirmBtn.addTarget(self, action: #selector(self.otpConfirmApiCall), for: .touchUpInside)
+        otpTF.keyboardType = .numberPad
     }
     @IBAction func backBtnAct(_ sender: UIButton) {
         self.navigationController?.popViewController(animated: true)
@@ -48,7 +49,7 @@ class ForgotPasswordViewController: UIViewController {
                 let param = ForgotPasswordRequestModel(email: emailTF.text ?? "")
                 LoaderView.shared.showLoader(in: self.view)
                 LoginViewModel.shared.forgotPasswordAPICall(params: param) { status, msg in
-                    LoaderView.shared.showLoader(in: self.view)
+                    LoaderView.shared.hideLoader()
                     self.showToast(message: msg ?? "")
                     if status {
                         self.emailStackView.isHidden = true
@@ -70,8 +71,8 @@ class ForgotPasswordViewController: UIViewController {
         } else if otpTF.text?.isEmpty ?? true {
             self.showToast(message: "Please enter OTP")
             return
-        } else if otpTF.text?.count != 4 {
-            self.showToast(message: "Please enter 4 digits OTP")
+        } else if otpTF.text?.count != 6 {
+            self.showToast(message: "Please enter 6 digits OTP")
             return
         } else if newPasswordTF.text?.isEmpty ?? true {
             self.showToast(message: "Please enter new password.")
