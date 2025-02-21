@@ -40,6 +40,7 @@ class HomeViewController: UIViewController {
     var isFetching = false
     var hasMoreData = true
     let placeholderTextView = "Add your Notes..."
+    var selectedIndex : Int?
     override func viewDidLoad() {
         super.viewDidLoad()
         // Check if we need to request location again
@@ -217,8 +218,12 @@ class HomeViewController: UIViewController {
             HomeViewModel.shared.notesAPICall(id: self.selectedOrderID, notes: notesTextView.text ?? "") { status, msg in
                 self.showToast(message: msg ?? "")
                 if status {
-                    self.notesTextView.text = ""
                     self.notesPopupView.isHidden = true
+                    var data = self.ordersArray[self.selectedIndex ?? 0]
+                    data.deliveryDetails?.notes = self.notesTextView.text ?? ""
+                    self.ordersArray[self.selectedIndex ?? 0] = data
+                    self.ordersListTableView.reloadRows(at: [IndexPath(row: self.selectedIndex ?? 0, section: 0)], with: .none)
+                    self.notesTextView.text = ""
                 }
             }
         } else {
@@ -254,6 +259,7 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
             self.selectedOrderID = orderData.id ?? 0
             self.notesTextView.delegate = self
             let notes = orderData.deliveryDetails?.notes ?? ""
+            self.selectedIndex = indexPath.row
             if notes == "" {
                 self.notesTextView.text = self.placeholderTextView
                 self.notesTextView.textColor = UIColor.lightGray

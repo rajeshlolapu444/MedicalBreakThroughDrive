@@ -16,7 +16,7 @@ struct OrdersResponseModel: Codable {
 
 // MARK: - DataClass
 struct OrdersData: Codable {
-    let orders: [Order]?
+    var orders: [Order]?
     let pagination: Pagination?
 }
 
@@ -31,7 +31,7 @@ struct Order: Codable {
     let customer: Customer?
     let address: Address?
     let products: [Product]?
-    let deliveryDetails: DeliveryDetails?
+    var deliveryDetails: DeliveryDetails?
     let orderTracking: OrderTracking?
     let deliveryImages: [DeliveryImages]?
 
@@ -88,7 +88,7 @@ struct Customer: Codable {
 struct DeliveryDetails: Codable {
     let id, deliveryPersonID: Int?
     let status: String?
-    let notes: String?
+    var notes: String?
    // let images: [Image]?
 
     enum CodingKeys: String, CodingKey {
