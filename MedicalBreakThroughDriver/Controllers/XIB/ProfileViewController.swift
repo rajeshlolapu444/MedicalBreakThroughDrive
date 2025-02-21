@@ -82,11 +82,17 @@ class ProfileViewController: UIViewController {
         self.firstNameTF.isUserInteractionEnabled = !isHide
         self.lastNameTF.isUserInteractionEnabled = !isHide
         self.phoneNumberTF.isUserInteractionEnabled = !isHide
-        self.firstEditIconImg.isHidden = isHide
-        self.lastEditIconImg.isHidden = isHide
-        self.emailNotEditIconImg.isHidden = isHide
-        self.phoneEditIconImg.isHidden = isHide
+        self.phoneNumberTF.keyboardType = .numbersAndPunctuation
+        self.firstEditIconImg.isHidden = true
+        self.lastEditIconImg.isHidden = true
+        self.emailNotEditIconImg.isHidden = true
+        self.phoneEditIconImg.isHidden = true
         self.profileImgEditBtnBgView.isHidden = isHide
+        if !isHide {
+            self.emailTF.textColor = UIColor.lightGray
+        } else {
+            self.emailTF.textColor = UIColor.black
+        }
     }
     @objc func updateBtnAct() {
 //        if firstNameTF.text == "" {

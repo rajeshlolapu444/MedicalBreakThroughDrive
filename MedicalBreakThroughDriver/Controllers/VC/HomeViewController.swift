@@ -80,13 +80,13 @@ class HomeViewController: UIViewController {
         if ordersType == .Active {
             //startDate = Date()
            // endDate = Date()
-            self.startDateLabel.text = "Date"
+            self.startDateLabel.text = "Delivery Date"
             //self.startDateLabel.text = formatDate(Date(), format: "MMM dd, yyyy")
             fetchActiveOrders(startDate: "", endDate: eDate)
             self.notesSaveBtn.isHidden = false
             self.notesTextView.isUserInteractionEnabled = true
             self.endDateBgView.isHidden = true
-            startDateTitleLbl.text = "Date"
+            startDateTitleLbl.text = "Delivery Date"
             startDateTitleLbl.isHidden = true
             self.routeBtnBgView.isHidden = false
         } else {
@@ -306,13 +306,13 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
             let startDateString = formatDate(self.startDate ?? Date(), format: "dd-MM-yyyy")
             let endDateString = formatDate(self.endDate ?? Date(), format: "dd-MM-yyyy")
             if ordersType == .Active {
-                if self.startDateLabel.text == "Date"{
+                if self.startDateLabel.text == "Delivery Date"{
                     self.fetchActiveOrders(startDate: "", endDate: "")
                 } else {
                     self.fetchActiveOrders(startDate: startDateString, endDate: endDateString)
                 }
             } else {
-                if self.endDateLabel.text == "End Date" || self.startDateLabel.text == "Start Date" || self.startDateLabel.text == "Date"{
+                if self.endDateLabel.text == "End Date" || self.startDateLabel.text == "Start Date" || self.startDateLabel.text == "Delivery Date"{
                     self.fetchPastOrders(startDate: "", endDate: "")
                 } else {
                     self.fetchPastOrders(startDate: startDateString, endDate: endDateString)
@@ -412,7 +412,7 @@ extension HomeViewController: UIPickerViewDelegate, UIPickerViewDataSource {
                    self.currentPage = 1
                    self.isFetching = false
                    self.hasMoreData = true
-                   if self.endDateLabel.text == "End Date" || self.startDateLabel.text == "Start Date" || self.startDateLabel.text == "Date"{
+                   if self.endDateLabel.text == "End Date" || self.startDateLabel.text == "Start Date" || self.startDateLabel.text == "Delivery Date"{
                        //self.showToast(message: "Please selecte start and end dates")
                    } else {
                        self.fetchPastOrders(startDate: startDateString, endDate: endDateString)
