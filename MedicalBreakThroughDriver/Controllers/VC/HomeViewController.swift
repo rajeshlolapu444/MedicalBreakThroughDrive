@@ -61,8 +61,7 @@ class HomeViewController: UIViewController {
         setupTableView()
         debugPrint(PersistenceStorage.sharedInstance.loginResponseData?.accessToken ?? "", "accessToken")
         self.notesPoupViewSetup()
-        startDate = Date()
-       // endDate = Date()
+       
         orderTypeSetup()
     }
     override func viewWillAppear(_ animated: Bool) {
@@ -78,6 +77,8 @@ class HomeViewController: UIViewController {
                  
 
         if ordersType == .Active {
+            startDate = Date()
+           // endDate = Date()
             self.startDateLabel.text = formatDate(Date(), format: "MMM dd, yyyy")
             fetchActiveOrders(startDate: sDate, endDate: eDate)
             self.notesSaveBtn.isHidden = false
@@ -87,6 +88,9 @@ class HomeViewController: UIViewController {
             startDateTitleLbl.isHidden = true
             self.routeBtnBgView.isHidden = false
         } else {
+            startDate = nil
+            endDate = nil
+
             self.startDateLabel.text = "Start Date"
             self.endDateLabel.text = "End Date"
             fetchPastOrders(startDate: "", endDate: "")
@@ -315,7 +319,6 @@ extension HomeViewController: UIPickerViewDelegate, UIPickerViewDataSource {
         datePicker.datePickerMode = .date
         datePicker.preferredDatePickerStyle = .wheels
            datePicker.frame = CGRect(x: 0, y: 0, width: 270, height: 210) // Set proper size
-           
            if isStartDate {
                // If Start Date is selected, allow selecting current date to future dates
                //datePicker.minimumDate = Date()
@@ -338,8 +341,14 @@ extension HomeViewController: UIPickerViewDelegate, UIPickerViewDataSource {
                // If End Date is selected, allow selecting current date to future dates
                if let startDate = startDate {
                    datePicker.minimumDate = startDate // Ensure end date is after start date
+                   datePicker.maximumDate = Date()
                } else {
-                   datePicker.minimumDate = Date()
+                   let dateFormatter = DateFormatter()
+                   dateFormatter.dateFormat = "dd-MM-yyyy"
+                   if let minDate = dateFormatter.date(from: "01-01-2013") {
+                       datePicker.minimumDate = minDate
+                   }
+                   datePicker.maximumDate = Date()
                }
            }
            
