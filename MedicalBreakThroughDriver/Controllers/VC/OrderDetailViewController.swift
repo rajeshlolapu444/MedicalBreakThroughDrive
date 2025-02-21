@@ -143,21 +143,26 @@ extension OrderDetailViewController: UICollectionViewDelegate, UICollectionViewD
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let itemsPerRow: CGFloat = 5  // Show 7 items
         let spacing: CGFloat = 0      // Adjust spacing if needed
-        let totalSpacingorderData = spacing * (itemsPerRow - 1)
+        //let totalSpacingorderData = spacing * (itemsPerRow - 1)
         let totalSpacing = spacing * (itemsPerRow - 1)
         let itemWidth = (collectionView.frame.width - totalSpacing) / itemsPerRow
         return CGSize(width: itemWidth, height: itemWidth)
     }
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let mediaData = self.orderData?.deliveryImages?[indexPath.row]
-        guard let data = mediaData else { return }
-        if data.url != "" {
-            let mType = data.type == "video" ? MediaType.video : MediaType.image
-            let storyboard = UIStoryboard(name: "Main", bundle: Bundle.main)
-            let vc = storyboard.instantiateViewController(identifier: "VideoPerviewViewController") as! VideoPerviewViewController
-            vc.mediaData = MediaItem(type: mType,url:data.url, thumbnail: nil)
-            vc.modalPresentationStyle = .fullScreen
-            self.present(vc, animated: true)
-        }
+        let mediaData = self.orderData?.deliveryImages
+      //  guard let data = mediaData else { return }
+        let slideshowVC = SlideshowPageViewController(transitionStyle: .scroll, navigationOrientation: .horizontal, options: nil)
+            slideshowVC.deliveryImages = mediaData ?? []
+            slideshowVC.selectedIndex = indexPath.item
+            slideshowVC.modalPresentationStyle = .fullScreen
+            present(slideshowVC, animated: true, completion: nil)
+//        if data.url != "" {
+//            let mType = data.type == "video" ? MediaType.video : MediaType.image
+//            let storyboard = UIStoryboard(name: "Main", bundle: Bundle.main)
+//            let vc = storyboard.instantiateViewController(identifier: "VideoPerviewViewController") as! VideoPerviewViewController
+//            vc.mediaData = MediaItem(type: mType,url:data.url, thumbnail: nil)
+//            vc.modalPresentationStyle = .fullScreen
+//            self.present(vc, animated: true)
+//        }
     }
 }

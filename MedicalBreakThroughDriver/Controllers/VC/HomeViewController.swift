@@ -72,7 +72,7 @@ class HomeViewController: UIViewController {
         self.notesTextViewBgView.layer.borderWidth = 1
     }
     func orderTypeSetup() {
-        let sDate = formatDate(Date(), format: "dd-MM-yyyy")
+       // let sDate = formatDate(Date(), format: "dd-MM-yyyy")
         let eDate = formatDate(Date(), format: "dd-MM-yyyy")
                  
 

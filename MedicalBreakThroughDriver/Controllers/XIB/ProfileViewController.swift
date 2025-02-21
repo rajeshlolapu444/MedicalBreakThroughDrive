@@ -89,18 +89,18 @@ class ProfileViewController: UIViewController {
         self.profileImgEditBtnBgView.isHidden = isHide
     }
     @objc func updateBtnAct() {
-        if firstNameTF.text == "" {
-            self.showToast(message: "Please enter first name.")
-            return
-        } else if lastNameTF.text == "" {
-            self.showToast(message: "Please enter last name.")
-            return
-        } else if phoneNumberTF.text == ""{
-            self.showToast(message: "Please enter phone number.")
-            return
-        } else {
-            
-        }
+//        if firstNameTF.text == "" {
+//            self.showToast(message: "Please enter first name.")
+//            return
+//        } else if lastNameTF.text == "" {
+//            self.showToast(message: "Please enter last name.")
+//            return
+//        } else if phoneNumberTF.text == ""{
+//            self.showToast(message: "Please enter phone number.")
+//            return
+//        } else {
+//            
+//        }
         let firstName = firstNameTF.text?.replacingOccurrences(of: " ", with: "") ?? ""
         let lastName = lastNameTF.text?.replacingOccurrences(of: " ", with: "") ?? ""
         let phoneNumber = phoneNumberTF.text?.replacingOccurrences(of: " ", with: "") ?? ""
@@ -115,6 +115,8 @@ class ProfileViewController: UIViewController {
                     //self.navigationController?.popViewController(animated: true)
                     self.conditionsForHide(isHide: true)
                 }
+            } else {
+                LoaderView.shared.hideLoader()
             }
         }
     }
