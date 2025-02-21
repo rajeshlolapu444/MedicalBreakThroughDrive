@@ -237,8 +237,8 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = MedicalBreakThroughDriver/Info.plist;
 				INFOPLIST_KEY_NSCameraUsageDescription = "We need access to the camera to capture photos and videos.";
-				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "We need your location to show your current position on the map.";
-				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "We need your location to show your current position on the map.";
+				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "We need your location to provide better service.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "We need your location to provide better service.";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "We need access to the microphone to record audio in videos.";
 				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "We need access to save captured media to your photo library.";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "We need access to your photo library to save and select photos and videos.";
@@ -273,8 +273,8 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = MedicalBreakThroughDriver/Info.plist;
 				INFOPLIST_KEY_NSCameraUsageDescription = "We need access to the camera to capture photos and videos.";
-				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "We need your location to show your current position on the map.";
-				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "We need your location to show your current position on the map.";
+				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "We need your location to provide better service.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "We need your location to provide better service.";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "We need access to the microphone to record audio in videos.";
 				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "We need access to save captured media to your photo library.";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "We need access to your photo library to save and select photos and videos.";
