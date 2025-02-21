@@ -84,7 +84,7 @@ class LoginViewController: UIViewController {
     @IBAction func forgotPasswordBtnAct(_ sender: UIButton) {
         let vc = ForgotPasswordViewController()
         vc.emailStr = self.emailTF?.text ?? ""
-       // self.navigationController?.pushViewController(vc, animated: true)
+        self.navigationController?.pushViewController(vc, animated: true)
     }
     func loginAPICall(){
         LoaderView.shared.showLoader(in: self.view)

@@ -208,6 +208,7 @@ class HomeViewController: UIViewController {
     }
     @IBAction func notePopupCloseBtnAct(_ sender: UIButton) {
         self.notesPopupView.isHidden = true
+        self.notesTextView.resignFirstResponder()
     }
     @IBAction func notesSaveBtnAct(_ sender: UIButton) {
         if notesTextView.text != "" && notesTextView.text != placeholderTextView{

@@ -60,6 +60,11 @@ class LoginViewModel {
 }
 
 extension LoginViewModel {
+    func isValidEmail(_ email: String) -> Bool {
+        let trimmedEmail = email.trimmingCharacters(in: .whitespacesAndNewlines)
+        let emailRegex = #"^[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,64}$"#
+        return NSPredicate(format: "SELF MATCHES %@", emailRegex).evaluate(with: trimmedEmail)
+    }
     func forgotPasswordAPICall(params:ForgotPasswordRequestModel,completion: @escaping (_ status:Bool, _ msg:String?) -> Void){
         debugPrint(params,"forgotPasswordParams")
         debugPrint(Forgot_Password_URL,"Forgot_Password_URL")
@@ -67,6 +72,22 @@ extension LoginViewModel {
             let response = try? JSONDecoder().decode(ForgotPasswordResponseModel.self, from: result as! Data)
             if response?.status == 200{
                 completion(response?.success ?? true,response?.message ?? "")
+            }
+             else {
+                 completion(false,response?.message ?? "")
+            }
+        } failureHandler: { error in
+            debugPrint(error)
+            completion(false,error)
+        }
+    }
+    func otpConfirmAPICall(params:OTPRequestModel,completion: @escaping (_ status:Bool, _ msg:String?) -> Void){
+        debugPrint(params,"otpParams")
+        debugPrint(OTP_For_Password_URL,"OTP_For_Password_URL")
+        APIModel.postRequest(strURL: OTP_For_Password_URL as NSString, postParams: params, postHeaders: ["":""]) { result in
+            let response = try? JSONDecoder().decode(OTPConfirmResponseModel.self, from: result as! Data)
+            if response?.status == 200{
+                completion(true,response?.message ?? "")
             }
              else {
                  completion(false,response?.message ?? "")
