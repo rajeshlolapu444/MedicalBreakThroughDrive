@@ -73,26 +73,24 @@ class PreviewViewController: UIViewController {
         playerViewController?.player = nil
         playerViewController?.view.removeFromSuperview()
         playerViewController?.removeFromParent()
-      
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-            self.view.layoutIfNeeded()
-        }
-        // Create a new AVPlayer instance
-        player = AVPlayer(url: url)
-        player?.rate = 1 // Auto play
-        player?.isMuted = false
-        // Create a new AVPlayerViewController instance
-        playerViewController = AVPlayerViewController()
-        playerViewController?.player = player
-        playerViewController?.view.frame = view.bounds
-        playerViewController?.showsPlaybackControls = true
-        
-        // Add as a child view controller
-        if let playerVC = playerViewController {
-            addChild(playerVC)
-            view.addSubview(playerVC.view)
-            playerVC.didMove(toParent: self)
-        }
+       // DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+            // Create a new AVPlayer instance
+            self.player = AVPlayer(url: url)
+           // self.player?.rate = 1 // Auto play
+            //self.player?.isMuted = false
+            // Create a new AVPlayerViewController instance
+            self.playerViewController = AVPlayerViewController()
+            self.playerViewController?.player = self.player
+            self.playerViewController?.view.frame = self.view.bounds
+            self.playerViewController?.showsPlaybackControls = true
+            
+            // Add as a child view controller
+            if let playerVC = self.playerViewController {
+                self.addChild(playerVC)
+                self.view.addSubview(playerVC.view)
+                playerVC.didMove(toParent: self)
+            }
+        //}
     }
 }
 
