@@ -10,6 +10,8 @@ import AVFoundation
 import MobileCoreServices
 import SDWebImage
 import AWSS3
+import PhotosUI
+import AVKit
 struct MediaItem {
     var type: MediaType
     var url: String?
@@ -44,6 +46,7 @@ class ConfirmDeliveryVC: UIViewController {
     var mediaItems: [MediaItem] = []
     var deliveryStatus : DeliveryStatus = .none
     let placeholderText = "Add your Notes..."
+
     override func viewDidLoad() {
         super.viewDidLoad()
         self.notesBgView.layer.borderWidth = 1
@@ -164,7 +167,7 @@ class ConfirmDeliveryVC: UIViewController {
     }
     
     @IBAction func uploadImageAndVideoBtnAct(_ sender: UIButton) {
-        self.openCamera()
+        self.mediaBtnTapped()
     }
     @IBAction func submitBtnAct(_ sender: UIButton) {
         switch deliveryStatus {
@@ -235,115 +238,6 @@ class ConfirmDeliveryVC: UIViewController {
         }
     }
 }
-// MARK: - UIImage PickerView Methods
-extension ConfirmDeliveryVC: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
-    @objc func openCamera() {
-        guard UIImagePickerController.isSourceTypeAvailable(.camera) else {
-            print("Camera not available")
-            return
-        }
-        
-        let picker = UIImagePickerController()
-        picker.sourceType = .camera
-        picker.mediaTypes = ["public.image", "public.movie"]
-        picker.delegate = self
-        picker.videoQuality = .typeHigh
-        picker.allowsEditing = false
-        present(picker, animated: true, completion: nil)
-    }
-    
-    // Delegate method when media is picked
-    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-        picker.dismiss(animated: true, completion: nil)
-        
-        if let mediaType = info[.mediaType] as? String {
-            if mediaType == "public.image", let image = info[.originalImage] as? UIImage {
-                saveImageToDocuments(image: image)
-            } else if mediaType == "public.movie", let videoURL = info[.mediaURL] as? URL {
-                saveVideoToDocuments(videoURL: videoURL)
-            }
-        }
-    }
-    
-    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
-        picker.dismiss(animated: true, completion: nil)
-    }
-    func saveImageToDocuments(image: UIImage) {
-        self.uploadImageToS3Server(image: image)
-//        guard let imageData = image.jpegData(compressionQuality: 0.8) else { return }
-//        
-//        let fileName = UUID().uuidString + ".jpg"
-//        let fileURL = FileManager.default.temporaryDirectory.appendingPathComponent(fileName)
-//        
-//        do {
-//            try imageData.write(to: fileURL)
-//            let mediaItem = MediaItem(type: .image, url: "\(fileURL)", thumbnail: nil)
-//            mediaItems.append(mediaItem)
-//            debugPrint(mediaItems,"mediaItemsss")
-//            self.mediaCountLbl.text = "\(mediaItems.count)/10"
-//            imageListCV.reloadData()
-//            if mediaItems.count > 0 {
-//                self.uploadImageBgView.isHidden = true
-//                self.imageListCV.isHidden = false
-//            } else {
-//                self.uploadImageBgView.isHidden = false
-//                self.imageListCV.isHidden = true
-//            }
-//        } catch {
-//            print("Failed to save image: \(error)")
-//        }
-    }
-    func saveVideoToDocuments(videoURL: URL) {
-        let fileName = UUID().uuidString + ".mov"
-        let destinationURL = FileManager.default.temporaryDirectory.appendingPathComponent(fileName)
-        
-        do {
-            try FileManager.default.copyItem(at: videoURL, to: destinationURL)
-            let thumbnail = generateThumbnail(for: destinationURL)
-            self.uploadVideoToS3Server(filePath: videoURL.path, thumbnail: thumbnail ?? UIImage())
-//            let mediaItem = MediaItem(type: .video, url: "\(destinationURL)", thumbnail: thumbnail)
-//            mediaItems.append(mediaItem)
-//            debugPrint(mediaItems,"mediaItemsss")
-//            self.mediaCountLbl.text = "\(mediaItems.count)/10"
-//            imageListCV.reloadData()
-//            if mediaItems.count > 0 {
-//                self.uploadImageBgView.isHidden = true
-//                self.imageListCV.isHidden = false
-//            } else {
-//                self.uploadImageBgView.isHidden = false
-//                self.imageListCV.isHidden = true
-//            }
-        } catch {
-            print("Failed to save video: \(error)")
-        }
-    }
-    func generateThumbnail(for url: URL) -> UIImage? {
-        let asset = AVAsset(url: url)
-        let generator = AVAssetImageGenerator(asset: asset)
-        generator.appliesPreferredTrackTransform = true
-        
-        do {
-            let cgImage = try generator.copyCGImage(at: .zero, actualTime: nil)
-            return UIImage(cgImage: cgImage)
-        } catch {
-            print("Failed to generate thumbnail: \(error)")
-            return nil
-        }
-    }
-    @objc func deleteImage(_ sender: UIButton) {
-        mediaItems.remove(at:sender.tag)
-        self.mediaCountLbl.text = "\(mediaItems.count)/10"
-        imageListCV.reloadData()
-        if mediaItems.count > 0 {
-            self.uploadImageBgView.isHidden = true
-            self.imageListCV.isHidden = false
-        } else {
-            self.uploadImageBgView.isHidden = false
-            self.imageListCV.isHidden = true
-        }
-    }
-}
-
 // MARK: - Collection View Methods
 extension ConfirmDeliveryVC: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -386,9 +280,9 @@ extension ConfirmDeliveryVC: UICollectionViewDelegate, UICollectionViewDataSourc
             }
         }
         cell.previewImg.isHidden = !cell.takePhotoBtn.isHidden
-        cell.takePhotoBtn.addTarget(self, action: #selector(openCamera), for: .touchUpInside)
+        cell.takePhotoBtn.addTarget(self, action: #selector(mediaBtnTapped), for: .touchUpInside)
         cell.deleteImgBtn.tag = indexPath.row
-        cell.deleteImgBtn.addTarget(self, action: #selector(deleteImage), for: .touchUpInside)
+        //cell.deleteImgBtn.addTarget(self, action: #selector(deleteImage), for: .touchUpInside)
         return cell
     }
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
@@ -417,9 +311,197 @@ extension ConfirmDeliveryVC: UICollectionViewDelegate, UICollectionViewDataSourc
     }
 }
 // MARK: - Uploade Server Methods
-extension ConfirmDeliveryVC {
-    func uploadImageToS3Server (image : UIImage)
+
+extension ConfirmDeliveryVC:UITextViewDelegate
+{
+    func textViewDidBeginEditing(_ textView: UITextView) {
+        if textView.text == placeholderText {
+            textView.text = ""
+            textView.textColor = UIColor.black
+        }
+    }
+    
+    func textViewDidEndEditing(_ textView: UITextView) {
+        if textView.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            textView.text = placeholderText
+            textView.textColor = UIColor.lightGray
+        }
+    }
+}
+extension ConfirmDeliveryVC
+{
+    func chh (imageUrl: URL)
     {
+        uploadImageToS3(imagePath: imageUrl, bucketName: "your-s3-bucket-name") { result in
+            switch result {
+            case .success(let url):
+                print("Image uploaded successfully: \(url)")
+            case .failure(let error):
+                print("Upload failed: \(error.localizedDescription)")
+            }
+        }
+    }
+    func uploadImageToS3(imagePath: URL, bucketName: String, completion: @escaping (Result<URL, Error>) -> Void) {
+        let s3BucketName = BUCKET_NAME
+        let fileName = "uploads/\(UUID().uuidString).jpg" // Unique file name
+        let uploadRequest = AWSS3TransferUtilityUploadExpression()
+        
+        let transferUtility = AWSS3TransferUtility.default()
+        
+        transferUtility.uploadFile(
+            imagePath,
+            bucket: s3BucketName,
+            key: fileName,
+            contentType: "image/jpeg",
+            expression: uploadRequest,
+            completionHandler: { task, error in
+                if let error = error {
+                    completion(.failure(error))
+                    return
+                }
+                let url = URL(string: "https://\(s3BucketName).s3.amazonaws.com/\(fileName)")
+                completion(.success(url!))
+            }
+        ).continueWith { task in
+            if let error = task.error {
+                completion(.failure(error))
+            }
+            return nil
+        }
+    }
+}
+
+extension ConfirmDeliveryVC:UIImagePickerControllerDelegate, UINavigationControllerDelegate, PHPickerViewControllerDelegate {
+    // MARK: - Open Camera
+        func openCamera() {
+            guard UIImagePickerController.isSourceTypeAvailable(.camera) else { return }
+            let picker = UIImagePickerController()
+            picker.sourceType = .camera
+            picker.mediaTypes = ["public.image", "public.movie"]
+            picker.delegate = self
+            picker.videoQuality = .typeHigh
+            picker.allowsEditing = true
+            present(picker, animated: true)
+        }
+    // MARK: - Open Photo Library
+        func openPhotoLibrary() {
+            var config = PHPickerConfiguration()
+            config.filter = .any(of: [.images, .videos])
+            config.selectionLimit = 1
+            let picker = PHPickerViewController(configuration: config)
+            picker.delegate = self
+            present(picker, animated: true)
+        }
+    // MARK: - UIImagePickerController Delegate (For Camera)
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
+        if let image = info[.originalImage] as? UIImage {
+            self.uploadImageToS3Server(image: image)
+//            if let imageURL = saveImageToDocuments(image: image) {
+//                mediaURLs.append(imageURL)
+//                print("Image saved at: \(imageURL)")
+//            }
+        } else if let videoURL = info[.mediaURL] as? URL {
+            self.uploadVideoToS3Server(filePath: videoURL.absoluteString, thumbnail: UIImage())
+            //let savedURL = saveVideoToDocuments(videoURL: videoURL)
+            //print("Video saved at: \(savedURL)")
+        }
+        picker.dismiss(animated: true)
+    }
+    // MARK: - PHPickerViewController Delegate (For Library)
+    func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
+        picker.dismiss(animated: true)
+        guard let item = results.first?.itemProvider else { return }
+
+        if item.canLoadObject(ofClass: UIImage.self) {
+            item.loadObject(ofClass: UIImage.self) { object, error in
+                if let image = object as? UIImage {
+                    self.uploadImageToS3Server(image: image)
+//                    if let imageURL = self.saveImageToDocuments(image: image) {
+//                        self.mediaURLs.append(imageURL)
+//                        print("Image saved at: \(imageURL)")
+//                    }
+                }
+            }
+        } else if item.hasItemConformingToTypeIdentifier("public.movie") {
+            item.loadFileRepresentation(forTypeIdentifier: "public.movie") { url, error in
+                guard let url = url else { return }
+                self.uploadVideoToS3Server(filePath: url.absoluteString, thumbnail: UIImage())
+//                let savedURL = self.saveVideoToDocuments(videoURL: url)
+//                print("Video saved at: \(savedURL)")
+            }
+        }
+    }
+    func saveImageToDocuments(image: UIImage) -> URL? {
+        guard let data = image.jpegData(compressionQuality: 1.0) else { return nil }
+        let fileName = UUID().uuidString + ".jpg"
+        let fileURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent(fileName)
+
+        do {
+            try data.write(to: fileURL)
+            return fileURL
+        } catch {
+            print("Error saving image: \(error)")
+            return nil
+        }
+    }
+    func saveVideoToDocuments(videoURL: URL) -> URL {
+        let fileName = UUID().uuidString + ".mov"
+        let fileURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent(fileName)
+
+        do {
+            try FileManager.default.copyItem(at: videoURL, to: fileURL)
+            return fileURL
+        } catch {
+            print("Error saving video: \(error)")
+            return videoURL
+        }
+    }
+    // MARK: - Cancel Selection
+        func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+            picker.dismiss(animated: true)
+        }
+    @objc func mediaBtnTapped(){
+        let alertView = UIAlertController(title: "Please choose one", message: nil, preferredStyle: .actionSheet)
+             let cameraAction: UIAlertAction = UIAlertAction(title: "Camera", style: .default) { action -> Void in
+                 AVCaptureDevice.requestAccess(for: AVMediaType.video) { response in
+                     if response {
+                         DispatchQueue.main.async {
+                             self.openCamera()
+                         }
+                     } else {
+                         DispatchQueue.main.async {
+                             let alertView = UIAlertController(title: "Are you sure?", message: "We appreciate your concern about denying this permission, but it will give you a seamless experience.", preferredStyle: .alert)
+                             let cancelAction: UIAlertAction = UIAlertAction(title: "Allow Later", style: .cancel) { action -> Void in
+                                 alertView.dismiss(animated: true, completion: nil)
+                             }
+                             let allowNowAction: UIAlertAction = UIAlertAction(title: "Allow Now", style: .default) { action -> Void in
+                                 UIApplication.shared.open(URL(string:UIApplication.openSettingsURLString)!)
+                             }
+                             alertView.addAction(cancelAction)
+                             alertView.addAction(allowNowAction)
+                             AppUtils.presentOnRootViewController(alertView)
+
+                         }
+                     }
+                 }
+             }
+             let photoLibraryAction: UIAlertAction = UIAlertAction(title: "Photo Library", style: .default) { action -> Void in
+                 self.openPhotoLibrary()
+     
+             }
+             let cancelAction: UIAlertAction = UIAlertAction(title: "Cancel", style: .cancel) { action -> Void in
+             }
+     
+             alertView.addAction(cameraAction)
+             alertView.addAction(photoLibraryAction)
+             alertView.addAction(cancelAction)
+        AppUtils.presentOnRootViewController(alertView)
+
+    }
+}
+
+extension ConfirmDeliveryVC {
+    func uploadImageToS3Server (image : UIImage) {
         LoaderView.shared.showLoader(in: self.view)
         DispatchQueue.global(qos: .background).async {
             AWSS3Manager.shared.uploadImage(image: image) { [weak self] progress in
@@ -478,64 +560,6 @@ extension ConfirmDeliveryVC {
                     }
                 }
             }
-        }
-    }
-}
-extension ConfirmDeliveryVC:UITextViewDelegate
-{
-    func textViewDidBeginEditing(_ textView: UITextView) {
-        if textView.text == placeholderText {
-            textView.text = ""
-            textView.textColor = UIColor.black
-        }
-    }
-    
-    func textViewDidEndEditing(_ textView: UITextView) {
-        if textView.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-            textView.text = placeholderText
-            textView.textColor = UIColor.lightGray
-        }
-    }
-}
-extension ConfirmDeliveryVC
-{
-    func chh (imageUrl: URL)
-    {
-        uploadImageToS3(imagePath: imageUrl, bucketName: "your-s3-bucket-name") { result in
-            switch result {
-            case .success(let url):
-                print("Image uploaded successfully: \(url)")
-            case .failure(let error):
-                print("Upload failed: \(error.localizedDescription)")
-            }
-        }
-    }
-    func uploadImageToS3(imagePath: URL, bucketName: String, completion: @escaping (Result<URL, Error>) -> Void) {
-        let s3BucketName = bucketName
-        let fileName = "uploads/\(UUID().uuidString).jpg" // Unique file name
-        let uploadRequest = AWSS3TransferUtilityUploadExpression()
-        
-        let transferUtility = AWSS3TransferUtility.default()
-        
-        transferUtility.uploadFile(
-            imagePath,
-            bucket: s3BucketName,
-            key: fileName,
-            contentType: "image/jpeg",
-            expression: uploadRequest,
-            completionHandler: { task, error in
-                if let error = error {
-                    completion(.failure(error))
-                    return
-                }
-                let url = URL(string: "https://\(s3BucketName).s3.amazonaws.com/\(fileName)")
-                completion(.success(url!))
-            }
-        ).continueWith { task in
-            if let error = task.error {
-                completion(.failure(error))
-            }
-            return nil
         }
     }
 }
