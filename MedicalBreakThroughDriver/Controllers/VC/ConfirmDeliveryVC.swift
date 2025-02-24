@@ -10,6 +10,7 @@ import AVFoundation
 import MobileCoreServices
 import SDWebImage
 import AWSS3
+import AWSCore
 import PhotosUI
 import AVKit
 struct MediaItem {
@@ -199,9 +200,9 @@ class ConfirmDeliveryVC: UIViewController {
             self.showToast(message: "Plese select status")
         }
     }
+    
+// MARK: - Submit Methods
     func submitApiCall(status:String) {
-//        self.navigateToThankYou()
-//        return
         var attachments: [AttechmentRequestModel] = []
         var att = AttechmentRequestModel()
         for i in 0..<self.mediaItems.count {
@@ -236,6 +237,44 @@ class ConfirmDeliveryVC: UIViewController {
                 }
             }
         }
+    }
+    @objc func mediaBtnTapped(){
+        let alertView = UIAlertController(title: "Please choose one", message: nil, preferredStyle: .actionSheet)
+             let cameraAction: UIAlertAction = UIAlertAction(title: "Camera", style: .default) { action -> Void in
+                 AVCaptureDevice.requestAccess(for: AVMediaType.video) { response in
+                     if response {
+                         DispatchQueue.main.async {
+                             self.openCamera()
+                         }
+                     } else {
+                         DispatchQueue.main.async {
+                             let alertView = UIAlertController(title: "Are you sure?", message: "We appreciate your concern about denying this permission, but it will give you a seamless experience.", preferredStyle: .alert)
+                             let cancelAction: UIAlertAction = UIAlertAction(title: "Allow Later", style: .cancel) { action -> Void in
+                                 alertView.dismiss(animated: true, completion: nil)
+                             }
+                             let allowNowAction: UIAlertAction = UIAlertAction(title: "Allow Now", style: .default) { action -> Void in
+                                 UIApplication.shared.open(URL(string:UIApplication.openSettingsURLString)!)
+                             }
+                             alertView.addAction(cancelAction)
+                             alertView.addAction(allowNowAction)
+                             AppUtils.presentOnRootViewController(alertView)
+
+                         }
+                     }
+                 }
+             }
+             let photoLibraryAction: UIAlertAction = UIAlertAction(title: "Photo Library", style: .default) { action -> Void in
+                 self.openPhotoLibrary()
+     
+             }
+             let cancelAction: UIAlertAction = UIAlertAction(title: "Cancel", style: .cancel) { action -> Void in
+             }
+     
+             alertView.addAction(cameraAction)
+             alertView.addAction(photoLibraryAction)
+             alertView.addAction(cancelAction)
+        AppUtils.presentOnRootViewController(alertView)
+
     }
     @objc func deleteImage(_ sender: UIButton) {
         mediaItems.remove(at:sender.tag)
@@ -322,8 +361,7 @@ extension ConfirmDeliveryVC: UICollectionViewDelegate, UICollectionViewDataSourc
         }
     }
 }
-// MARK: - Uploade Server Methods
-
+// MARK: - UITextViewDelegate
 extension ConfirmDeliveryVC:UITextViewDelegate
 {
     func textViewDidBeginEditing(_ textView: UITextView) {
@@ -340,7 +378,7 @@ extension ConfirmDeliveryVC:UITextViewDelegate
         }
     }
 }
-
+// MARK: - UIImagePickerController Delegate
 extension ConfirmDeliveryVC:UIImagePickerControllerDelegate, UINavigationControllerDelegate, PHPickerViewControllerDelegate {
     // MARK: - Open Camera
         func openCamera() {
@@ -365,15 +403,71 @@ extension ConfirmDeliveryVC:UIImagePickerControllerDelegate, UINavigationControl
     // MARK: - UIImagePickerController Delegate (For Camera)
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
         if let image = info[.originalImage] as? UIImage {
-            self.uploadImageToS3Server(image: image)
-//            if let imageURL = saveImageToDocuments(image: image) {
-//                mediaURLs.append(imageURL)
-//                print("Image saved at: \(imageURL)")
-//            }
+            if let imageURL = saveImageToDocuments(image: image) {
+                LoaderView.shared.showLoader(in: view)
+                uploadMediaToS3(fileURL: imageURL) { result in
+                    switch result {
+                    case .success(let url):
+                        print("Image uploaded to S3: \(url)")
+                        debugPrint(url, "awsS3ImageUrl")
+                        let mediaItem = MediaItem(type: .image, url: url, thumbnail: nil)
+                        self.mediaItems.append(mediaItem)
+                        self.mediaCountLbl.text = "\(self.mediaItems.count)/10"
+                        self.imageListCV.reloadData()
+                        LoaderView.shared.hideLoader()
+                        if self.mediaItems.count > 0 {
+                            self.uploadImageBgView.isHidden = true
+                            self.imageListCV.isHidden = false
+                        } else {
+                            self.uploadImageBgView.isHidden = false
+                            self.imageListCV.isHidden = true
+                        }
+                    case .failure(let error):
+                        LoaderView.shared.hideLoader()
+                        print("Upload failed: \(error.localizedDescription)")
+                    }
+                }
+            }
         } else if let videoURL = info[.mediaURL] as? URL {
-            self.uploadVideoToS3Server(filePath: videoURL.absoluteString, thumbnail: UIImage())
-            //let savedURL = saveVideoToDocuments(videoURL: videoURL)
-            //print("Video saved at: \(savedURL)")
+            LoaderView.shared.showLoader(in: view)
+            var thumbnailImage: UIImage? = nil
+            self.generateThumbnail(from: videoURL) { thumbnail in
+                if let thumbnail = thumbnail {
+                    DispatchQueue.main.async {
+                        thumbnailImage = thumbnail // Set thumbnail to UIImageView
+                    }
+                }
+            }
+            convertMovToMp4(sourceURL: videoURL) { mp4URL in
+                guard let mp4URL = mp4URL else {
+                    LoaderView.shared.hideLoader()
+                    print("MP4 conversion failed")
+                    return
+                }
+                
+                self.uploadMediaToS3(fileURL: mp4URL) { result in
+                    switch result {
+                    case .success(let url):
+                        print("Video uploaded to S3: \(url)")
+                        debugPrint(url, "awsS3ImageUrl")
+                        let mediaItem = MediaItem(type: .video, url: url, thumbnail: thumbnailImage)
+                        self.mediaItems.append(mediaItem)
+                        self.mediaCountLbl.text = "\(self.mediaItems.count)/10"
+                        self.imageListCV.reloadData()
+                        LoaderView.shared.hideLoader()
+                        if self.mediaItems.count > 0 {
+                            self.uploadImageBgView.isHidden = true
+                            self.imageListCV.isHidden = false
+                        } else {
+                            self.uploadImageBgView.isHidden = false
+                            self.imageListCV.isHidden = true
+                        }
+                    case .failure(let error):
+                        LoaderView.shared.hideLoader()
+                        print("Upload failed: \(error.localizedDescription)")
+                    }
+                }
+            }
         }
         picker.dismiss(animated: true)
     }
@@ -381,25 +475,74 @@ extension ConfirmDeliveryVC:UIImagePickerControllerDelegate, UINavigationControl
     func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
         picker.dismiss(animated: true)
         guard let item = results.first?.itemProvider else { return }
-
+        
         if item.canLoadObject(ofClass: UIImage.self) {
             item.loadObject(ofClass: UIImage.self) { object, error in
-                if let image = object as? UIImage {
-                    DispatchQueue.main.async {                    self.uploadImageToS3Server(image: image)
+                if let image = object as? UIImage, let imageURL = self.saveImageToDocuments(image: image) {
+                    DispatchQueue.main.async {
+                        LoaderView.shared.showLoader(in: self.view)
                     }
-//                    if let imageURL = self.saveImageToDocuments(image: image) {
-//                        self.mediaURLs.append(imageURL)
-//                        print("Image saved at: \(imageURL)")
-//                    }
+                    self.uploadMediaToS3(fileURL: imageURL) { result in
+                        switch result {
+                        case .success(let url):
+                            print("Image uploaded to S3: \(url)")
+                            debugPrint(url, "awsS3ImageUrl")
+                            let mediaItem = MediaItem(type: .image, url: url, thumbnail: nil)
+                            self.mediaItems.append(mediaItem)
+                            self.mediaCountLbl.text = "\(self.mediaItems.count)/10"
+                            self.imageListCV.reloadData()
+                            LoaderView.shared.hideLoader()
+                            if self.mediaItems.count > 0 {
+                                self.uploadImageBgView.isHidden = true
+                                self.imageListCV.isHidden = false
+                            } else {
+                                self.uploadImageBgView.isHidden = false
+                                self.imageListCV.isHidden = true
+                            }
+                        case .failure(let error):
+                            LoaderView.shared.hideLoader()
+                            print("Upload failed: \(error.localizedDescription)")
+                        }
+                    }
                 }
             }
         } else if item.hasItemConformingToTypeIdentifier("public.movie") {
             item.loadFileRepresentation(forTypeIdentifier: "public.movie") { url, error in
                 guard let url = url else { return }
-                DispatchQueue.main.async {                                    self.uploadVideoToS3Server(filePath: url.absoluteString, thumbnail: UIImage())
+                DispatchQueue.main.async {
+                    LoaderView.shared.showLoader(in: self.view)
                 }
-//                let savedURL = self.saveVideoToDocuments(videoURL: url)
-//                print("Video saved at: \(savedURL)")
+                var thumbnailImage: UIImage? = nil
+                self.generateThumbnail(from: url) { thumbnail in
+                    if let thumbnail = thumbnail {
+                        DispatchQueue.main.async {
+                            thumbnailImage = thumbnail // Set thumbnail to UIImageView
+                        }
+                    }
+                }
+                self.uploadMediaToS3(fileURL: url) { result in
+                    switch result {
+                    case .success(let url):
+                        print("Video uploaded to S3: \(url)")
+                        debugPrint(url, "awsS3ImageUrl")
+                       
+                        let mediaItem = MediaItem(type: .video, url: url, thumbnail: thumbnailImage)
+                        self.mediaItems.append(mediaItem)
+                        self.mediaCountLbl.text = "\(self.mediaItems.count)/10"
+                        self.imageListCV.reloadData()
+                        LoaderView.shared.hideLoader()
+                        if self.mediaItems.count > 0 {
+                            self.uploadImageBgView.isHidden = true
+                            self.imageListCV.isHidden = false
+                        } else {
+                            self.uploadImageBgView.isHidden = false
+                            self.imageListCV.isHidden = true
+                        }
+                    case .failure(let error):
+                        LoaderView.shared.hideLoader()
+                        print("Upload failed: \(error.localizedDescription)")
+                    }
+                }
             }
         }
     }
@@ -416,120 +559,89 @@ extension ConfirmDeliveryVC:UIImagePickerControllerDelegate, UINavigationControl
             return nil
         }
     }
-    func saveVideoToDocuments(videoURL: URL) -> URL {
-        let fileName = UUID().uuidString + ".mov"
-        let fileURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent(fileName)
-
-        do {
-            try FileManager.default.copyItem(at: videoURL, to: fileURL)
-            return fileURL
-        } catch {
-            print("Error saving video: \(error)")
-            return videoURL
-        }
-    }
+//    func saveVideoToDocuments(videoURL: URL) -> URL {
+//        let fileName = UUID().uuidString + ".mov"
+//        let fileURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent(fileName)
+//
+//        do {
+//            try FileManager.default.copyItem(at: videoURL, to: fileURL)
+//            return fileURL
+//        } catch {
+//            print("Error saving video: \(error)")
+//            return videoURL
+//        }
+//    }
     // MARK: - Cancel Selection
         func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
             picker.dismiss(animated: true)
         }
-    @objc func mediaBtnTapped(){
-        let alertView = UIAlertController(title: "Please choose one", message: nil, preferredStyle: .actionSheet)
-             let cameraAction: UIAlertAction = UIAlertAction(title: "Camera", style: .default) { action -> Void in
-                 AVCaptureDevice.requestAccess(for: AVMediaType.video) { response in
-                     if response {
-                         DispatchQueue.main.async {
-                             self.openCamera()
-                         }
-                     } else {
-                         DispatchQueue.main.async {
-                             let alertView = UIAlertController(title: "Are you sure?", message: "We appreciate your concern about denying this permission, but it will give you a seamless experience.", preferredStyle: .alert)
-                             let cancelAction: UIAlertAction = UIAlertAction(title: "Allow Later", style: .cancel) { action -> Void in
-                                 alertView.dismiss(animated: true, completion: nil)
-                             }
-                             let allowNowAction: UIAlertAction = UIAlertAction(title: "Allow Now", style: .default) { action -> Void in
-                                 UIApplication.shared.open(URL(string:UIApplication.openSettingsURLString)!)
-                             }
-                             alertView.addAction(cancelAction)
-                             alertView.addAction(allowNowAction)
-                             AppUtils.presentOnRootViewController(alertView)
-
-                         }
-                     }
-                 }
-             }
-             let photoLibraryAction: UIAlertAction = UIAlertAction(title: "Photo Library", style: .default) { action -> Void in
-                 self.openPhotoLibrary()
-     
-             }
-             let cancelAction: UIAlertAction = UIAlertAction(title: "Cancel", style: .cancel) { action -> Void in
-             }
-     
-             alertView.addAction(cameraAction)
-             alertView.addAction(photoLibraryAction)
-             alertView.addAction(cancelAction)
-        AppUtils.presentOnRootViewController(alertView)
-
-    }
 }
-
+// MARK: - Uploade Server Methods
 extension ConfirmDeliveryVC {
-    func uploadImageToS3Server (image : UIImage) {
-        LoaderView.shared.showLoader(in: self.view)
-        DispatchQueue.global(qos: .background).async {
-            AWSS3Manager.shared.uploadImage(image: image) { [weak self] progress in
-                guard self != nil else { return }
-            } completion: { [weak self] response, error in
-                
-                guard self != nil else { return }
-                
-                if let awsS3ReturnImageUrl = response as? String
-                {
-                    debugPrint("Uploaded Image file url: " + awsS3ReturnImageUrl)
-                    let awsS3ImageUrl = SERVERURL + awsS3ReturnImageUrl
-                    debugPrint(awsS3ImageUrl, "awsS3ImageUrl")
-                    let mediaItem = MediaItem(type: .image, url: awsS3ImageUrl, thumbnail: nil)
-                    self?.mediaItems.append(mediaItem)
-                    self?.mediaCountLbl.text = "\(self?.mediaItems.count ?? 0)/10"
-                    self?.imageListCV.reloadData()
-                    LoaderView.shared.hideLoader()
-                    if self?.mediaItems.count ?? 0 > 0 {
-                        self?.uploadImageBgView.isHidden = true
-                        self?.imageListCV.isHidden = false
-                    } else {
-                        self?.uploadImageBgView.isHidden = false
-                        self?.imageListCV.isHidden = true
-                    }
+    func uploadMediaToS3(fileURL: URL, completion: @escaping (Result<String, Error>) -> Void) {
+        let fileName = UUID().uuidString + "." + fileURL.pathExtension
+        let s3Key = "\(fileName)" // Change folder if needed
+
+        let expression = AWSS3TransferUtilityUploadExpression()
+        expression.progressBlock = { _, progress in
+            print("Upload Progress: \(progress.fractionCompleted * 100)%")
+        }
+        let transferUtility = AWSS3TransferUtility.default()
+        transferUtility.uploadFile(fileURL, bucket: BUCKET_NAME, key: s3Key, contentType: fileURL.pathExtension == "mp4" ? "video/mp4" : "image/jpeg", expression: expression) { task, error in
+            if let error = error {
+                DispatchQueue.main.async {
+                    completion(.failure(error))
+                }
+            } else {
+                let uploadedURL = "\(SERVERURL)/\(s3Key)"
+                DispatchQueue.main.async {
+                    completion(.success(uploadedURL))
                 }
             }
-
         }
     }
-    func uploadVideoToS3Server (filePath : String,thumbnail:UIImage){
-        LoaderView.shared.showLoader(in: self.view)
-        DispatchQueue.global(qos: .background).async {
-            let videoUrl = URL(fileURLWithPath: filePath)
-            AWSS3Manager.shared.uploadVideo(videoUrl: videoUrl, progress: { [weak self] (progress) in
-                debugPrint("Video progress percentage \(Int(progress*100))%")
-                guard self != nil else { return }
-            }) { [weak self] (uploadedFileUrl, error) in
-              
-                if let awsS3Url = uploadedFileUrl as? String {
-                    
-                    let awsS3VideoUrl = SERVERVIDEOURL + awsS3Url
-                    debugPrint("Uploaded file url: " + (awsS3VideoUrl))
-                    debugPrint(awsS3VideoUrl,"awsS3VideoUrl")
-                    let mediaItem = MediaItem(type: .video, url: awsS3VideoUrl, thumbnail: thumbnail)
-                    self?.mediaItems.append(mediaItem)
-                    self?.mediaCountLbl.text = "\(self?.mediaItems.count ?? 0)/10"
-                    self?.imageListCV.reloadData()
-                    LoaderView.shared.hideLoader()
-                    if self?.mediaItems.count ?? 0 > 0 {
-                        self?.uploadImageBgView.isHidden = true
-                        self?.imageListCV.isHidden = false
-                    } else {
-                        self?.uploadImageBgView.isHidden = false
-                        self?.imageListCV.isHidden = true
-                    }
+    func convertMovToMp4(sourceURL: URL, completion: @escaping (URL?) -> Void) {
+        let avAsset = AVURLAsset(url: sourceURL)
+
+        // Set output file URL
+        let fileName = UUID().uuidString + ".mp4"
+        let exportURL = FileManager.default.temporaryDirectory.appendingPathComponent(fileName)
+
+        // Set export session
+        guard let exportSession = AVAssetExportSession(asset: avAsset, presetName: AVAssetExportPresetHighestQuality) else {
+            completion(nil)
+            return
+        }
+
+        exportSession.outputURL = exportURL
+        exportSession.outputFileType = .mp4
+        exportSession.shouldOptimizeForNetworkUse = true
+
+        exportSession.exportAsynchronously {
+            if exportSession.status == .completed {
+                completion(exportURL)
+            } else {
+                print("Video conversion failed: \(String(describing: exportSession.error))")
+                completion(nil)
+            }
+        }
+    }
+    func generateThumbnail(from videoURL: URL, completion: @escaping (UIImage?) -> Void) {
+        let asset = AVAsset(url: videoURL)
+        let imageGenerator = AVAssetImageGenerator(asset: asset)
+        imageGenerator.appliesPreferredTrackTransform = true // Ensures correct orientation
+
+        let time = CMTime(seconds: 1, preferredTimescale: 600) // Capture frame at 1 second
+        imageGenerator.generateCGImagesAsynchronously(forTimes: [NSValue(time: time)]) { _, cgImage, _, _, error in
+            if let cgImage = cgImage {
+                let thumbnail = UIImage(cgImage: cgImage)
+                DispatchQueue.main.async {
+                    completion(thumbnail)
+                }
+            } else {
+                print("Thumbnail generation failed: \(error?.localizedDescription ?? "Unknown error")")
+                DispatchQueue.main.async {
+                    completion(nil)
                 }
             }
         }
