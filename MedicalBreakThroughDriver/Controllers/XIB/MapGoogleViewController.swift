@@ -60,20 +60,20 @@ class MapGoogleViewController: UIViewController, MKMapViewDelegate, CLLocationMa
         ])
     }
     @objc func nextBtnAct() {
-        if nextBtn.titleLabel?.text == "Next" {
+      //  if nextBtn.titleLabel?.text == "Next" {
             let vc = MAIN.instantiateViewController(withIdentifier: "ConfirmDeliveryVC") as! ConfirmDeliveryVC
             vc.orderData = orderData
             self.navigationController?.pushViewController(vc, animated: true)
             
-        } else {
-            let lat = orderData?.address?.latitude ?? 0
-            let long = orderData?.address?.longitude ?? 0
-            if lat != 0 && long != 0 && orderData?.address?.latitude != nil && orderData?.address?.longitude != nil {
-                self.openGoogleMaps(destinationLat: orderData?.address?.latitude ?? 0, destinationLng: orderData?.address?.longitude ?? 0 )
-            } else {
-                self.showToast(message: "No Location Found")
-            }
-        }
+//        } else {
+//            let lat = orderData?.address?.latitude ?? 0
+//            let long = orderData?.address?.longitude ?? 0
+//            if lat != 0 && long != 0 && orderData?.address?.latitude != nil && orderData?.address?.longitude != nil {
+//                self.openGoogleMaps(destinationLat: orderData?.address?.latitude ?? 0, destinationLng: orderData?.address?.longitude ?? 0 )
+//            } else {
+//                self.showToast(message: "No Location Found")
+//            }
+//        }
     }
     func openGoogleMaps(destinationLat: Double, destinationLng: Double) {
         nextBtn.setTitle("Next", for: .normal)

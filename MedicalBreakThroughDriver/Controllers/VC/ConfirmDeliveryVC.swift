@@ -237,6 +237,18 @@ class ConfirmDeliveryVC: UIViewController {
             }
         }
     }
+    @objc func deleteImage(_ sender: UIButton) {
+        mediaItems.remove(at:sender.tag)
+        self.mediaCountLbl.text = "\(mediaItems.count)/10"
+        imageListCV.reloadData()
+        if mediaItems.count > 0 {
+            self.uploadImageBgView.isHidden = true
+            self.imageListCV.isHidden = false
+        } else {
+            self.uploadImageBgView.isHidden = false
+            self.imageListCV.isHidden = true
+        }
+    }
 }
 // MARK: - Collection View Methods
 extension ConfirmDeliveryVC: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
@@ -282,7 +294,7 @@ extension ConfirmDeliveryVC: UICollectionViewDelegate, UICollectionViewDataSourc
         cell.previewImg.isHidden = !cell.takePhotoBtn.isHidden
         cell.takePhotoBtn.addTarget(self, action: #selector(mediaBtnTapped), for: .touchUpInside)
         cell.deleteImgBtn.tag = indexPath.row
-        //cell.deleteImgBtn.addTarget(self, action: #selector(deleteImage), for: .touchUpInside)
+        cell.deleteImgBtn.addTarget(self, action: #selector(deleteImage), for: .touchUpInside)
         return cell
     }
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
@@ -325,48 +337,6 @@ extension ConfirmDeliveryVC:UITextViewDelegate
         if textView.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
             textView.text = placeholderText
             textView.textColor = UIColor.lightGray
-        }
-    }
-}
-extension ConfirmDeliveryVC
-{
-    func chh (imageUrl: URL)
-    {
-        uploadImageToS3(imagePath: imageUrl, bucketName: "your-s3-bucket-name") { result in
-            switch result {
-            case .success(let url):
-                print("Image uploaded successfully: \(url)")
-            case .failure(let error):
-                print("Upload failed: \(error.localizedDescription)")
-            }
-        }
-    }
-    func uploadImageToS3(imagePath: URL, bucketName: String, completion: @escaping (Result<URL, Error>) -> Void) {
-        let s3BucketName = BUCKET_NAME
-        let fileName = "uploads/\(UUID().uuidString).jpg" // Unique file name
-        let uploadRequest = AWSS3TransferUtilityUploadExpression()
-        
-        let transferUtility = AWSS3TransferUtility.default()
-        
-        transferUtility.uploadFile(
-            imagePath,
-            bucket: s3BucketName,
-            key: fileName,
-            contentType: "image/jpeg",
-            expression: uploadRequest,
-            completionHandler: { task, error in
-                if let error = error {
-                    completion(.failure(error))
-                    return
-                }
-                let url = URL(string: "https://\(s3BucketName).s3.amazonaws.com/\(fileName)")
-                completion(.success(url!))
-            }
-        ).continueWith { task in
-            if let error = task.error {
-                completion(.failure(error))
-            }
-            return nil
         }
     }
 }
@@ -415,7 +385,8 @@ extension ConfirmDeliveryVC:UIImagePickerControllerDelegate, UINavigationControl
         if item.canLoadObject(ofClass: UIImage.self) {
             item.loadObject(ofClass: UIImage.self) { object, error in
                 if let image = object as? UIImage {
-                    self.uploadImageToS3Server(image: image)
+                    DispatchQueue.main.async {                    self.uploadImageToS3Server(image: image)
+                    }
 //                    if let imageURL = self.saveImageToDocuments(image: image) {
 //                        self.mediaURLs.append(imageURL)
 //                        print("Image saved at: \(imageURL)")
@@ -425,7 +396,8 @@ extension ConfirmDeliveryVC:UIImagePickerControllerDelegate, UINavigationControl
         } else if item.hasItemConformingToTypeIdentifier("public.movie") {
             item.loadFileRepresentation(forTypeIdentifier: "public.movie") { url, error in
                 guard let url = url else { return }
-                self.uploadVideoToS3Server(filePath: url.absoluteString, thumbnail: UIImage())
+                DispatchQueue.main.async {                                    self.uploadVideoToS3Server(filePath: url.absoluteString, thumbnail: UIImage())
+                }
 //                let savedURL = self.saveVideoToDocuments(videoURL: url)
 //                print("Video saved at: \(savedURL)")
             }
