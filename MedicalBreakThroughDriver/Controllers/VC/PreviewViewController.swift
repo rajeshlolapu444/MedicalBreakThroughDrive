@@ -11,7 +11,8 @@ import AVKit
 class PreviewViewController: UIViewController {
     
     var deliveryImage: DeliveryImages?
-
+    var selectedIndex: Int = 0
+    var deliveryImages: [DeliveryImages] = []
     private let imageView: UIImageView = {
         let imgView = UIImageView()
         imgView.contentMode = .scaleAspectFit
@@ -19,14 +20,15 @@ class PreviewViewController: UIViewController {
         imgView.translatesAutoresizingMaskIntoConstraints = false
         return imgView
     }()
-
+    
     private var player: AVPlayer?
-    private var playerLayer: AVPlayerLayer?
-
+    private var playerViewController: AVPlayerViewController?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .lightGray
-
+        debugPrint(selectedIndex,"selectedIndex")
+        deliveryImage = deliveryImages[selectedIndex]
         if let deliveryImage = deliveryImage {
             if deliveryImage.type == "image", let urlString = deliveryImage.url, let url = URL(string: urlString) {
                 setupImageView(url: url)
@@ -39,7 +41,7 @@ class PreviewViewController: UIViewController {
             }
         }
     }
-
+    
     private func setupImageView(url: URL) {
         view.addSubview(imageView)
         NSLayoutConstraint.activate([
@@ -62,16 +64,35 @@ class PreviewViewController: UIViewController {
             }
         }
     }
-
     private func setupVideoPlayer(url: URL) {
-        player = AVPlayer(url: url)
-        playerLayer = AVPlayerLayer(player: player)
-        playerLayer?.frame = view.bounds
-        playerLayer?.videoGravity = .resizeAspect
-        if let playerLayer = playerLayer {
-            view.layer.addSublayer(playerLayer)
+        debugPrint(url,"setupVideoPlayer")
+        // Stop and release the previous player before setting a new one
+        player?.pause()
+        player?.isMuted = true
+        player = nil
+        playerViewController?.player = nil
+        playerViewController?.view.removeFromSuperview()
+        playerViewController?.removeFromParent()
+      
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            self.view.layoutIfNeeded()
         }
-        player?.play()
+        // Create a new AVPlayer instance
+        player = AVPlayer(url: url)
+        player?.rate = 1 // Auto play
+        player?.isMuted = false
+        // Create a new AVPlayerViewController instance
+        playerViewController = AVPlayerViewController()
+        playerViewController?.player = player
+        playerViewController?.view.frame = view.bounds
+        playerViewController?.showsPlaybackControls = true
+        
+        // Add as a child view controller
+        if let playerVC = playerViewController {
+            addChild(playerVC)
+            view.addSubview(playerVC.view)
+            playerVC.didMove(toParent: self)
+        }
     }
 }
 
