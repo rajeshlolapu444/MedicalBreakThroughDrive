@@ -45,14 +45,15 @@ class ConfirmDeliveryVC: UIViewController {
     
     var orderData : Order?
     var mediaItems: [MediaItem] = []
-    var deliveryStatus : DeliveryStatus = .none
+    var deliveryStatus : DeliveryStatus = .delivered
     let placeholderText = "Add your Notes..."
 
     override func viewDidLoad() {
         super.viewDidLoad()
         self.notesBgView.layer.borderWidth = 1
         self.notesBgView.layer.borderColor = UIColor.lightGray.cgColor
-        self.statusSelectionSubView.layer.borderWidth = 1
+        self.statusSelectionSubView.layer.cornerRadius = 5
+        self.statusSelectionSubView.layer.borderWidth = 2
         self.statusSelectionSubView.layer.borderColor = UIColor.lightGray.cgColor
         self.setupTextView()
         if let data = orderData {
@@ -102,11 +103,11 @@ class ConfirmDeliveryVC: UIViewController {
         navigationController?.pushViewController(homeViewController, animated: true)
     }
     @IBAction func statusSelectionBtnAct(_ sender: UIButton) {
-        self.selectLbl.text = "Select Status"
-        self.selectLbl.textColor = .darkGray
+        self.selectLbl.text = "Delivered"
+        self.selectLbl.textColor = .systemGreen
         self.deliveredSelectionBgView.isHidden = !self.deliveredSelectionBgView.isHidden
         self.cancelledSelectionBgView.isHidden = !self.cancelledSelectionBgView.isHidden
-        self.deliveryStatus = .none
+        self.deliveryStatus = .delivered
         self.mediaCountLbl.isHidden = false
         if mediaItems.count > 0 {
             self.uploadImageBgView.isHidden = true
@@ -115,6 +116,7 @@ class ConfirmDeliveryVC: UIViewController {
             self.uploadImageBgView.isHidden = false
             self.imageListCV.isHidden = true
         }
+        
     }
     @IBAction func deliveredSelectionBtnAct(_ sender: UIButton) {
         self.selectLbl.text = "Delivered"
@@ -214,7 +216,7 @@ class ConfirmDeliveryVC: UIViewController {
             att.url = self.mediaItems[i].url
             attachments.append(att)
         }
-        if notesTextView.text == "" {
+        if notesTextView.text == "" || notesTextView.text == placeholderText {
             self.showToast(message: "Notes required")
             return
         }
