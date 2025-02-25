@@ -8,6 +8,7 @@
 import UIKit
 
 class MyOrdersListTableViewCell: UITableViewCell {
+    @IBOutlet weak var threeBgView: UIView!
     @IBOutlet weak var orderIdLbl: UILabel!
     @IBOutlet weak var productNameLbl: UILabel!
     @IBOutlet weak var customerNameLbl: UILabel!
@@ -72,8 +73,14 @@ class MyOrdersListTableViewCell: UITableViewCell {
 //        self.milesLbl.text = String(format: "%.2f", miles) + " miles"
         self.milesLbl.text =  (data.address?.distance_in_miles ?? "") + " miles"
         self.milesBgView.isHidden = !(ordersType == .Active)
-
-
+    
+        if ordersType == .Past {
+            if contactBgView.isHidden == true && notesBgView.isHidden == true && milesBgView.isHidden == true{
+                self.threeBgView.isHidden = true
+            } else {
+                self.threeBgView.isHidden = false
+            }
+        }
     }
 }
 // MARK: - NibReusable
