@@ -49,8 +49,8 @@ struct ForgotPasswordResponseModel: Codable {
         case success = "success"
     }
 }
-// MARK: - OTPConfirmResponseModel
-struct OTPConfirmResponseModel: Codable {
+// MARK: - NewPasswordResponseModel
+struct NewPasswordResponseModel: Codable {
     let message : String?
     let status : Int?
 
@@ -60,10 +60,8 @@ struct OTPConfirmResponseModel: Codable {
     }
 }
 
-// MARK: - OTPRequestModel
-struct OTPRequestModel: Encodable {
-    let email: String?
-    let otp: String?
+// MARK: - NewPasswordRequestModel
+struct NewPasswordRequestModel: Encodable {
     let password: String?
     let password_confirmation: String?
 }

@@ -81,11 +81,11 @@ extension LoginViewModel {
             completion(false,error)
         }
     }
-    func otpConfirmAPICall(params:OTPRequestModel,completion: @escaping (_ status:Bool, _ msg:String?) -> Void){
-        debugPrint(params,"otpParams")
-        debugPrint(OTP_For_Password_URL,"OTP_For_Password_URL")
-        APIModel.postRequest(strURL: OTP_For_Password_URL as NSString, postParams: params, postHeaders: ["":""]) { result in
-            let response = try? JSONDecoder().decode(OTPConfirmResponseModel.self, from: result as! Data)
+    func newPasswordApiCall(params:NewPasswordRequestModel,completion: @escaping (_ status:Bool, _ msg:String?) -> Void){
+        debugPrint(params,"Params")
+        debugPrint(Reset_Password_URL,"Reset_Password_URL")
+        APIModel.postRequest(strURL: Reset_Password_URL as NSString, postParams: params, postHeaders: ["":""]) { result in
+            let response = try? JSONDecoder().decode(NewPasswordResponseModel.self, from: result as! Data)
             if response?.status == 200{
                 completion(true,response?.message ?? "")
             }

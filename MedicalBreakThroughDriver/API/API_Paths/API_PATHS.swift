@@ -50,4 +50,4 @@ let Forgot_Password_URL = BASEURL + "drivers/forgotPassword"
 
 //https://beta.yesdone.com/api/v1/drivers/reset-password
 
-let OTP_For_Password_URL = BASEURL + "drivers/reset-password"
+let Reset_Password_URL = BASEURL + "drivers/reset-password"
