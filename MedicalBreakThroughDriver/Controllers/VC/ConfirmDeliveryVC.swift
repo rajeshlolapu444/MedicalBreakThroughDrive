@@ -104,7 +104,6 @@ class ConfirmDeliveryVC: UIViewController {
     }
     @IBAction func statusSelectionBtnAct(_ sender: UIButton) {
         self.selectLbl.text = "Delivered"
-        self.selectLbl.textColor = .systemGreen
         self.deliveredSelectionBgView.isHidden = !self.deliveredSelectionBgView.isHidden
         self.cancelledSelectionBgView.isHidden = !self.cancelledSelectionBgView.isHidden
         self.deliveryStatus = .delivered
@@ -120,7 +119,6 @@ class ConfirmDeliveryVC: UIViewController {
     }
     @IBAction func deliveredSelectionBtnAct(_ sender: UIButton) {
         self.selectLbl.text = "Delivered"
-        self.selectLbl.textColor = .systemGreen
         self.deliveredSelectionBgView.isHidden = true
         self.cancelledSelectionBgView.isHidden = true
         self.deliveryStatus = .delivered
@@ -136,7 +134,6 @@ class ConfirmDeliveryVC: UIViewController {
     @IBAction func cancelledSelectionBtnAct(_ sender: UIButton) {
         
         self.selectLbl.text = "Installed"
-        self.selectLbl.textColor = .systemGreen
         self.deliveredSelectionBgView.isHidden = true
         self.cancelledSelectionBgView.isHidden = true
         self.deliveryStatus = .delivered

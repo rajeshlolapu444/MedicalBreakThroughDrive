@@ -71,7 +71,7 @@
                     </constraints>
                 </view>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="se2-F3-mi7">
-                    <rect key="frame" x="76.666666666666686" y="738" width="240" height="40"/>
+                    <rect key="frame" x="76.666666666666686" y="640" width="240" height="40"/>
                     <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <constraints>
                         <constraint firstAttribute="width" constant="240" id="Jee-ZA-oaZ"/>
@@ -138,9 +138,9 @@ Thank you for delivering the goods successfully. Please ensure the recipient has
             <constraints>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="ZbC-Wh-kCF" secondAttribute="trailing" id="4Xi-fY-zgU"/>
                 <constraint firstItem="wQi-U3-PtL" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" id="CbI-7t-gGn"/>
+                <constraint firstItem="se2-F3-mi7" firstAttribute="top" secondItem="aQN-uE-SVR" secondAttribute="bottom" constant="50" id="Gn0-HO-vNi"/>
                 <constraint firstItem="wQi-U3-PtL" firstAttribute="trailing" secondItem="fnl-2z-Ty3" secondAttribute="trailing" id="JzE-b2-hKO"/>
                 <constraint firstItem="ZbC-Wh-kCF" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="K1o-h2-mAo"/>
-                <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="se2-F3-mi7" secondAttribute="bottom" constant="40" id="a6s-sA-tpz"/>
                 <constraint firstItem="aQN-uE-SVR" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="20" id="bSL-3d-IbT"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="aQN-uE-SVR" secondAttribute="trailing" constant="20" id="d8K-SP-60v"/>
                 <constraint firstItem="aQN-uE-SVR" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" id="fV1-b1-ddK"/>

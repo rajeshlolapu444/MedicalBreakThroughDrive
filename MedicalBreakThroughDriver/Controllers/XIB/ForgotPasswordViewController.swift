@@ -94,7 +94,9 @@ class ForgotPasswordViewController: UIViewController {
                 self.showToast(message: msg ?? "")
                 LoaderView.shared.hideLoader()
                 if status {
-                    self.navigationController?.popViewController(animated: true)
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                        self.navigationController?.popViewController(animated: true)
+                    }
                 }
             }
         }
