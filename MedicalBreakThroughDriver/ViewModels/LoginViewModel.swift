@@ -81,6 +81,22 @@ extension LoginViewModel {
             completion(false,error)
         }
     }
+    func verifiedOtpApiCall(params:VerifyOtpRequestModel,completion: @escaping (_ status:Bool, _ msg:String?) -> Void){
+        debugPrint(params,"Params")
+        debugPrint(Verify_OTP_URL,"Verify_OTP_URL")
+        APIModel.postRequest(strURL: Verify_OTP_URL as NSString, postParams: params, postHeaders: ["":""]) { result in
+            let response = try? JSONDecoder().decode(VerifyOtpResponseModel.self, from: result as! Data)
+            if response?.status == 200{
+                completion(true,response?.message ?? "")
+            }
+             else {
+                 completion(false,response?.message ?? "")
+            }
+        } failureHandler: { error in
+            debugPrint(error)
+            completion(false,error)
+        }
+    }
     func newPasswordApiCall(params:NewPasswordRequestModel,completion: @escaping (_ status:Bool, _ msg:String?) -> Void){
         debugPrint(params,"Params")
         debugPrint(Reset_Password_URL,"Reset_Password_URL")

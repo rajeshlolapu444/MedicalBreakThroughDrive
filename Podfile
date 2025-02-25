@@ -11,5 +11,6 @@ pod 'GoogleMaps'
 pod 'GooglePlaces'
 pod 'AWSS3'
 pod 'SDWebImage'
+pod 'SROTPView'
 
 end

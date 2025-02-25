@@ -48,6 +48,8 @@ let Update_Profile_URL = BASEURL + "drivers/updateProfile"
 
 let Forgot_Password_URL = BASEURL + "drivers/forgotPassword"
 
+let Verify_OTP_URL = BASEURL + "drivers/verify-otp"
+
 //https://beta.yesdone.com/api/v1/drivers/reset-password
 
 let Reset_Password_URL = BASEURL + "drivers/reset-password"

@@ -49,6 +49,27 @@ struct ForgotPasswordResponseModel: Codable {
         case success = "success"
     }
 }
+// MARK: - verifyOtpRequestModel
+struct VerifyOtpRequestModel: Encodable {
+    let email: String?
+    let otp: String?
+}
+// MARK: - VerifyOtpResponseModel
+struct VerifyOtpResponseModel: Codable {
+    let message : String?
+    let status : Int?
+
+    enum CodingKeys: String, CodingKey {
+        case message = "message"
+        case status = "status"
+    }
+}
+// MARK: - NewPasswordRequestModel
+struct NewPasswordRequestModel: Encodable {
+    let email: String?
+    let password: String?
+    let password_confirmation: String?
+}
 // MARK: - NewPasswordResponseModel
 struct NewPasswordResponseModel: Codable {
     let message : String?
@@ -60,8 +81,4 @@ struct NewPasswordResponseModel: Codable {
     }
 }
 
-// MARK: - NewPasswordRequestModel
-struct NewPasswordRequestModel: Encodable {
-    let password: String?
-    let password_confirmation: String?
-}
+

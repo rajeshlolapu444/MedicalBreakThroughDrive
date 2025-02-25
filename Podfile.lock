@@ -49,6 +49,7 @@ PODS:
   - SDWebImage (5.20.0):
     - SDWebImage/Core (= 5.20.0)
   - SDWebImage/Core (5.20.0)
+  - SROTPView (2.1.8)
 
 DEPENDENCIES:
   - AWSS3
@@ -56,6 +57,7 @@ DEPENDENCIES:
   - GooglePlaces
   - IQKeyboardManagerSwift
   - SDWebImage
+  - SROTPView
 
 SPEC REPOS:
   trunk:
@@ -72,6 +74,7 @@ SPEC REPOS:
     - IQTextInputViewNotification
     - IQTextView
     - SDWebImage
+    - SROTPView
 
 SPEC CHECKSUMS:
   AWSCore: 29c85b2be07489b459cc17060b6354e9ba0f96a0
@@ -87,7 +90,8 @@ SPEC CHECKSUMS:
   IQTextInputViewNotification: f5e954d8881fd9808b744e49e024cc0d4bcfe572
   IQTextView: ae13b4922f22e6f027f62c557d9f4f236b19d5c7
   SDWebImage: 73c6079366fea25fa4bb9640d5fb58f0893facd8
+  SROTPView: 74364a9142b246935460fbcd8d5f57e6fdbfa4ef
 
-PODFILE CHECKSUM: c77730e34e45264f8329881a868b1a9b98396d8c
+PODFILE CHECKSUM: c35ab7d94228f7566c299412f2d31b4aaf905031
 
 COCOAPODS: 1.16.2
