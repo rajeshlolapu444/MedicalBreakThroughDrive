@@ -25,16 +25,16 @@ class MapGoogleViewController: UIViewController, MKMapViewDelegate, CLLocationMa
     // Set your destination coordinates
     //let destinationCoordinate = CLLocationCoordinate2D(latitude: 17.48581167804096, longitude: 78.39512477322054)
     var destinations: [CLLocationCoordinate2D] = [
-            CLLocationCoordinate2D(latitude: 17.48581167804096, longitude: 78.39512477322054)//,
-            //CLLocationCoordinate2D(latitude: 17.48581167804096, longitude: 78.35855975339823) // Sacramento
-        ]
+        CLLocationCoordinate2D(latitude: 17.48581167804096, longitude: 78.39512477322054)//,
+        //CLLocationCoordinate2D(latitude: 17.48581167804096, longitude: 78.35855975339823) // Sacramento
+    ]
     var orderData : Order?
     var ordersArray: [Order] = []
     override func viewDidLoad() {
         super.viewDidLoad()
         setupMapView()
         setupLocationManager()
-       // addDestinationMarker()
+        // addDestinationMarker()
         zoomInButton.addTarget(self, action: #selector(zoomInAction), for: .touchUpInside)
         zoomOutButton.addTarget(self, action: #selector(zoomOutAction), for: .touchUpInside)
         nextBtn.addTarget(self, action: #selector(nextBtnAct), for: .touchUpInside)
@@ -81,7 +81,7 @@ class MapGoogleViewController: UIViewController, MKMapViewDelegate, CLLocationMa
     func openGoogleMaps(destinationLat: Double, destinationLng: Double) {
         nextBtn.setTitle("Next", for: .normal)
         let urlString = "comgooglemaps://?saddr=&daddr=\(destinationLat),\(destinationLng)&directionsmode=driving"
-
+        
         if let url = URL(string: urlString) {
             if UIApplication.shared.canOpenURL(url) {
                 UIApplication.shared.open(url, options: [:], completionHandler: nil)
@@ -94,6 +94,14 @@ class MapGoogleViewController: UIViewController, MKMapViewDelegate, CLLocationMa
             }
         }
     }
+    // Function to add a marker at a specific location
+    func addMarker(at coordinate: CLLocationCoordinate2D, title: String, subtitle: String? = nil) {
+        let annotation = MKPointAnnotation()
+        annotation.coordinate = coordinate
+        annotation.title = title
+        annotation.subtitle = subtitle
+        mapView.addAnnotation(annotation)
+    }
     func setupLocationManager() {
         locationManager.delegate = self
         locationManager.requestWhenInUseAuthorization()
@@ -103,8 +111,12 @@ class MapGoogleViewController: UIViewController, MKMapViewDelegate, CLLocationMa
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         guard let userLocation = locations.last else { return }
         locationManager.stopUpdatingLocation()
-        
-        let userCoordinate = userLocation.coordinate
+        let storeLatitude = PersistenceStorage.sharedInstance.storeAddressLatitude ?? 0
+        let storeLongititude = PersistenceStorage.sharedInstance.storeAddressLongitude ?? 0
+        let customCurrentLocation = CLLocationCoordinate2D(latitude: storeLatitude, longitude: storeLongititude)
+        let userCoordinate = customCurrentLocation
+        addMarker(at: userCoordinate, title:"", subtitle: "")
+        //let userCoordinate = userLocation.coordinate
         // Set initial zoom level
         let region = MKCoordinateRegion(
             center: userCoordinate,
@@ -151,23 +163,39 @@ class MapGoogleViewController: UIViewController, MKMapViewDelegate, CLLocationMa
         
         addDestinationMarkers(for: Array(locations.dropFirst())) // Add markers for destinations
     }
-    
     func addDestinationMarkers(for locations: [CLLocationCoordinate2D]) {
         for (index, location) in locations.enumerated() {
-            let annotation = MKPointAnnotation()
-            annotation.coordinate = location
-            annotation.title = "Destination \(index + 1)"
+            //let annotation = CustomAnnotation(coordinate: location, title: "Destination \(index + 1)")
             if isFromHome {
                 let data = "\(ordersArray[index].customer?.name ?? ""),\n\(ordersArray[index].address?.addressLine1 ?? ""), \(ordersArray[index].address?.city ?? ""),\(ordersArray[index].address?.state ?? ""), \(ordersArray[index].address?.country ?? ""),\(ordersArray[index].address?.postalCode ?? "")"
-                annotation.title = data
+                let annotation = CustomAnnotation(coordinate: location, title:data)
+                mapView.addAnnotation(annotation)
             } else {
                 let data = "\(orderData?.customer?.name ?? ""),\n\(orderData?.address?.addressLine1 ?? ""), \(orderData?.address?.city ?? ""),\(orderData?.address?.state ?? ""), \(orderData?.address?.country ?? ""),\(orderData?.address?.postalCode ?? "")"
-                annotation.title = data
+                let annotation = CustomAnnotation(coordinate: location, title:data)
+                mapView.addAnnotation(annotation)
             }
             
-            mapView.addAnnotation(annotation)
         }
     }
+    
+    
+    //    func addDestinationMarkers(for locations: [CLLocationCoordinate2D]) {
+    //        for (index, location) in locations.enumerated() {
+    //            let annotation = MKPointAnnotation()
+    //            annotation.coordinate = location
+    //            annotation.title = "Destination \(index + 1)"
+    //            if isFromHome {
+    //                let data = "\(ordersArray[index].customer?.name ?? ""),\n\(ordersArray[index].address?.addressLine1 ?? ""), \(ordersArray[index].address?.city ?? ""),\(ordersArray[index].address?.state ?? ""), \(ordersArray[index].address?.country ?? ""),\(ordersArray[index].address?.postalCode ?? "")"
+    //                annotation.title = data
+    //            } else {
+    //                let data = "\(orderData?.customer?.name ?? ""),\n\(orderData?.address?.addressLine1 ?? ""), \(orderData?.address?.city ?? ""),\(orderData?.address?.state ?? ""), \(orderData?.address?.country ?? ""),\(orderData?.address?.postalCode ?? "")"
+    //                annotation.title = data
+    //            }
+    //
+    //            mapView.addAnnotation(annotation)
+    //        }
+    //    }
     
     func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
         if let polyline = overlay as? MKPolyline {
@@ -200,5 +228,55 @@ class MapGoogleViewController: UIViewController, MKMapViewDelegate, CLLocationMa
         region.span.latitudeDelta *= 2
         region.span.longitudeDelta *= 2
         mapView.setRegion(region, animated: true)
+    }
+    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+        guard let customAnnotation = annotation as? CustomAnnotation else { return nil }
+        
+        let identifier = "customMarker"
+        var annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: identifier) as? MKMarkerAnnotationView
+        
+        if annotationView == nil {
+            annotationView = MKMarkerAnnotationView(annotation: customAnnotation, reuseIdentifier: identifier)
+            annotationView?.canShowCallout = true // Enables pop-up title
+            
+            // Set marker color and icon
+            annotationView?.markerTintColor = .red // Marker color
+            annotationView?.glyphText = "📍" // Custom marker glyph (emoji or single character)
+            
+            // Create the label
+            let label = UILabel()
+            label.text = customAnnotation.title
+            label.textColor = .black // Text color
+            label.textAlignment = .center
+            label.font = UIFont.boldSystemFont(ofSize: 12)
+            label.backgroundColor = .white // Background for visibility
+            label.layer.cornerRadius = 5
+            label.layer.borderColor = UIColor.gray.cgColor // Border color
+            label.layer.borderWidth = 2 // Border width
+            label.clipsToBounds = true
+            label.numberOfLines = 0 // Allow multiple lines
+            
+            // Dynamic size
+            let maxWidth: CGFloat = 150
+            let maxHeight: CGFloat = 100 // Maximum height (adjust if needed)
+            let size = label.sizeThatFits(CGSize(width: maxWidth, height: maxHeight))
+            label.frame = CGRect(x: 0, y: 35, width: maxWidth, height: min(size.height, maxHeight))
+            
+            annotationView?.addSubview(label)
+        } else {
+            annotationView?.annotation = customAnnotation
+        }
+        
+        return annotationView
+    }
+}
+// Custom annotation class
+class CustomAnnotation: NSObject, MKAnnotation {
+    var coordinate: CLLocationCoordinate2D
+    var title: String?
+    
+    init(coordinate: CLLocationCoordinate2D, title: String) {
+        self.coordinate = coordinate
+        self.title = title
     }
 }

@@ -37,10 +37,10 @@ class LoginViewController: UIViewController {
        // emailTF.text = "mylescurbside@medicalbreakthrough.com"
         //emailTF.text = "mylesinstallation@medicalbreakthrough.com"
         // "luiscurbside@medicalbreakthrough.com"
-        emailTF.text = "alrickdelivery@medicalbreakthrough.com"
+        //emailTF.text = "alrickdelivery@medicalbreakthrough.com"
          //emailTF.text = "carlos@medicalbreakthrough.com"
         //emailTF.text = "guynewhampshire@medicalbreakthrough.com"
-        //emailTF.text = "freddyinstall@medicalbreakthrough.com"
+        emailTF.text = "freddyinstall@medicalbreakthrough.com"
         passwordTF.text = "apple@123"
         configureEyeButton()
     }

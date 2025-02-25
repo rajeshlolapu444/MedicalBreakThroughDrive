@@ -355,11 +355,26 @@ extension ConfirmDeliveryVC: UICollectionViewDelegate, UICollectionViewDataSourc
         if indexPath.row >= mediaItems.count { return }
         let data = mediaItems[indexPath.row]
         if data.url != "" {
-            let storyboard = UIStoryboard(name: "Main", bundle: Bundle.main)
-            let vc = storyboard.instantiateViewController(identifier: "VideoPerviewViewController") as! VideoPerviewViewController
-            vc.mediaData = data
-            vc.modalPresentationStyle = .fullScreen
-            self.present(vc, animated: true)
+            //            let storyboard = UIStoryboard(name: "Main", bundle: Bundle.main)
+            //            let vc = storyboard.instantiateViewController(identifier: "VideoPerviewViewController") as! VideoPerviewViewController
+            //            vc.mediaData = data
+            //            vc.modalPresentationStyle = .fullScreen
+            //            self.present(vc, animated: true)
+            
+            var deliveryImages = [DeliveryImages]()
+            for item in mediaItems {
+                let type = item.type == .video ? "video" : "image"
+                let urll = item.url
+                let img = DeliveryImages(id: 0, url: urll, type: type)
+                deliveryImages.append(img)
+            }
+            let mediaData = deliveryImages
+            //  guard let data = mediaData else { return }
+            let slideshowVC = SlideshowPageViewController(transitionStyle: .scroll, navigationOrientation: .horizontal, options: nil)
+            slideshowVC.deliveryImages = mediaData
+            slideshowVC.selectedIndex = indexPath.item
+            slideshowVC.modalPresentationStyle = .fullScreen
+            present(slideshowVC, animated: true, completion: nil)
         }
     }
 }

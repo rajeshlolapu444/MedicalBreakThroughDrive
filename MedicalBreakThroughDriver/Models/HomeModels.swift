@@ -125,8 +125,8 @@ struct OrderTracking: Codable {
 // MARK: - DeliveryImages
 struct DeliveryImages: Codable {
     let id: Int?
-    let url: String?
-    let type: String?
+    var url: String?
+    var type: String?
 
     enum CodingKeys: String, CodingKey {
         case id
