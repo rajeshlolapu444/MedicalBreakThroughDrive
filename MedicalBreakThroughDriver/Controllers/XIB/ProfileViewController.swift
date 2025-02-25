@@ -36,7 +36,6 @@ class ProfileViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupData()
         if isProfile {
             profileStackView.isHidden = false
             changePasswordStackView.isHidden = true
@@ -45,6 +44,11 @@ class ProfileViewController: UIViewController {
             self.profileImgEditBtn.addTarget(self, action: #selector(btnProfileImageTapped), for: .touchUpInside)
             self.updateBtn.addTarget(self, action: #selector(updateBtnAct), for: .touchUpInside)
             self.topEditBtnBgView.isHidden = false
+            if PersistenceStorage.sharedInstance.driverProfileData != nil {
+                self.setupData()
+            } else {
+                profileDataApiCall()
+            }
         } else {
             profileStackView.isHidden = true
             changePasswordStackView.isHidden = false
@@ -65,6 +69,21 @@ class ProfileViewController: UIViewController {
         }
         self.profileImgeUrl = data?.profileImage ?? ""
         profileImgView.setImage(from: data?.profileImage ?? "")
+    }
+    func profileDataApiCall() {
+        LoaderView.shared.showLoader(in: self.view)
+        ProfileViewModel.shared.getDriverProfileAPI { status, msg in
+            if status {
+                if let data = PersistenceStorage.sharedInstance.driverProfileData {
+                    debugPrint(data, "driverProfileData")
+                    LoaderView.shared.hideLoader()
+                    self.setupData()
+                }
+            } else {
+                self.showToast(message: msg ?? "")
+                LoaderView.shared.hideLoader()
+            }
+        }
     }
     @IBAction func backBtnAct(_ sender: UIButton) {
         self.navigationController?.popViewController(animated: true)

@@ -12,6 +12,7 @@ class SummaryPageViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.profileDataApiCall()
     }
     @IBAction func activeOrdersBtnAct(_ sender: UIButton) {
         let homeViewController = MAIN.instantiateViewController(withIdentifier: "HomeViewController") as! HomeViewController
@@ -60,4 +61,18 @@ class SummaryPageViewController: UIViewController {
         PersistenceStorage.sharedInstance.currentLocationCoordinates = coordinates
         popOrPushToViewController(ofType: LoginViewController.self)
     }
+    func profileDataApiCall() {
+        ProfileViewModel.shared.getDriverProfileAPI { status, msg in
+            if status {
+                if let data = PersistenceStorage.sharedInstance.driverProfileData {
+                    debugPrint(data, "driverProfileData")
+                    LoaderView.shared.hideLoader()
+                }
+            } else {
+                self.showToast(message: msg ?? "")
+                LoaderView.shared.hideLoader()
+            }
+        }
+    }
+
 }

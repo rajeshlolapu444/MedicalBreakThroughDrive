@@ -92,7 +92,8 @@ class LoginViewController: UIViewController {
         LoginViewModel.shared.loginAPICall(params: loginParams) { status, msg in
             if status {
                 LoginViewModel.shared.getStoreCoordinates()
-                self.profileDataApiCall()
+                //self.profileDataApiCall()
+                self.navigateToSummary()
                 self.showToast(message: msg ?? "")
             } else {
                 LoaderView.shared.hideLoader()
