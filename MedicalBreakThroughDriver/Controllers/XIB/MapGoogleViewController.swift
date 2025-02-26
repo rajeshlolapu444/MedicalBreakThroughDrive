@@ -126,15 +126,19 @@ class MapGoogleViewController: UIViewController, MKMapViewDelegate, CLLocationMa
         planRoute(from: userCoordinate, to: destinations)
     }
     
+//    func planRoute(from startLocation: CLLocationCoordinate2D, to destinations: [CLLocationCoordinate2D]) {
+//        var sortedDestinations = destinations.sorted { (loc1, loc2) -> Bool in
+//            let dist1 = CLLocation(latitude: loc1.latitude, longitude: loc1.longitude).distance(from: CLLocation(latitude: startLocation.latitude, longitude: startLocation.longitude))
+//            let dist2 = CLLocation(latitude: loc2.latitude, longitude: loc2.longitude).distance(from: CLLocation(latitude: startLocation.latitude, longitude: startLocation.longitude))
+//            return dist1 < dist2
+//        }
+//        
+//        sortedDestinations.insert(startLocation, at: 0) // Start from current location
+//        drawRoute(for: sortedDestinations)
+//    }
     func planRoute(from startLocation: CLLocationCoordinate2D, to destinations: [CLLocationCoordinate2D]) {
-        var sortedDestinations = destinations.sorted { (loc1, loc2) -> Bool in
-            let dist1 = CLLocation(latitude: loc1.latitude, longitude: loc1.longitude).distance(from: CLLocation(latitude: startLocation.latitude, longitude: startLocation.longitude))
-            let dist2 = CLLocation(latitude: loc2.latitude, longitude: loc2.longitude).distance(from: CLLocation(latitude: startLocation.latitude, longitude: startLocation.longitude))
-            return dist1 < dist2
-        }
-        
-        sortedDestinations.insert(startLocation, at: 0) // Start from current location
-        drawRoute(for: sortedDestinations)
+        let routeLocations = [startLocation] + destinations // Maintain given order
+        drawRoute(for: routeLocations)
     }
     
     func drawRoute(for locations: [CLLocationCoordinate2D]) {
@@ -175,7 +179,6 @@ class MapGoogleViewController: UIViewController, MKMapViewDelegate, CLLocationMa
                 let annotation = CustomAnnotation(coordinate: location, title:data)
                 mapView.addAnnotation(annotation)
             }
-            
         }
     }
     
@@ -206,16 +209,7 @@ class MapGoogleViewController: UIViewController, MKMapViewDelegate, CLLocationMa
         }
         return MKOverlayRenderer()
     }
-    
-    
-    //    func addDestinationMarker() {
-    //        let annotation = MKPointAnnotation()
-    //        annotation.coordinate = destinationCoordinate
-    //        annotation.title = "Destination"
-    //        annotation.subtitle = "Your target location"
-    //        mapView.addAnnotation(annotation)
-    //    }
-    
+        
     @objc func zoomInAction() {
         var region = mapView.region
         region.span.latitudeDelta /= 2
@@ -260,7 +254,7 @@ class MapGoogleViewController: UIViewController, MKMapViewDelegate, CLLocationMa
             let maxWidth: CGFloat = 150
             let maxHeight: CGFloat = 100 // Maximum height (adjust if needed)
             let size = label.sizeThatFits(CGSize(width: maxWidth, height: maxHeight))
-            label.frame = CGRect(x: 0, y: 35, width: maxWidth, height: min(size.height, maxHeight))
+            label.frame = CGRect(x: -50, y: 30, width: maxWidth, height: min(size.height, maxHeight))
             
             annotationView?.addSubview(label)
         } else {

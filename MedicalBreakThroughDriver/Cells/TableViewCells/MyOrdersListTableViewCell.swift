@@ -44,7 +44,7 @@ class MyOrdersListTableViewCell: UITableViewCell {
         self.orderIdLbl.text = "#\(data.orderID ?? 0)"
         self.productNameLbl.text = data.products?.first?.productName
         self.customerNameLbl.text = data.customer?.name
-        self.addressLbl.text = "\(data.address?.addressLine1 ?? ""), \(data.address?.city ?? ""),\(data.address?.state ?? ""), \(data.address?.country ?? ""),\(data.address?.postalCode ?? "")"
+        self.addressLbl.text = "\(data.address?.addressLine1 ?? ""), \(data.address?.city ?? ""), \(data.address?.state ?? ""), \(data.address?.country ?? ""), \(data.address?.postalCode ?? "")"
         if let formattedDate = convertDateFormat(dateString: data.orderTracking?.date ?? "", from: "yyyy-MM-dd") {
             self.timeLbl.text = formattedDate
         }

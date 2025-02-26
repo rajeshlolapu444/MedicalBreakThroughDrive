@@ -162,7 +162,7 @@ class ConfirmDeliveryVC: UIViewController {
         if let formattedDate = convertDateFormat(dateString: data.orderTracking?.date ?? "", from: "yyyy-MM-dd") {
             self.timeLbl.text = formattedDate
         }
-        self.addressLbl.text = "\(data.address?.addressLine1 ?? ""), \(data.address?.city ?? ""),\(data.address?.state ?? ""), \(data.address?.country ?? ""),\(data.address?.postalCode ?? "")"
+        self.addressLbl.text = "\(data.address?.addressLine1 ?? ""), \(data.address?.city ?? ""), \(data.address?.state ?? ""), \(data.address?.country ?? ""), \(data.address?.postalCode ?? "")"
         productImgView.setImage(from: data.products?.first?.productImage ?? "")
     }
     
