@@ -150,11 +150,16 @@ extension ForgotPasswordViewController {
             showToast(message: "Please enter 6 digits OTP")
             return
         } else {
+            LoaderView.shared.showLoader(in: self.view)
             let params = VerifyOtpRequestModel(email: emailTF.text ?? "", otp: otpvalue)
             debugPrint(params,"params")
             LoginViewModel.shared.verifiedOtpApiCall(params: params) { status, msg in
+                self.showToast(message: msg ?? "")
+                LoaderView.shared.hideLoader()
                 if status {
-                    self.setupStackViews(stackView: self.newPasswordStackView)
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                        self.setupStackViews(stackView: self.newPasswordStackView)
+                    }
                 }
             }
         }
