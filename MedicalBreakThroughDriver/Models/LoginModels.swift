@@ -82,3 +82,18 @@ struct NewPasswordResponseModel: Codable {
 }
 
 
+//func decodeInt(from container: KeyedDecodingContainer<some CodingKey>, forKey key: CodingKey) -> Int? {
+//    // Try to decode as an Int
+//    if let intValue = try? container.decode(Int.self, forKey: key) {
+//        return intValue
+//    }
+//    // Try to decode as a String and convert to Int
+//    if let stringValue = try? container.decode(String.self, forKey: key), let intValue = Int(stringValue) {
+//        return intValue
+//    }
+//    // Try to decode as a Double and convert to Int
+//    if let doubleValue = try? container.decode(Double.self, forKey: key) {
+//        return Int(doubleValue)
+//    }
+//    return nil
+//}
