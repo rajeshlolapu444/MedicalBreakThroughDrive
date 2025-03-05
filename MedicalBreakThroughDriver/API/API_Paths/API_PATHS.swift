@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 //MARK: - Live
-let AppLive = true
+let AppLive = false
 
 let BASEURL = AppLive ? "https://yesdone.com/api/v1/" : "https://beta.yesdone.com/api/v1/"
 let BUCKET_NAME =  AppLive ? "doneappai" : "doneappai-beta"
@@ -53,3 +53,7 @@ let Verify_OTP_URL = BASEURL + "drivers/verify-otp"
 //https://beta.yesdone.com/api/v1/drivers/reset-password
 
 let Reset_Password_URL = BASEURL + "drivers/reset-password"
+
+let Create_Driver_URL = BASEURL + "drivers/createDriver"
+
+let Create_Driver_Verify_OTP_URL = BASEURL + "drivers/verifyOtp"
