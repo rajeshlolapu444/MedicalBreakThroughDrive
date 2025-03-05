@@ -46,9 +46,6 @@ class MapGoogleViewController: UIViewController, MKMapViewDelegate, CLLocationMa
     @IBAction func backBtnAct(_ sender: UIButton) {
         self.navigationController?.popViewController(animated: true)
     }
-    @IBAction func btnBackAct(_ sender: UIButton) {
-        self.navigationController?.popViewController(animated: true)
-    }
     func setupMapView() {
         mapView.frame = view.bounds
         mapView.delegate = self
@@ -98,6 +95,7 @@ class MapGoogleViewController: UIViewController, MKMapViewDelegate, CLLocationMa
     }
     // MARK: - AppleMaps
     func openAppleMaps(destinationLat: Double, destinationLng: Double) {
+        self.nextBtn.setTitle("Next", for: .normal)
         let destinationCoordinates = CLLocationCoordinate2D(latitude: destinationLat, longitude: destinationLng)
         //17.48581167804096, longitude: 78.39512477322054
         let mapItem = MKMapItem(placemark: MKPlacemark(coordinate: destinationCoordinates))

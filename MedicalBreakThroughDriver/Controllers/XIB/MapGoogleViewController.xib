@@ -151,7 +151,7 @@
                                 </userDefinedRuntimeAttribute>
                             </userDefinedRuntimeAttributes>
                             <connections>
-                                <action selector="btnBackAct:" destination="-1" eventType="touchUpInside" id="v82-bX-kY3"/>
+                                <action selector="backBtnAct:" destination="-1" eventType="touchUpInside" id="Nk5-HK-2Vc"/>
                             </connections>
                         </button>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="iaP-Tg-R9C">
