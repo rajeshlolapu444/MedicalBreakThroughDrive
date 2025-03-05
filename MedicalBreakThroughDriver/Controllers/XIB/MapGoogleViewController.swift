@@ -72,12 +72,14 @@ class MapGoogleViewController: UIViewController, MKMapViewDelegate, CLLocationMa
             let lat = orderData?.address?.latitude ?? 0
             let long = orderData?.address?.longitude ?? 0
             if lat != 0 && long != 0 && orderData?.address?.latitude != nil && orderData?.address?.longitude != nil {
-                self.openGoogleMaps(destinationLat: orderData?.address?.latitude ?? 0, destinationLng: orderData?.address?.longitude ?? 0 )
+                //self.openGoogleMaps(destinationLat: orderData?.address?.latitude ?? 0, destinationLng: orderData?.address?.longitude ?? 0 )
+                self.openAppleMaps(destinationLat: orderData?.address?.latitude ?? 0, destinationLng: orderData?.address?.longitude ?? 0 )
             } else {
                 self.showToast(message: "No Location Found")
             }
         }
     }
+    // MARK: - GoogleMaps
     func openGoogleMaps(destinationLat: Double, destinationLng: Double) {
         nextBtn.setTitle("Next", for: .normal)
         let urlString = "comgooglemaps://?saddr=&daddr=\(destinationLat),\(destinationLng)&directionsmode=driving"
@@ -93,6 +95,16 @@ class MapGoogleViewController: UIViewController, MKMapViewDelegate, CLLocationMa
                 }
             }
         }
+    }
+    // MARK: - AppleMaps
+    func openAppleMaps(destinationLat: Double, destinationLng: Double) {
+        let destinationCoordinates = CLLocationCoordinate2D(latitude: destinationLat, longitude: destinationLng)
+        //17.48581167804096, longitude: 78.39512477322054
+        let mapItem = MKMapItem(placemark: MKPlacemark(coordinate: destinationCoordinates))
+        mapItem.name = "Destination"
+        
+        let launchOptions = [MKLaunchOptionsDirectionsModeKey: MKLaunchOptionsDirectionsModeDriving]
+        mapItem.openInMaps(launchOptions: launchOptions)
     }
     // Function to add a marker at a specific location
     func addMarker(at coordinate: CLLocationCoordinate2D, title: String, subtitle: String? = nil) {
