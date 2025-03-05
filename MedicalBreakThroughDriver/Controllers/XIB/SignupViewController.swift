@@ -39,7 +39,12 @@ class SignupViewController: UIViewController {
         self.doneBtn.addTarget(self, action: #selector(self.verifiedOtpApiCall), for: .touchUpInside)
     }
     @IBAction func backBtnAct(_ sender: UIButton) {
-        self.navigationController?.popViewController(animated: true)
+        if twoStack.isHidden == false {
+            setupStackViews(stackView: oneStack)
+        } else {
+            self.navigationController?.popViewController(animated: true)
+
+        }
     }
     func setupStackViews(stackView: UIStackView) {
         oneStack.isHidden = true

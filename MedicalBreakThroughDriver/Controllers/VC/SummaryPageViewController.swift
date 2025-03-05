@@ -53,6 +53,10 @@ class SummaryPageViewController: UIViewController {
         self.navigationController?.pushViewController(vc, animated: true)
 
     }
+    @IBAction func privacyPolicyBtnAct(_ sender: UIButton) {
+        let vc = PrivacyPolicyViewController()
+        self.navigationController?.pushViewController(vc, animated: true)
+    }
     @IBAction func logoutBtnAct(_ sender: UIButton) {
         let coordinates = PersistenceStorage.sharedInstance.currentLocationCoordinates ?? CLLocationCoordinate2D()
         let domain = Bundle.main.bundleIdentifier!
