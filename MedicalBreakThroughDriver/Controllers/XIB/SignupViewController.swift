@@ -65,6 +65,10 @@ class SignupViewController: UIViewController {
             self.showToast(message: "Please enter first name")
             return false
         }
+        if lastName.isEmpty {
+            self.showToast(message: "Please enter last name")
+            return false
+        }
         if email.isEmpty {
             self.showToast(message: "Please enter email")
             return false
@@ -74,8 +78,21 @@ class SignupViewController: UIViewController {
             self.showToast(message: "Please enter valid email")
             return false
         }
+
+        if phoneNumber.isEmpty {
+            self.showToast(message: "Please enter phone number")
+            return false
+        }
+        if phoneNumber.count < 10 {
+            self.showToast(message: "Please enter valid phone number")
+            return false
+        }
         if password.isEmpty {
             self.showToast(message: "Please enter password.")
+            return false
+        }
+        if password.count != 6 {
+            self.showToast(message: "Password should be 6 characters long.")
             return false
         }
         if confirmPassword.isEmpty {
@@ -86,13 +103,13 @@ class SignupViewController: UIViewController {
             self.showToast(message: "Password and confirm password does not match.")
             return false
         }
-        emailModel = SignupEmailRequestModel(email: email)
+        emailModel = SignupEmailRequestModel(email: email,mobile_number: Int(phoneNumber))
         verifyOtpRequestModel = SignupVerifyOtpRequestModel(first_name: firstName, last_name: lastName, email: email, mobile_number: Int(phoneNumber), password: password, otp: 0)
         return true
     }
     @objc func submit() {
         debugPrint(fieldsValidation(), "fieldsValidation")
-        let params = SignupEmailRequestModel(email: emailModel?.email)
+        let params = SignupEmailRequestModel(email: emailModel?.email,mobile_number: emailModel?.mobile_number)
         if fieldsValidation() {
             LoaderView.shared.showLoader(in: self.view)
             SignupViewModel.shared.signupEmailAPICall(params: params) { status, msg in
@@ -139,7 +156,7 @@ class SignupViewController: UIViewController {
         otpView?.setUpOtpView()
     }
     @objc func otpResendSendtoEmailAPI() {
-        let params = SignupEmailRequestModel(email: emailModel?.email)
+        let params = SignupEmailRequestModel(email: emailModel?.email,mobile_number: emailModel?.mobile_number)
         LoaderView.shared.showLoader(in: self.view)
         SignupViewModel.shared.signupEmailAPICall(params: params) { status, msg in
             LoaderView.shared.hideLoader()

@@ -10,6 +10,7 @@ import Foundation
 // MARK: - SignupEmailRequestModel
 struct SignupEmailRequestModel: Encodable {
     let email : String?
+    let mobile_number: Int?
 }
 
 // MARK: - SignupEmailResponseModel
