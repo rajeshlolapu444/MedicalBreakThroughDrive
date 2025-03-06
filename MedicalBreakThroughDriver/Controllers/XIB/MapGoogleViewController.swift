@@ -120,6 +120,7 @@ class MapGoogleViewController: UIViewController, MKMapViewDelegate, CLLocationMa
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         guard let userLocation = locations.last else { return }
+        debugPrint(userLocation)
         locationManager.stopUpdatingLocation()
         let storeLatitude = PersistenceStorage.sharedInstance.storeAddressLatitude ?? 0
         let storeLongititude = PersistenceStorage.sharedInstance.storeAddressLongitude ?? 0

@@ -6,34 +6,49 @@
 //
 
 import UIKit
+import WebKit
 
 class PrivacyPolicyViewController: UIViewController {
-
-    @IBOutlet weak var textV: UITextView!
+    
+    @IBOutlet weak var containerView: UIView!
+   // @IBOutlet weak var textV: UITextView!
+    
+    var webView: WKWebView!
     override func viewDidLoad() {
         super.viewDidLoad()
-        loadRTFFile()
         
+        let fixedFrame = CGRect(x: 0, y: 0, width:containerView.frame.width - 10, height:containerView.frame.height)
+        webView = WKWebView(frame: fixedFrame)
+        containerView.addSubview(webView)
+        loadHTMLFile()
     }
     @IBAction func backBtnAct(_ sender: UIButton) {
-            self.navigationController?.popViewController(animated: true)
-
+        self.navigationController?.popViewController(animated: true)
+        
     }
-    private func loadRTFFile() {
-        guard let fileURL = Bundle.main.url(forResource: "Driver APP - Privacy Policy", withExtension: "html") else {
-            print("File not found")
+    private func loadHTMLFile() {
+        guard let fileURL = Bundle.main.url(forResource: PrivacyPolicy, withExtension: "html") else {
+            print("HTML file not found")
             return
         }
         
-        do {
-            let attributedString = try NSAttributedString(
-                url: fileURL,
-                options: [.documentType: NSAttributedString.DocumentType.html],
-                documentAttributes: nil
-            )
-            textV.attributedText = attributedString
-        } catch {
-            print("Failed to load RTF: \(error)")
-        }
+        webView.loadFileURL(fileURL, allowingReadAccessTo: fileURL.deletingLastPathComponent())
     }
+    //    private func loadRTFFile() {
+    //        guard let fileURL = Bundle.main.url(forResource: "privacy-policy", withExtension: "html") else {
+    //            print("File not found")
+    //            return
+    //        }
+    //
+    //        do {
+    //            let attributedString = try NSAttributedString(
+    //                url: fileURL,
+    //                options: [.documentType: NSAttributedString.DocumentType.html],
+    //                documentAttributes: nil
+    //            )
+    //            textV.attributedText = attributedString
+    //        } catch {
+    //            print("Failed to load RTF: \(error)")
+    //        }
+    //    }
 }

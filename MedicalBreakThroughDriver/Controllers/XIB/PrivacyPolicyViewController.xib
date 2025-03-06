@@ -10,7 +10,7 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="PrivacyPolicyViewController" customModule="MedicalBreakThroughDriver" customModuleProvider="target">
             <connections>
-                <outlet property="textV" destination="I5n-ey-SRa" id="saq-PD-aXd"/>
+                <outlet property="containerView" destination="VjS-X8-rW1" id="pbm-d7-2Yu"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
         </placeholder>
@@ -63,20 +63,7 @@
                 </view>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="VjS-X8-rW1">
                     <rect key="frame" x="0.0" y="109" width="393" height="743"/>
-                    <subviews>
-                        <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" usesAttributedText="YES" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="I5n-ey-SRa">
-                            <rect key="frame" x="5" y="0.0" width="383" height="713"/>
-                            <attributedString key="attributedText"/>
-                            <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
-                        </textView>
-                    </subviews>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                    <constraints>
-                        <constraint firstItem="I5n-ey-SRa" firstAttribute="leading" secondItem="VjS-X8-rW1" secondAttribute="leading" constant="5" id="0FM-rj-ePq"/>
-                        <constraint firstAttribute="bottom" secondItem="I5n-ey-SRa" secondAttribute="bottom" constant="30" id="Pcs-HR-ybQ"/>
-                        <constraint firstAttribute="trailing" secondItem="I5n-ey-SRa" secondAttribute="trailing" constant="5" id="jh7-Fq-NW0"/>
-                        <constraint firstItem="I5n-ey-SRa" firstAttribute="top" secondItem="VjS-X8-rW1" secondAttribute="top" id="r36-YK-Ghx"/>
-                    </constraints>
                 </view>
             </subviews>
             <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
