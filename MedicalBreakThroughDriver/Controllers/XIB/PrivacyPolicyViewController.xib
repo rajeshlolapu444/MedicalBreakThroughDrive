@@ -10,6 +10,7 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="PrivacyPolicyViewController" customModule="MedicalBreakThroughDriver" customModuleProvider="target">
             <connections>
+                <outlet property="textV" destination="I5n-ey-SRa" id="saq-PD-aXd"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
         </placeholder>
@@ -63,40 +64,9 @@
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="VjS-X8-rW1">
                     <rect key="frame" x="0.0" y="109" width="393" height="743"/>
                     <subviews>
-                        <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" usesAttributedText="YES" translatesAutoresizingMaskIntoConstraints="NO" id="I5n-ey-SRa">
+                        <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" usesAttributedText="YES" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="I5n-ey-SRa">
                             <rect key="frame" x="5" y="0.0" width="383" height="713"/>
-                            <attributedString key="attributedText">
-                                <fragment>
-                                    <string key="content">1. Introduction Welcome to the MedicalBreakthrough Driver App ("App"). This Privacy Policy explains how we collect, use, disclose, and protect your information when you use our App. By using the App, you agree to the collection and use of information in accordance with this policy.
-2. Information We Collect We may collect the following types of information:
-	•	Personal Information: Name, contact details, and other relevant driver-related details.
-	•	Location Data: Real-time GPS location to facilitate navigation and optimize delivery routes.
-	•	Delivery Data: Information related to assigned deliveries, customer notes, and proof of delivery (including media files).
-3. How We Use Your Information We use the collected information to:
-	•	Assign and manage deliveries efficiently.
-	•	Provide route navigation using third-party mapping services.
-	•	Maintain records of completed deliveries and customer interactions.
-	•	Enhance security, prevent fraud, and comply with legal obligations.
-	•	Improve app performance, troubleshoot issues, and enhance the user experience.
-4. Data Sharing and Disclosure We do not sell, trade, or rent your personal data. However, we may share information with:
-	•	Logistics and Operations Teams: To facilitate delivery management.
-	•	Third-Party Service Providers: For navigation, cloud storage, and analytics services.
-	•	Legal and Compliance Entities: If required by law, legal proceedings, or regulatory authorities.
-5. Data Retention We retain your data only for as long as necessary to fulfill the purposes outlined in this policy, comply with legal obligations, and resolve disputes.
-6. Security Measures We implement industry-standard security measures to protect your data from unauthorized access, alteration, or disclosure. However, no method of transmission over the internet is 100% secure.
-7. Your Rights and Choices Depending on your location, you may have rights regarding your personal data, including:
-	•	Accessing, updating, or deleting your information.
-	•	Restricting or objecting to data processing.
-	•	Withdrawing consent for data collection where applicable. To exercise these rights, please contact us at apps@medicalbreakthrough.com.
-8. Third-Party Services and Links The App may integrate third-party services (e.g., mapping tools) that have their own privacy policies. We encourage you to review their policies before using those services.
-9. Updates to This Privacy Policy We may update this Privacy Policy periodically. Any changes will be posted within the App and become effective upon publication.
-10. Contact Us If you have any questions or concerns about this Privacy Policy, please contact us at: Medical Breakthrough Massage Chairs LLC Email: apps@medicalbreakthrough.com</string>
-                                    <attributes>
-                                        <color key="NSColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                        <font key="NSFont" metaFont="system" size="18"/>
-                                    </attributes>
-                                </fragment>
-                            </attributedString>
+                            <attributedString key="attributedText"/>
                             <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                         </textView>
                     </subviews>
