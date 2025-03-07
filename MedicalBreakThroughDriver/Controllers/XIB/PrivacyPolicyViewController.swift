@@ -20,7 +20,10 @@ class PrivacyPolicyViewController: UIViewController {
         let fixedFrame = CGRect(x: 0, y: 0, width:containerView.frame.width - 10, height:containerView.frame.height)
         webView = WKWebView(frame: fixedFrame)
         containerView.addSubview(webView)
-        loadHTMLFile()
+        if let url = URL(string: "https://www.medicalbreakthrough.com/driver-privacypolicy.html") {
+            let request = URLRequest(url: url)
+            webView.load(request)
+        }
     }
     @IBAction func backBtnAct(_ sender: UIButton) {
         self.navigationController?.popViewController(animated: true)
