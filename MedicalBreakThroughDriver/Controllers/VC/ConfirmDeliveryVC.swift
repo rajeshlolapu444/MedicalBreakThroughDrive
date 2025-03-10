@@ -25,10 +25,10 @@ class ConfirmDeliveryVC: UIViewController {
     @IBOutlet weak var orderIdLbl: UILabel!
     @IBOutlet weak var productNameLbl: UILabel!
     @IBOutlet weak var customerNameLbl: UILabel!
-  //  @IBOutlet weak var addressLbl: UILabel!
+    //  @IBOutlet weak var addressLbl: UILabel!
     @IBOutlet weak var timeLbl: UILabel!
     @IBOutlet weak var productImgView: UIImageView!
-   // @IBOutlet weak var contactLbl: UILabel!
+    // @IBOutlet weak var contactLbl: UILabel!
     @IBOutlet weak var selectLbl: UILabel!
     
     @IBOutlet weak var deliveredSelectionBgView: UIView!
@@ -47,7 +47,7 @@ class ConfirmDeliveryVC: UIViewController {
     var mediaItems: [MediaItem] = []
     var deliveryStatus : DeliveryStatus = .delivered
     let placeholderText = "Add your Notes..."
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.notesBgView.layer.borderWidth = 1
@@ -60,7 +60,7 @@ class ConfirmDeliveryVC: UIViewController {
             loadData(data: data)
             self.deliveredSelectionBgView.isHidden = true
             self.cancelledSelectionBgView.isHidden = true
-           // self.statusSelectionView.layer.borderColor = UIColor.black.cgColor
+            // self.statusSelectionView.layer.borderColor = UIColor.black.cgColor
             //self.statusSelectionView.layer.borderWidth = 1
         }
         setupCollectionView()
@@ -89,7 +89,7 @@ class ConfirmDeliveryVC: UIViewController {
             self.notesTextView.text = orderData?.deliveryDetails?.notes ?? ""
         }
     }
-
+    
     func navigateToSummary() {
         let vc = MAIN.instantiateViewController(withIdentifier: "SummaryPageViewController") as! SummaryPageViewController
         navigationController?.pushViewController(vc, animated: true)
@@ -145,15 +145,15 @@ class ConfirmDeliveryVC: UIViewController {
             self.uploadImageBgView.isHidden = false
             self.imageListCV.isHidden = true
         }
-//        
-//        self.selectLbl.text = "Installed"
-//        self.selectLbl.textColor = .systemRed
-//        self.deliveredSelectionBgView.isHidden = true
-//        self.cancelledSelectionBgView.isHidden = true
-//        self.deliveryStatus = .installed
-//        self.mediaCountLbl.isHidden = true
-//        self.uploadImageBgView.isHidden = true
-//        self.imageListCV.isHidden = true
+        //
+        //        self.selectLbl.text = "Installed"
+        //        self.selectLbl.textColor = .systemRed
+        //        self.deliveredSelectionBgView.isHidden = true
+        //        self.cancelledSelectionBgView.isHidden = true
+        //        self.deliveryStatus = .installed
+        //        self.mediaCountLbl.isHidden = true
+        //        self.uploadImageBgView.isHidden = true
+        //        self.imageListCV.isHidden = true
     }
     func loadData(data: Order) {
         self.orderIdLbl.text = "#\(data.orderID ?? 0)"
@@ -180,27 +180,27 @@ class ConfirmDeliveryVC: UIViewController {
                 self.showToast(message: "Notes required")
                 return
             }
-//            let rejectParams = CancelledDeliveryRequestModel(order_id: orderData?.id ?? 0, status: DeliveryStatus.installed.rawValue, reason:notesTextView.text ?? "")
-//            debugPrint(rejectParams,"installedParams")
-//            LoaderView.shared.showLoader(in: self.view)
-//            ConfirmViewModel.shared.putOrdersCancellAPI(parms: rejectParams) { status, msg in
-//                if status {
-//                    self.showToast(message: msg ?? "")
-//                    DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-//                        LoaderView.shared.hideLoader()
-//                        self.navigateToSummary()
-//                    }
-//                } else {
-//                    self.showToast(message: msg ?? "")
-//                    LoaderView.shared.hideLoader()
-//                }
-//            }
+            //            let rejectParams = CancelledDeliveryRequestModel(order_id: orderData?.id ?? 0, status: DeliveryStatus.installed.rawValue, reason:notesTextView.text ?? "")
+            //            debugPrint(rejectParams,"installedParams")
+            //            LoaderView.shared.showLoader(in: self.view)
+            //            ConfirmViewModel.shared.putOrdersCancellAPI(parms: rejectParams) { status, msg in
+            //                if status {
+            //                    self.showToast(message: msg ?? "")
+            //                    DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+            //                        LoaderView.shared.hideLoader()
+            //                        self.navigateToSummary()
+            //                    }
+            //                } else {
+            //                    self.showToast(message: msg ?? "")
+            //                    LoaderView.shared.hideLoader()
+            //                }
+            //            }
         case .none:
             self.showToast(message: "Plese select status")
         }
     }
     
-// MARK: - Submit Methods
+    // MARK: - Submit Methods
     func submitApiCall(status:String) {
         var attachments: [AttechmentRequestModel] = []
         var att = AttechmentRequestModel()
@@ -239,41 +239,41 @@ class ConfirmDeliveryVC: UIViewController {
     }
     @objc func mediaBtnTapped(){
         let alertView = UIAlertController(title: "Please choose one", message: nil, preferredStyle: .actionSheet)
-             let cameraAction: UIAlertAction = UIAlertAction(title: "Camera", style: .default) { action -> Void in
-                 AVCaptureDevice.requestAccess(for: AVMediaType.video) { response in
-                     if response {
-                         DispatchQueue.main.async {
-                             self.openCamera()
-                         }
-                     } else {
-                         DispatchQueue.main.async {
-                             let alertView = UIAlertController(title: "Are you sure?", message: "We appreciate your concern about denying this permission, but it will give you a seamless experience.", preferredStyle: .alert)
-                             let cancelAction: UIAlertAction = UIAlertAction(title: "Allow Later", style: .cancel) { action -> Void in
-                                 alertView.dismiss(animated: true, completion: nil)
-                             }
-                             let allowNowAction: UIAlertAction = UIAlertAction(title: "Allow Now", style: .default) { action -> Void in
-                                 UIApplication.shared.open(URL(string:UIApplication.openSettingsURLString)!)
-                             }
-                             alertView.addAction(cancelAction)
-                             alertView.addAction(allowNowAction)
-                             AppUtils.presentOnRootViewController(alertView)
-
-                         }
-                     }
-                 }
-             }
-             let photoLibraryAction: UIAlertAction = UIAlertAction(title: "Photo Library", style: .default) { action -> Void in
-                 self.openPhotoLibrary()
-     
-             }
-             let cancelAction: UIAlertAction = UIAlertAction(title: "Cancel", style: .cancel) { action -> Void in
-             }
-     
-             alertView.addAction(cameraAction)
-             alertView.addAction(photoLibraryAction)
-             alertView.addAction(cancelAction)
+        let cameraAction: UIAlertAction = UIAlertAction(title: "Camera", style: .default) { action -> Void in
+            AVCaptureDevice.requestAccess(for: AVMediaType.video) { response in
+                if response {
+                    DispatchQueue.main.async {
+                        self.openCamera()
+                    }
+                } else {
+                    DispatchQueue.main.async {
+                        let alertView = UIAlertController(title: "Are you sure?", message: "We appreciate your concern about denying this permission, but it will give you a seamless experience.", preferredStyle: .alert)
+                        let cancelAction: UIAlertAction = UIAlertAction(title: "Allow Later", style: .cancel) { action -> Void in
+                            alertView.dismiss(animated: true, completion: nil)
+                        }
+                        let allowNowAction: UIAlertAction = UIAlertAction(title: "Allow Now", style: .default) { action -> Void in
+                            UIApplication.shared.open(URL(string:UIApplication.openSettingsURLString)!)
+                        }
+                        alertView.addAction(cancelAction)
+                        alertView.addAction(allowNowAction)
+                        AppUtils.presentOnRootViewController(alertView)
+                        
+                    }
+                }
+            }
+        }
+        let photoLibraryAction: UIAlertAction = UIAlertAction(title: "Photo Library", style: .default) { action -> Void in
+            self.galleryOpen()
+            
+        }
+        let cancelAction: UIAlertAction = UIAlertAction(title: "Cancel", style: .cancel) { action -> Void in
+        }
+        
+        alertView.addAction(cameraAction)
+        alertView.addAction(photoLibraryAction)
+        alertView.addAction(cancelAction)
         AppUtils.presentOnRootViewController(alertView)
-
+        
     }
     @objc func deleteImage(_ sender: UIButton) {
         mediaItems.remove(at:sender.tag)
@@ -393,27 +393,96 @@ extension ConfirmDeliveryVC:UITextViewDelegate
     }
 }
 // MARK: - UIImagePickerController Delegate
-extension ConfirmDeliveryVC:UIImagePickerControllerDelegate, UINavigationControllerDelegate, PHPickerViewControllerDelegate {
+extension ConfirmDeliveryVC:UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     // MARK: - Open Camera
-        func openCamera() {
-            guard UIImagePickerController.isSourceTypeAvailable(.camera) else { return }
-            let picker = UIImagePickerController()
-            picker.sourceType = .camera
-            picker.mediaTypes = ["public.image", "public.movie"]
-            picker.delegate = self
-            picker.videoQuality = .typeHigh
-            picker.allowsEditing = true
-            present(picker, animated: true)
-        }
+    func openCamera() {
+        guard UIImagePickerController.isSourceTypeAvailable(.camera) else { return }
+        let picker = UIImagePickerController()
+        picker.sourceType = .camera
+        picker.mediaTypes = ["public.image", "public.movie"]
+        picker.delegate = self
+        picker.videoQuality = .typeHigh
+        picker.allowsEditing = true
+        present(picker, animated: true)
+    }
     // MARK: - Open Photo Library
-        func openPhotoLibrary() {
-            var config = PHPickerConfiguration()
-            config.filter = .any(of: [.images, .videos])
-            config.selectionLimit = 1
-            let picker = PHPickerViewController(configuration: config)
-            picker.delegate = self
-            present(picker, animated: true)
+    func galleryOpen(){
+        let status = PHPhotoLibrary.authorizationStatus()
+        switch status {
+        case .authorized:
+            self.openPhotos()
+            break
+        case .denied, .restricted :
+            DispatchQueue.main.async {
+                let alertView = UIAlertController(title: "Are you sure?", message: "We appreciate your concern about denying this permission, but it will give you a seamless experience.", preferredStyle: .alert)
+                let cancelAction: UIAlertAction = UIAlertAction(title: "Allow Later", style: .cancel) { action -> Void in
+                    alertView.dismiss(animated: true, completion: nil)
+                }
+                let allowNowAction: UIAlertAction = UIAlertAction(title: "Allow Now", style: .default) { action -> Void in
+                    UIApplication.shared.open(URL(string:UIApplication.openSettingsURLString)!)
+                }
+                alertView.addAction(cancelAction)
+                alertView.addAction(allowNowAction)
+                //                let rootVC = UIApplication.shared.windows.filter { $0.isKeyWindow }.first?.rootViewController
+                //                rootVC?.present(alertView, animated: true, completion: nil)
+                AppUtils.presentOnRootViewController(alertView)
+                
+            }
+            break
+        case .limited:
+            self.openPhotos()
+            break
+        case .notDetermined:
+            PHPhotoLibrary.requestAuthorization { status in
+                switch status {
+                case .authorized:
+                    DispatchQueue.main.async {
+                        self.openPhotos()
+                    }
+                    break
+                case .limited:
+                    self.openPhotos()
+                    break
+                case .denied, .restricted:
+                    DispatchQueue.main.async {
+                        let alertView = UIAlertController(title: "Are you sure?", message: "We appreciate your concern about denying this permission, but it will give you a seamless experience.", preferredStyle: .alert)
+                        let cancelAction: UIAlertAction = UIAlertAction(title: "Allow Later", style: .cancel) { action -> Void in
+                            alertView.dismiss(animated: true, completion: nil)
+                        }
+                        let allowNowAction: UIAlertAction = UIAlertAction(title: "Allow Now", style: .default) { action -> Void in
+                            UIApplication.shared.open(URL(string:UIApplication.openSettingsURLString)!)
+                        }
+                        alertView.addAction(cancelAction)
+                        alertView.addAction(allowNowAction)
+                        AppUtils.presentOnRootViewController(alertView)
+                    }
+                    break
+                case .notDetermined:
+                    break
+                    
+                @unknown default:
+                    break
+                }
+            }
+            
+        @unknown default:
+            break
         }
+        
+        
+    }
+    func openPhotos(){
+        DispatchQueue.main.async {
+            if UIImagePickerController.isSourceTypeAvailable(.photoLibrary) {
+                let picker = UIImagePickerController()
+                picker.sourceType = .photoLibrary
+                picker.mediaTypes = ["public.image", "public.movie"]
+                picker.delegate = self
+                picker.allowsEditing = true
+                self.present(picker, animated: true)
+            }
+        }
+    }
     // MARK: - UIImagePickerController Delegate (For Camera)
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
         if let image = info[.originalImage] as? UIImage {
@@ -485,86 +554,11 @@ extension ConfirmDeliveryVC:UIImagePickerControllerDelegate, UINavigationControl
         }
         picker.dismiss(animated: true)
     }
-    // MARK: - PHPickerViewController Delegate (For Library)
-    func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
-        picker.dismiss(animated: true)
-        guard let item = results.first?.itemProvider else { return }
-        
-        if item.canLoadObject(ofClass: UIImage.self) {
-            item.loadObject(ofClass: UIImage.self) { object, error in
-                if let image = object as? UIImage, let imageURL = self.saveImageToDocuments(image: image) {
-                    DispatchQueue.main.async {
-                        LoaderView.shared.showLoader(in: self.view)
-                    }
-                    self.uploadMediaToS3(fileURL: imageURL) { result in
-                        switch result {
-                        case .success(let url):
-                            print("Image uploaded to S3: \(url)")
-                            debugPrint(url, "awsS3ImageUrl")
-                            let mediaItem = MediaItem(type: .image, url: url, thumbnail: nil)
-                            self.mediaItems.append(mediaItem)
-                            self.mediaCountLbl.text = "\(self.mediaItems.count)/10"
-                            self.imageListCV.reloadData()
-                            LoaderView.shared.hideLoader()
-                            if self.mediaItems.count > 0 {
-                                self.uploadImageBgView.isHidden = true
-                                self.imageListCV.isHidden = false
-                            } else {
-                                self.uploadImageBgView.isHidden = false
-                                self.imageListCV.isHidden = true
-                            }
-                        case .failure(let error):
-                            LoaderView.shared.hideLoader()
-                            print("Upload failed: \(error.localizedDescription)")
-                        }
-                    }
-                }
-            }
-        } else if item.hasItemConformingToTypeIdentifier("public.movie") {
-            item.loadFileRepresentation(forTypeIdentifier: "public.movie") { url, error in
-                guard let url = url else { return }
-                DispatchQueue.main.async {
-                    LoaderView.shared.showLoader(in: self.view)
-                }
-                var thumbnailImage: UIImage? = nil
-                self.generateThumbnail(from: url) { thumbnail in
-                    if let thumbnail = thumbnail {
-                        DispatchQueue.main.async {
-                            thumbnailImage = thumbnail // Set thumbnail to UIImageView
-                        }
-                    }
-                }
-                self.uploadMediaToS3(fileURL: url) { result in
-                    switch result {
-                    case .success(let url):
-                        print("Video uploaded to S3: \(url)")
-                        debugPrint(url, "awsS3ImageUrl")
-                       
-                        let mediaItem = MediaItem(type: .video, url: url, thumbnail: thumbnailImage)
-                        self.mediaItems.append(mediaItem)
-                        self.mediaCountLbl.text = "\(self.mediaItems.count)/10"
-                        self.imageListCV.reloadData()
-                        LoaderView.shared.hideLoader()
-                        if self.mediaItems.count > 0 {
-                            self.uploadImageBgView.isHidden = true
-                            self.imageListCV.isHidden = false
-                        } else {
-                            self.uploadImageBgView.isHidden = false
-                            self.imageListCV.isHidden = true
-                        }
-                    case .failure(let error):
-                        LoaderView.shared.hideLoader()
-                        print("Upload failed: \(error.localizedDescription)")
-                    }
-                }
-            }
-        }
-    }
     func saveImageToDocuments(image: UIImage) -> URL? {
         guard let data = image.jpegData(compressionQuality: 1.0) else { return nil }
         let fileName = UUID().uuidString + ".jpg"
         let fileURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent(fileName)
-
+        
         do {
             try data.write(to: fileURL)
             return fileURL
@@ -573,29 +567,29 @@ extension ConfirmDeliveryVC:UIImagePickerControllerDelegate, UINavigationControl
             return nil
         }
     }
-//    func saveVideoToDocuments(videoURL: URL) -> URL {
-//        let fileName = UUID().uuidString + ".mov"
-//        let fileURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent(fileName)
-//
-//        do {
-//            try FileManager.default.copyItem(at: videoURL, to: fileURL)
-//            return fileURL
-//        } catch {
-//            print("Error saving video: \(error)")
-//            return videoURL
-//        }
-//    }
+    //    func saveVideoToDocuments(videoURL: URL) -> URL {
+    //        let fileName = UUID().uuidString + ".mov"
+    //        let fileURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent(fileName)
+    //
+    //        do {
+    //            try FileManager.default.copyItem(at: videoURL, to: fileURL)
+    //            return fileURL
+    //        } catch {
+    //            print("Error saving video: \(error)")
+    //            return videoURL
+    //        }
+    //    }
     // MARK: - Cancel Selection
-        func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
-            picker.dismiss(animated: true)
-        }
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        picker.dismiss(animated: true)
+    }
 }
 // MARK: - Uploade Server Methods
 extension ConfirmDeliveryVC {
     func uploadMediaToS3(fileURL: URL, completion: @escaping (Result<String, Error>) -> Void) {
         let fileName = UUID().uuidString + "." + fileURL.pathExtension
         let s3Key = "\(fileName)" // Change folder if needed
-
+        
         let expression = AWSS3TransferUtilityUploadExpression()
         expression.progressBlock = { _, progress in
             print("Upload Progress: \(progress.fractionCompleted * 100)%")
@@ -616,21 +610,21 @@ extension ConfirmDeliveryVC {
     }
     func convertMovToMp4(sourceURL: URL, completion: @escaping (URL?) -> Void) {
         let avAsset = AVURLAsset(url: sourceURL)
-
+        
         // Set output file URL
         let fileName = UUID().uuidString + ".mp4"
         let exportURL = FileManager.default.temporaryDirectory.appendingPathComponent(fileName)
-
+        
         // Set export session
         guard let exportSession = AVAssetExportSession(asset: avAsset, presetName: AVAssetExportPresetHighestQuality) else {
             completion(nil)
             return
         }
-
+        
         exportSession.outputURL = exportURL
         exportSession.outputFileType = .mp4
         exportSession.shouldOptimizeForNetworkUse = true
-
+        
         exportSession.exportAsynchronously {
             if exportSession.status == .completed {
                 completion(exportURL)
@@ -644,7 +638,7 @@ extension ConfirmDeliveryVC {
         let asset = AVAsset(url: videoURL)
         let imageGenerator = AVAssetImageGenerator(asset: asset)
         imageGenerator.appliesPreferredTrackTransform = true // Ensures correct orientation
-
+        
         let time = CMTime(seconds: 1, preferredTimescale: 600) // Capture frame at 1 second
         imageGenerator.generateCGImagesAsynchronously(forTimes: [NSValue(time: time)]) { _, cgImage, _, _, error in
             if let cgImage = cgImage {

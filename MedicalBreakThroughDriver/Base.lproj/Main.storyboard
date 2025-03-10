@@ -139,7 +139,7 @@
                                             <action selector="signInBtnAct:" destination="MBE-Yx-Uj8" eventType="touchUpInside" id="dpy-bW-L1O"/>
                                         </connections>
                                     </button>
-                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="sVV-yE-22v">
+                                    <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="sVV-yE-22v">
                                         <rect key="frame" x="16" y="222" width="342" height="30"/>
                                         <subviews>
                                             <stackView opaque="NO" contentMode="scaleToFill" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="gA2-BU-y95">

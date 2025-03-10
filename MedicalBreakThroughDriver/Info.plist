@@ -3,9 +3,9 @@
 <plist version="1.0">
 <dict>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>We need your location to provide better service.</string>
+	<string>We use your location to provide real-time navigation assistance, guiding you to the customer&apos;s address efficiently.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>We need your location to provide better service.</string>
+	<string>We use your location to provide real-time navigation assistance, guiding you to the customer&apos;s address efficiently.</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Poppins-Regular.ttf</string>
