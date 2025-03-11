@@ -43,27 +43,15 @@ class HomeViewController: UIViewController {
     var selectedIndex : Int?
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Check if we need to request location again
-        let shouldRequest = UserDefaults.standard.bool(forKey: "RequestLocationOnHomePage")
-        if shouldRequest {
-            UserDefaults.standard.set(false, forKey: "RequestLocationOnHomePage") // Reset flag
-            LocationManager.shared.requestLocationOnHomePage { coordinate in
-                if let coordinate = coordinate {
-                    print("Latitude: \(coordinate.latitude), Longitude: \(coordinate.longitude)")
-                    PersistenceStorage.sharedInstance.currentLocationCoordinates = coordinate
-                } else {
-                    print("Location access denied")
-                }
-            }
-        }
-
-        
         self.titleLbl.text = topTitle
         setupTableView()
         debugPrint(PersistenceStorage.sharedInstance.loginResponseData?.accessToken ?? "", "accessToken")
         self.notesPoupViewSetup()
-       
-        orderTypeSetup()
+        LocationManager.shared.onLocationAuthorized = { latitude, longitude in
+            debugPrint("Latitude: \(latitude), Longitude: \(longitude)")
+            self.orderTypeSetup() // Only call API when location is granted
+        }
+        LocationManager.shared.requestLocationPermission()
     }
     override func viewWillAppear(_ animated: Bool) {
         self.notesPopupView.isHidden = true

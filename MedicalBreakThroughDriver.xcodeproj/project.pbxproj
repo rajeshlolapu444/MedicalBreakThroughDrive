@@ -224,7 +224,7 @@
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Use your microphone to upload videos as proof of delivery status.";
 				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "We need access to save captured media to your photo library.";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "We access your Photo Library to allow you to upload photos or videos as proof of delivery status.";
-				INFOPLIST_KEY_NSUserTrackingUsageDescription = "We use your data to provide personalized ads and a better experience.";
+				INFOPLIST_KEY_NSUserTrackingUsageDescription = "Your data will be used to monitor the app and ensure it functions smoothly without any glitches.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
@@ -263,7 +263,7 @@
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Use your microphone to upload videos as proof of delivery status.";
 				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "We need access to save captured media to your photo library.";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "We access your Photo Library to allow you to upload photos or videos as proof of delivery status.";
-				INFOPLIST_KEY_NSUserTrackingUsageDescription = "We use your data to provide personalized ads and a better experience.";
+				INFOPLIST_KEY_NSUserTrackingUsageDescription = "Your data will be used to monitor the app and ensure it functions smoothly without any glitches.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
