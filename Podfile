@@ -10,5 +10,8 @@ pod 'IQKeyboardManagerSwift'
 pod 'AWSS3'
 pod 'SDWebImage'
 pod 'SROTPView'
+# Add Firebase Crashlytics
+  pod 'Firebase/Core'
+  pod 'Firebase/Crashlytics'
 
 end

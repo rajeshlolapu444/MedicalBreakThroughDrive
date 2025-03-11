@@ -9,6 +9,7 @@ import UIKit
 import IQKeyboardManagerSwift
 import AWSS3
 import AWSCore
+import Firebase
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -17,6 +18,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        FirebaseApp.configure()
         initializeS3()
         IQKeyboardManager.shared.isEnabled = true
         IQKeyboardManager.shared.enableAutoToolbar = true

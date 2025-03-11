@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		707F61B72D80425D00660FFC /* FirebaseCrashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 70EC578E2D803AA300FC487C /* FirebaseCrashlytics.framework */; };
+		70EC561E2D80313A00FC487C /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 70EC561D2D80313A00FC487C /* GoogleService-Info.plist */; };
 		D548BFB6B099DC774C798DB8 /* Pods_MedicalBreakThroughDriver.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6C26A7544C8E63D10B9255ED /* Pods_MedicalBreakThroughDriver.framework */; };
 /* End PBXBuildFile section */
 
@@ -15,6 +17,8 @@
 		684D54E5E0B9350F79734AAB /* Pods-MedicalBreakThroughDriver.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MedicalBreakThroughDriver.release.xcconfig"; path = "Target Support Files/Pods-MedicalBreakThroughDriver/Pods-MedicalBreakThroughDriver.release.xcconfig"; sourceTree = "<group>"; };
 		6C26A7544C8E63D10B9255ED /* Pods_MedicalBreakThroughDriver.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MedicalBreakThroughDriver.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		709DEF792D4A22AC0058D3BD /* MedicalBreakThroughDriver.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MedicalBreakThroughDriver.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		70EC561D2D80313A00FC487C /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		70EC578E2D803AA300FC487C /* FirebaseCrashlytics.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = FirebaseCrashlytics.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -44,6 +48,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D548BFB6B099DC774C798DB8 /* Pods_MedicalBreakThroughDriver.framework in Frameworks */,
+				707F61B72D80425D00660FFC /* FirebaseCrashlytics.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -62,6 +67,7 @@
 		640F4E06101E893DB2484777 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				70EC578E2D803AA300FC487C /* FirebaseCrashlytics.framework */,
 				6C26A7544C8E63D10B9255ED /* Pods_MedicalBreakThroughDriver.framework */,
 			);
 			name = Frameworks;
@@ -70,6 +76,7 @@
 		709DEF702D4A22AC0058D3BD = {
 			isa = PBXGroup;
 			children = (
+				70EC561D2D80313A00FC487C /* GoogleService-Info.plist */,
 				709DEF7B2D4A22AC0058D3BD /* MedicalBreakThroughDriver */,
 				709DEF7A2D4A22AC0058D3BD /* Products */,
 				3DA8DB4E321A142561A37C89 /* Pods */,
@@ -97,6 +104,7 @@
 				709DEF762D4A22AC0058D3BD /* Frameworks */,
 				709DEF772D4A22AC0058D3BD /* Resources */,
 				125C77A23620028EF5044C74 /* [CP] Embed Pods Frameworks */,
+				70EC578D2D80383C00FC487C /* Firebase Crashlytics Run Script */,
 			);
 			buildRules = (
 			);
@@ -149,6 +157,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				70EC561E2D80313A00FC487C /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -194,6 +203,30 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
+		70EC578D2D80383C00FC487C /* Firebase Crashlytics Run Script */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}",
+				"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Resources/DWARF/${PRODUCT_NAME}",
+				"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Info.plist",
+				"$(TARGET_BUILD_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/GoogleService-Info.plist",
+				"$(TARGET_BUILD_DIR)/$(EXECUTABLE_PATH)",
+				"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Resources/DWARF/${PRODUCT_NAME}.debug.dylib",
+			);
+			name = "Firebase Crashlytics Run Script";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\n\"${PODS_ROOT}/FirebaseCrashlytics/run\"\n";
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -215,6 +248,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 3HG54YWY75;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = MedicalBreakThroughDriver/Info.plist;

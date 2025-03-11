@@ -7,7 +7,15 @@
 		<key>MedicalBreakThroughDriver.xcscheme_^#shared#^_</key>
 		<dict>
 			<key>orderHint</key>
-			<integer>24</integer>
+			<integer>49</integer>
+		</dict>
+	</dict>
+	<key>SuppressBuildableAutocreation</key>
+	<dict>
+		<key>709DEF782D4A22AC0058D3BD</key>
+		<dict>
+			<key>primary</key>
+			<true/>
 		</dict>
 	</dict>
 </dict>
