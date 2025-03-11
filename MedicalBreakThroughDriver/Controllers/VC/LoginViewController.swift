@@ -83,10 +83,6 @@ class LoginViewController: UIViewController {
         }
     }
     
-    @IBAction func signupBtnAct(_ sender: UIButton) {
-        let vc = SignupViewController()
-        self.navigationController?.pushViewController(vc, animated: true)
-    }
     @IBAction func forgotPasswordBtnAct(_ sender: UIButton) {
         let vc = ForgotPasswordViewController()
         vc.emailStr = self.emailTF?.text ?? ""

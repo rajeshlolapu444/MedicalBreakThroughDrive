@@ -139,50 +139,11 @@
                                             <action selector="signInBtnAct:" destination="MBE-Yx-Uj8" eventType="touchUpInside" id="dpy-bW-L1O"/>
                                         </connections>
                                     </button>
-                                    <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="sVV-yE-22v">
-                                        <rect key="frame" x="16" y="222" width="342" height="30"/>
-                                        <subviews>
-                                            <stackView opaque="NO" contentMode="scaleToFill" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="gA2-BU-y95">
-                                                <rect key="frame" x="58.666666666666671" y="0.0" width="224.66666666666663" height="30"/>
-                                                <subviews>
-                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Dont have an account?" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Fre-bq-ZH0">
-                                                        <rect key="frame" x="0.0" y="0.0" width="165.66666666666666" height="30"/>
-                                                        <fontDescription key="fontDescription" type="system" pointSize="16"/>
-                                                        <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                        <nil key="highlightedColor"/>
-                                                    </label>
-                                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Qzk-oO-xP6">
-                                                        <rect key="frame" x="170.66666666666663" y="0.0" width="54" height="30"/>
-                                                        <constraints>
-                                                            <constraint firstAttribute="height" constant="30" id="MqV-9l-Srv"/>
-                                                        </constraints>
-                                                        <fontDescription key="fontDescription" name="Poppins-SemiBold" family="Poppins" pointSize="14"/>
-                                                        <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
-                                                        <state key="normal" title="Sign up">
-                                                            <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                        </state>
-                                                        <connections>
-                                                            <action selector="signupBtnAct:" destination="MBE-Yx-Uj8" eventType="touchUpInside" id="ace-aq-d3R"/>
-                                                        </connections>
-                                                    </button>
-                                                </subviews>
-                                            </stackView>
-                                        </subviews>
-                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                        <constraints>
-                                            <constraint firstItem="gA2-BU-y95" firstAttribute="centerX" secondItem="sVV-yE-22v" secondAttribute="centerX" id="R8b-dY-o1z"/>
-                                            <constraint firstItem="gA2-BU-y95" firstAttribute="top" secondItem="sVV-yE-22v" secondAttribute="top" id="b8L-1H-aQv"/>
-                                            <constraint firstAttribute="bottom" secondItem="gA2-BU-y95" secondAttribute="bottom" id="dP8-OF-DF2"/>
-                                            <constraint firstAttribute="height" constant="30" id="kAy-ro-fzn"/>
-                                        </constraints>
-                                    </view>
                                 </subviews>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
-                                    <constraint firstAttribute="trailing" secondItem="sVV-yE-22v" secondAttribute="trailing" constant="16" id="6a2-B2-O1o"/>
                                     <constraint firstItem="KGP-kv-BWQ" firstAttribute="top" secondItem="yg1-Qx-mwZ" secondAttribute="top" constant="20" id="EVB-0N-MS5"/>
                                     <constraint firstItem="KGP-kv-BWQ" firstAttribute="centerX" secondItem="yg1-Qx-mwZ" secondAttribute="centerX" id="Gbr-Np-aNw"/>
-                                    <constraint firstItem="sVV-yE-22v" firstAttribute="top" secondItem="NRX-S9-CSp" secondAttribute="bottom" constant="2" id="JIj-Dw-gi3"/>
                                     <constraint firstAttribute="trailing" secondItem="KGP-kv-BWQ" secondAttribute="trailing" constant="10" id="JUV-cB-8Ja"/>
                                     <constraint firstItem="NRX-S9-CSp" firstAttribute="leading" secondItem="yg1-Qx-mwZ" secondAttribute="leading" constant="16" id="Nsa-Ae-KOa"/>
                                     <constraint firstAttribute="height" constant="250" id="Qw2-0s-752"/>
@@ -190,7 +151,6 @@
                                     <constraint firstItem="NRX-S9-CSp" firstAttribute="top" secondItem="KGP-kv-BWQ" secondAttribute="bottom" constant="20" id="bLE-fU-WZE"/>
                                     <constraint firstItem="NRX-S9-CSp" firstAttribute="centerX" secondItem="yg1-Qx-mwZ" secondAttribute="centerX" id="l4G-1Q-Atm"/>
                                     <constraint firstItem="KGP-kv-BWQ" firstAttribute="leading" secondItem="yg1-Qx-mwZ" secondAttribute="leading" constant="10" id="nue-57-K5J"/>
-                                    <constraint firstItem="sVV-yE-22v" firstAttribute="leading" secondItem="yg1-Qx-mwZ" secondAttribute="leading" constant="16" id="sMb-bB-a6P"/>
                                 </constraints>
                             </view>
                         </subviews>
