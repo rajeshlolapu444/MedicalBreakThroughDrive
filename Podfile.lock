@@ -2,10 +2,6 @@ PODS:
   - AWSCore (2.40.1)
   - AWSS3 (2.40.1):
     - AWSCore (= 2.40.1)
-  - GoogleMaps (9.3.0):
-    - GoogleMaps/Maps (= 9.3.0)
-  - GoogleMaps/Maps (9.3.0)
-  - GooglePlaces (9.3.0)
   - IQKeyboardCore (1.0.5)
   - IQKeyboardManagerSwift (8.0.0):
     - IQKeyboardManagerSwift/Appearance (= 8.0.0)
@@ -53,8 +49,6 @@ PODS:
 
 DEPENDENCIES:
   - AWSS3
-  - GoogleMaps
-  - GooglePlaces
   - IQKeyboardManagerSwift
   - SDWebImage
   - SROTPView
@@ -63,8 +57,6 @@ SPEC REPOS:
   trunk:
     - AWSCore
     - AWSS3
-    - GoogleMaps
-    - GooglePlaces
     - IQKeyboardCore
     - IQKeyboardManagerSwift
     - IQKeyboardNotification
@@ -79,8 +71,6 @@ SPEC REPOS:
 SPEC CHECKSUMS:
   AWSCore: 29c85b2be07489b459cc17060b6354e9ba0f96a0
   AWSS3: 29e7d0e5d77af1ce97c91424d7b86aa1b0bf69b6
-  GoogleMaps: b58e9627004f47043897eeae830c3ef023678f3b
-  GooglePlaces: 310d8c240eb4bf7aaeecec0de71fe75d086dbf4a
   IQKeyboardCore: 28c8bf3bcd8ba5aa1570b318cbc4da94b861711e
   IQKeyboardManagerSwift: 0c6fbbaa2e60739e48d7cf59f25661471a7a3a65
   IQKeyboardNotification: d7382c4466c5a5adef92c7452ebf861b36050088
@@ -92,6 +82,6 @@ SPEC CHECKSUMS:
   SDWebImage: 73c6079366fea25fa4bb9640d5fb58f0893facd8
   SROTPView: 74364a9142b246935460fbcd8d5f57e6fdbfa4ef
 
-PODFILE CHECKSUM: c35ab7d94228f7566c299412f2d31b4aaf905031
+PODFILE CHECKSUM: 472bd63ce7bf15da23b8d35a9159214eb2127af6
 
 COCOAPODS: 1.16.2

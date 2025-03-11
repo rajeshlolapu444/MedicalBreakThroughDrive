@@ -7,8 +7,6 @@ target 'MedicalBreakThroughDriver' do
 
   # Pods for MedicalBreakThroughDriver
 pod 'IQKeyboardManagerSwift'
-pod 'GoogleMaps'
-pod 'GooglePlaces'
 pod 'AWSS3'
 pod 'SDWebImage'
 pod 'SROTPView'

@@ -97,7 +97,6 @@
 				709DEF762D4A22AC0058D3BD /* Frameworks */,
 				709DEF772D4A22AC0058D3BD /* Resources */,
 				125C77A23620028EF5044C74 /* [CP] Embed Pods Frameworks */,
-				7DE62D859723772100190FCA /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -195,23 +194,6 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		7DE62D859723772100190FCA /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-MedicalBreakThroughDriver/Pods-MedicalBreakThroughDriver-resources-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Copy Pods Resources";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-MedicalBreakThroughDriver/Pods-MedicalBreakThroughDriver-resources-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-MedicalBreakThroughDriver/Pods-MedicalBreakThroughDriver-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -242,6 +224,7 @@
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Use your microphone to upload videos as proof of delivery status.";
 				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "We need access to save captured media to your photo library.";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "We access your Photo Library to allow you to upload photos or videos as proof of delivery status.";
+				INFOPLIST_KEY_NSUserTrackingUsageDescription = "We use your data to provide personalized ads and a better experience.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
@@ -280,6 +263,7 @@
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Use your microphone to upload videos as proof of delivery status.";
 				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "We need access to save captured media to your photo library.";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "We access your Photo Library to allow you to upload photos or videos as proof of delivery status.";
+				INFOPLIST_KEY_NSUserTrackingUsageDescription = "We use your data to provide personalized ads and a better experience.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
