@@ -164,7 +164,7 @@ class ConfirmDeliveryVC: UIViewController {
     }
     
     @IBAction func uploadImageAndVideoBtnAct(_ sender: UIButton) {
-        self.mediaBtnTapped()
+        self.requestTrackingPermission()
     }
     @IBAction func submitBtnAct(_ sender: UIButton) {
         switch deliveryStatus {
@@ -234,7 +234,7 @@ class ConfirmDeliveryVC: UIViewController {
             }
         }
     }
-    func mediaBtnTapped(){
+    @objc func mediaBtnTapped(){
         let alertView = UIAlertController(title: "Please choose one", message: nil, preferredStyle: .actionSheet)
         let cameraAction: UIAlertAction = UIAlertAction(title: "Camera", style: .default) { action -> Void in
             AVCaptureDevice.requestAccess(for: AVMediaType.video) { response in
@@ -244,7 +244,7 @@ class ConfirmDeliveryVC: UIViewController {
                     }
                 } else {
                     DispatchQueue.main.async {
-                        let alertView = UIAlertController(title: "Purpose of camera Access?", message: "To capture  a photo/video and upload proof of delivery, this app requires access to your camera. Please enable permissions in your device settings to continue.", preferredStyle: .alert)
+                        let alertView = UIAlertController(title: "Purpose of Camera Access?", message: "To capture  a photo/video and upload proof of delivery, this app requires access to your camera. Please enable permissions in your device settings to continue.", preferredStyle: .alert)
                         let cancelAction: UIAlertAction = UIAlertAction(title: "Ok", style: .cancel) { action -> Void in
                             alertView.dismiss(animated: true, completion: nil)
                         }
@@ -327,7 +327,7 @@ extension ConfirmDeliveryVC: UICollectionViewDelegate, UICollectionViewDataSourc
             }
         }
         cell.previewImg.isHidden = !cell.takePhotoBtn.isHidden
-        cell.takePhotoBtn.addTarget(self, action: #selector(requestTrackingPermission), for: .touchUpInside)
+        cell.takePhotoBtn.addTarget(self, action: #selector(mediaBtnTapped), for: .touchUpInside)
         cell.deleteImgBtn.tag = indexPath.row
         cell.deleteImgBtn.addTarget(self, action: #selector(deleteImage), for: .touchUpInside)
         return cell
@@ -394,13 +394,63 @@ extension ConfirmDeliveryVC:UIImagePickerControllerDelegate, UINavigationControl
     // MARK: - Open Camera
     func openCamera() {
         guard UIImagePickerController.isSourceTypeAvailable(.camera) else { return }
-        let picker = UIImagePickerController()
-        picker.sourceType = .camera
-        picker.mediaTypes = ["public.image", "public.movie"]
-        picker.delegate = self
-        picker.videoQuality = .typeHigh
-        picker.allowsEditing = true
-        present(picker, animated: true)
+           
+           let picker = UIImagePickerController()
+           picker.sourceType = .camera
+           picker.mediaTypes = ["public.image", "public.movie"]
+           picker.delegate = self
+           picker.videoQuality = .typeHigh
+           picker.allowsEditing = true
+
+           let permissionStatus = AVAudioSession.sharedInstance().recordPermission
+           
+           if permissionStatus == .denied {
+               // If microphone permission is already denied, show alert
+               self.showMicrophonePermissionAlert()
+               return
+           }
+           
+           if permissionStatus == .undetermined {
+               // Ask for microphone permission before opening the camera
+               AVAudioSession.sharedInstance().requestRecordPermission { granted in
+                   DispatchQueue.main.async {
+                       if granted {
+                           // Open camera if permission granted
+                           self.present(picker, animated: true)
+                       } else {
+                           // If user taps "Don't Allow", show alert & dismiss camera
+                           self.showMicrophonePermissionAlert()
+                       }
+                   }
+               }
+               return
+           }
+           
+           // If microphone permission is already granted, open camera
+           present(picker, animated: true)
+    }
+    // MARK: - Show Alert for Microphone Permission
+    func showMicrophonePermissionAlert() {
+        let alert = UIAlertController(
+            title: "Purpose of Microphone Access?",
+            message: "To capture the video with audio and upload as a proof of delivery, this app requires access to your microphone. Please enable permissions in your device settings to continue.",
+            preferredStyle: .alert
+        )
+        
+        alert.addAction(UIAlertAction(title: "OK", style: .cancel, handler: { _ in
+            // Dismiss camera immediately if user denied microphone permission
+            self.dismiss(animated: true)
+        }))
+        
+//        alert.addAction(UIAlertAction(title: "Settings", style: .default, handler: { _ in
+//            if let settingsURL = URL(string: UIApplication.openSettingsURLString) {
+//                UIApplication.shared.open(settingsURL)
+//            }
+//        }))
+        
+        DispatchQueue.main.async {
+            self.present(alert, animated: true)
+        }
     }
     // MARK: - Open Photo Library
     func galleryOpen(){
@@ -411,7 +461,7 @@ extension ConfirmDeliveryVC:UIImagePickerControllerDelegate, UINavigationControl
             break
         case .denied, .restricted :
             DispatchQueue.main.async {
-                let alertView = UIAlertController(title: "Purpose of photo library Access?", message: "To upload proof of delivery which is already available on your device, this app requires access to your photo library. Please enable permissions in your device settings to continue.", preferredStyle: .alert)
+                let alertView = UIAlertController(title: "Purpose of Photo library Access?", message: "To upload proof of delivery which is already available on your device, this app requires access to your photo library. Please enable permissions in your device settings to continue.", preferredStyle: .alert)
                 let cancelAction: UIAlertAction = UIAlertAction(title: "OK", style: .cancel) { action -> Void in
                     alertView.dismiss(animated: true, completion: nil)
                 }
@@ -654,7 +704,7 @@ extension ConfirmDeliveryVC {
 }
 extension ConfirmDeliveryVC {
    
-    @objc func requestTrackingPermission() {
+    func requestTrackingPermission() {
             ATTrackingManager.requestTrackingAuthorization { status in
                 switch status {
                 case .authorized:
@@ -672,7 +722,7 @@ extension ConfirmDeliveryVC {
         }
     func showTrackingDeniedAlert() {
         let alert = UIAlertController(
-            title: "Purpose of tracking permission Access?",
+            title: "Purpose of Tracking permission Access?",
             message: "To ensure a smooth app experience, we rely on app tracking to collect essential crash reports and performance data. This helps us maintain and improve the app regularly. Please enable tracking in your device settings to support ongoing enhancements.",
             preferredStyle: .alert
         )

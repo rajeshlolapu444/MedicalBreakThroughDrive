@@ -252,7 +252,7 @@ extension ProfileViewController:UIImagePickerControllerDelegate, UINavigationCon
             break
         case .denied, .restricted :
             DispatchQueue.main.async {
-                let alertView = UIAlertController(title: "Purpose of photo library Access?", message: "To upload proof of delivery which is already available on your device, this app requires access to your photo library. Please enable permissions in your device settings to continue.", preferredStyle: .alert)
+                let alertView = UIAlertController(title: "Purpose of Photo library Access?", message: "To upload proof of delivery which is already available on your device, this app requires access to your photo library. Please enable permissions in your device settings to continue.", preferredStyle: .alert)
                 let cancelAction: UIAlertAction = UIAlertAction(title: "OK", style: .cancel) { action -> Void in
                     alertView.dismiss(animated: true, completion: nil)
                 }
@@ -290,7 +290,7 @@ extension ProfileViewController:UIImagePickerControllerDelegate, UINavigationCon
                     break
                 case .denied, .restricted:
                     DispatchQueue.main.async {
-                        let alertView = UIAlertController(title: "Purpose of photo library Access?", message: "To upload proof of delivery which is already available on your device, this app requires access to your photo library. Please enable permissions in your device settings to continue.", preferredStyle: .alert)
+                        let alertView = UIAlertController(title: "Purpose of Photo library Access?", message: "To upload proof of delivery which is already available on your device, this app requires access to your photo library. Please enable permissions in your device settings to continue.", preferredStyle: .alert)
                         let cancelAction: UIAlertAction = UIAlertAction(title: "OK", style: .cancel) { action -> Void in
                             alertView.dismiss(animated: true, completion: nil)
                         }
@@ -419,7 +419,7 @@ extension ProfileViewController {
         }
     func showTrackingDeniedAlert() {
         let alert = UIAlertController(
-            title: "Purpose of tracking permission Access?",
+            title: "Purpose of Tracking permission Access?",
             message: "To ensure a smooth app experience, we rely on app tracking to collect essential crash reports and performance data. This helps us maintain and improve the app regularly. Please enable tracking in your device settings to support ongoing enhancements.",
             preferredStyle: .alert
         )
