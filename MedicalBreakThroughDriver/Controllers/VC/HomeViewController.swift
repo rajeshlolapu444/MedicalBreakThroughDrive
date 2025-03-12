@@ -47,11 +47,7 @@ class HomeViewController: UIViewController {
         setupTableView()
         debugPrint(PersistenceStorage.sharedInstance.loginResponseData?.accessToken ?? "", "accessToken")
         self.notesPoupViewSetup()
-        LocationManager.shared.onLocationAuthorized = { latitude, longitude in
-            debugPrint("Latitude: \(latitude), Longitude: \(longitude)")
-            self.orderTypeSetup() // Only call API when location is granted
-        }
-        LocationManager.shared.requestLocationPermission()
+        self.orderTypeSetup() // Only call API when location is granted
     }
     override func viewWillAppear(_ animated: Bool) {
         self.notesPopupView.isHidden = true
@@ -94,36 +90,40 @@ class HomeViewController: UIViewController {
     }
 
     func fetchPastOrders(startDate: String?, endDate: String?) {
-        guard !isFetching else { return }
-        isFetching = true
-        LoaderView.shared.showLoader(in: self.view)
-        HomeViewModel.shared.getPastOrdersListAPI(start_date: startDate, end_date: endDate, page: currentPage) { newOrders, status, msg in
-            DispatchQueue.main.async {
-                if status, let newOrders = newOrders {
-                    if newOrders.isEmpty {
+        LocationManager.shared.onLocationAuthorized = { latitude, longitude in
+            guard !self.isFetching else { return }
+            self.isFetching = true
+            LoaderView.shared.showLoader(in: self.view)
+            HomeViewModel.shared.getPastOrdersListAPI(start_date: startDate, end_date: endDate, page: self.currentPage) { newOrders, status, msg in
+                DispatchQueue.main.async {
+                    if status, let newOrders = newOrders {
+                        if newOrders.isEmpty {
+                            self.hasMoreData = false
+                            LoaderView.shared.hideLoader()
+                        } else {
+                            self.ordersArray.append(contentsOf: newOrders)
+                            self.currentPage += 1
+                            LoaderView.shared.hideLoader()
+                        }
+                    } else {
                         self.hasMoreData = false
                         LoaderView.shared.hideLoader()
-                    } else {
-                        self.ordersArray.append(contentsOf: newOrders)
-                        self.currentPage += 1
-                        LoaderView.shared.hideLoader()
                     }
-                } else {
-                    self.hasMoreData = false
                     LoaderView.shared.hideLoader()
-                }
-                LoaderView.shared.hideLoader()
-                self.isFetching = false
-                self.ordersListTableView.reloadData()
-                if self.ordersArray.count == 0 {
-                    self.noOrdersLbl.isHidden = false
-                } else {
-                    self.noOrdersLbl.isHidden = true
+                    self.isFetching = false
+                    self.ordersListTableView.reloadData()
+                    if self.ordersArray.count == 0 {
+                        self.noOrdersLbl.isHidden = false
+                    } else {
+                        self.noOrdersLbl.isHidden = true
+                    }
                 }
             }
         }
+        LocationManager.shared.requestLocationPermission()
     }
     func fetchActiveOrders(startDate: String?, endDate: String?) {
+        LocationManager.shared.onLocationAuthorized = { latitude, longitude in
             guard !self.isFetching else { return }
             self.isFetching = true
             LoaderView.shared.showLoader(in: self.view)
@@ -152,6 +152,8 @@ class HomeViewController: UIViewController {
                     }
                 }
             }
+        }
+        LocationManager.shared.requestLocationPermission()
     }
 
     @IBAction func backBtnAct(_ sender: UIButton) {

@@ -63,14 +63,17 @@ class LocationManager: NSObject, CLLocationManagerDelegate {
         DispatchQueue.main.async {
             if let topVC = UIApplication.shared.windows.first?.rootViewController {
                 let alert = UIAlertController(
-                    title: "Location Required",
-                    message: "Please enable location access to use this app.",
+                    title: "Purpose of Location Access?",
+                    message: "Location access is required to display active orders, order history, and enable navigation for seamless deliveries. Please enable location permissions in your device settings for an optimized experience.",
                     preferredStyle: .alert
                 )
-                alert.addAction(UIAlertAction(title: "Open Settings", style: .default) { _ in
-                    if let url = URL(string: UIApplication.openSettingsURLString) {
-                        UIApplication.shared.open(url)
-                    }
+//                alert.addAction(UIAlertAction(title: "Open Settings", style: .default) { _ in
+//                    if let url = URL(string: UIApplication.openSettingsURLString) {
+//                        UIApplication.shared.open(url)
+//                    }
+//                })
+                alert.addAction(UIAlertAction(title: "OK", style: .default) { _ in
+                    alert.dismiss(animated: true, completion: nil)
                 })
                 topVC.present(alert, animated: true)
             }

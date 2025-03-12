@@ -62,8 +62,6 @@ class ConfirmDeliveryVC: UIViewController {
             //self.statusSelectionView.layer.borderWidth = 1
         }
         setupCollectionView()
-        self.requestTrackingPermission()
-        
     }
     @IBAction func backBtnAct(_ sender: UIButton) {
         self.navigationController?.popViewController(animated: true)
@@ -236,7 +234,7 @@ class ConfirmDeliveryVC: UIViewController {
             }
         }
     }
-    @objc func mediaBtnTapped(){
+    func mediaBtnTapped(){
         let alertView = UIAlertController(title: "Please choose one", message: nil, preferredStyle: .actionSheet)
         let cameraAction: UIAlertAction = UIAlertAction(title: "Camera", style: .default) { action -> Void in
             AVCaptureDevice.requestAccess(for: AVMediaType.video) { response in
@@ -246,15 +244,15 @@ class ConfirmDeliveryVC: UIViewController {
                     }
                 } else {
                     DispatchQueue.main.async {
-                        let alertView = UIAlertController(title: "Are you sure?", message: "We appreciate your concern about denying this permission, but it will give you a seamless experience.", preferredStyle: .alert)
-                        let cancelAction: UIAlertAction = UIAlertAction(title: "Allow Later", style: .cancel) { action -> Void in
+                        let alertView = UIAlertController(title: "Purpose of camera Access?", message: "To capture  a photo/video and upload proof of delivery, this app requires access to your camera. Please enable permissions in your device settings to continue.", preferredStyle: .alert)
+                        let cancelAction: UIAlertAction = UIAlertAction(title: "Ok", style: .cancel) { action -> Void in
                             alertView.dismiss(animated: true, completion: nil)
                         }
-                        let allowNowAction: UIAlertAction = UIAlertAction(title: "Allow Now", style: .default) { action -> Void in
-                            UIApplication.shared.open(URL(string:UIApplication.openSettingsURLString)!)
-                        }
+//                        let allowNowAction: UIAlertAction = UIAlertAction(title: "Allow Now", style: .default) { action -> Void in
+//                            UIApplication.shared.open(URL(string:UIApplication.openSettingsURLString)!)
+//                        }
                         alertView.addAction(cancelAction)
-                        alertView.addAction(allowNowAction)
+                       // alertView.addAction(allowNowAction)
                         AppUtils.presentOnRootViewController(alertView)
                         
                     }
@@ -329,7 +327,7 @@ extension ConfirmDeliveryVC: UICollectionViewDelegate, UICollectionViewDataSourc
             }
         }
         cell.previewImg.isHidden = !cell.takePhotoBtn.isHidden
-        cell.takePhotoBtn.addTarget(self, action: #selector(mediaBtnTapped), for: .touchUpInside)
+        cell.takePhotoBtn.addTarget(self, action: #selector(requestTrackingPermission), for: .touchUpInside)
         cell.deleteImgBtn.tag = indexPath.row
         cell.deleteImgBtn.addTarget(self, action: #selector(deleteImage), for: .touchUpInside)
         return cell
@@ -413,15 +411,15 @@ extension ConfirmDeliveryVC:UIImagePickerControllerDelegate, UINavigationControl
             break
         case .denied, .restricted :
             DispatchQueue.main.async {
-                let alertView = UIAlertController(title: "Are you sure?", message: "We appreciate your concern about denying this permission, but it will give you a seamless experience.", preferredStyle: .alert)
-                let cancelAction: UIAlertAction = UIAlertAction(title: "Allow Later", style: .cancel) { action -> Void in
+                let alertView = UIAlertController(title: "Purpose of photo library Access?", message: "To upload proof of delivery which is already available on your device, this app requires access to your photo library. Please enable permissions in your device settings to continue.", preferredStyle: .alert)
+                let cancelAction: UIAlertAction = UIAlertAction(title: "OK", style: .cancel) { action -> Void in
                     alertView.dismiss(animated: true, completion: nil)
                 }
-                let allowNowAction: UIAlertAction = UIAlertAction(title: "Allow Now", style: .default) { action -> Void in
-                    UIApplication.shared.open(URL(string:UIApplication.openSettingsURLString)!)
-                }
+//                let allowNowAction: UIAlertAction = UIAlertAction(title: "Allow Now", style: .default) { action -> Void in
+//                    UIApplication.shared.open(URL(string:UIApplication.openSettingsURLString)!)
+//                }
                 alertView.addAction(cancelAction)
-                alertView.addAction(allowNowAction)
+                //alertView.addAction(allowNowAction)
                 //                let rootVC = UIApplication.shared.windows.filter { $0.isKeyWindow }.first?.rootViewController
                 //                rootVC?.present(alertView, animated: true, completion: nil)
                 AppUtils.presentOnRootViewController(alertView)
@@ -445,14 +443,14 @@ extension ConfirmDeliveryVC:UIImagePickerControllerDelegate, UINavigationControl
                 case .denied, .restricted:
                     DispatchQueue.main.async {
                         let alertView = UIAlertController(title: "Are you sure?", message: "We appreciate your concern about denying this permission, but it will give you a seamless experience.", preferredStyle: .alert)
-                        let cancelAction: UIAlertAction = UIAlertAction(title: "Allow Later", style: .cancel) { action -> Void in
+                        let cancelAction: UIAlertAction = UIAlertAction(title: "OK", style: .cancel) { action -> Void in
                             alertView.dismiss(animated: true, completion: nil)
                         }
-                        let allowNowAction: UIAlertAction = UIAlertAction(title: "Allow Now", style: .default) { action -> Void in
-                            UIApplication.shared.open(URL(string:UIApplication.openSettingsURLString)!)
-                        }
+//                        let allowNowAction: UIAlertAction = UIAlertAction(title: "Allow Now", style: .default) { action -> Void in
+//                            UIApplication.shared.open(URL(string:UIApplication.openSettingsURLString)!)
+//                        }
                         alertView.addAction(cancelAction)
-                        alertView.addAction(allowNowAction)
+                        //alertView.addAction(allowNowAction)
                         AppUtils.presentOnRootViewController(alertView)
                     }
                     break
@@ -655,28 +653,13 @@ extension ConfirmDeliveryVC {
     }
 }
 extension ConfirmDeliveryVC {
-    func showTrackingPermissionPopup() {
-        let alert = UIAlertController(
-            title: "Privacy Notice",
-            message: "We use your data to improve your experience. Please allow tracking.",
-            preferredStyle: .alert
-        )
-
-        alert.addAction(UIAlertAction(title: "Allow", style: .default) { _ in
-            self.requestTrackingPermission()
-        })
-
-        alert.addAction(UIAlertAction(title: "Not Now", style: .cancel, handler: nil))
-
-        if let topController = UIApplication.shared.windows.first?.rootViewController {
-            topController.present(alert, animated: true)
-        }
-    }
-    func requestTrackingPermission() {
+   
+    @objc func requestTrackingPermission() {
             ATTrackingManager.requestTrackingAuthorization { status in
                 switch status {
                 case .authorized:
                     print("Tracking authorized")
+                    self.mediaBtnTapped()
                 case .denied, .restricted, .notDetermined:
                     print("Tracking denied")
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
@@ -689,20 +672,17 @@ extension ConfirmDeliveryVC {
         }
     func showTrackingDeniedAlert() {
         let alert = UIAlertController(
-            title: "Tracking Permission Denied",
-            message: "You have denied tracking permission. If you change your mind, you can enable it in Settings.",
+            title: "Purpose of tracking permission Access?",
+            message: "To ensure a smooth app experience, we rely on app tracking to collect essential crash reports and performance data. This helps us maintain and improve the app regularly. Please enable tracking in your device settings to support ongoing enhancements.",
             preferredStyle: .alert
         )
 
-        alert.addAction(UIAlertAction(title: "Go to Settings", style: .default) { _ in
-            self.openAppSettings()
-        })
+//        alert.addAction(UIAlertAction(title: "Go to Settings", style: .default) { _ in
+//            self.openAppSettings()
+//        })
 
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
-
-        if let topController = UIApplication.shared.windows.first?.rootViewController {
-            topController.present(alert, animated: true)
-        }
+        alert.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
+        AppUtils.presentOnRootViewController(alert)
     }
     func openAppSettings() {
         if let url = URL(string: UIApplication.openSettingsURLString) {

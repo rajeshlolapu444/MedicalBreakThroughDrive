@@ -36,13 +36,12 @@ class ProfileViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.requestTrackingPermission()
         if isProfile {
             profileStackView.isHidden = false
             changePasswordStackView.isHidden = true
             self.titleLbl.text = "Profile"
             self.conditionsForHide(isHide: true)
-            self.profileImgEditBtn.addTarget(self, action: #selector(btnProfileImageTapped), for: .touchUpInside)
+            self.profileImgEditBtn.addTarget(self, action: #selector(requestTrackingPermission), for: .touchUpInside)
             self.updateBtn.addTarget(self, action: #selector(updateBtnAct), for: .touchUpInside)
             self.topEditBtnBgView.isHidden = false
             if PersistenceStorage.sharedInstance.driverProfileData != nil {
@@ -149,7 +148,7 @@ class ProfileViewController: UIViewController {
 }
 
 extension ProfileViewController:UIImagePickerControllerDelegate, UINavigationControllerDelegate {
-    @objc func btnProfileImageTapped(){
+     func btnProfileImageTapped(){
         let alertView = UIAlertController(title: "Please choose one", message: nil, preferredStyle: .actionSheet)
              let cameraAction: UIAlertAction = UIAlertAction(title: "Camera", style: .default) { action -> Void in
                  AVCaptureDevice.requestAccess(for: AVMediaType.video) { response in
@@ -160,26 +159,21 @@ extension ProfileViewController:UIImagePickerControllerDelegate, UINavigationCon
                              picker.mediaTypes = ["public.image"]
                              picker.delegate = self
                              picker.allowsEditing = true
-//                             let rootVC = UIApplication.shared.windows.filter { $0.isKeyWindow }.first?.rootViewController
-//                             rootVC?.present(picker, animated: true)
                              AppUtils.presentOnRootViewController(picker)
 
                          }
                      } else {
                          DispatchQueue.main.async {
-                             let alertView = UIAlertController(title: "Are you sure?", message: "We appreciate your concern about denying this permission, but it will give you a seamless experience.", preferredStyle: .alert)
-                             let cancelAction: UIAlertAction = UIAlertAction(title: "Allow Later", style: .cancel) { action -> Void in
+                             let alertView = UIAlertController(title: "Purpose of Camera Access?", message: "To capture  a photo/video and upload proof of delivery, this app requires access to your camera. Please enable permissions in your device settings to continue.", preferredStyle: .alert)
+                             let cancelAction: UIAlertAction = UIAlertAction(title: "OK", style: .cancel) { action -> Void in
                                  alertView.dismiss(animated: true, completion: nil)
                              }
-                             let allowNowAction: UIAlertAction = UIAlertAction(title: "Allow Now", style: .default) { action -> Void in
-                                 UIApplication.shared.open(URL(string:UIApplication.openSettingsURLString)!)
-                             }
+//                             let allowNowAction: UIAlertAction = UIAlertAction(title: "Allow Now", style: .default) { action -> Void in
+//                                 UIApplication.shared.open(URL(string:UIApplication.openSettingsURLString)!)
+//                             }
                              alertView.addAction(cancelAction)
-                             alertView.addAction(allowNowAction)
-//                             let rootVC = UIApplication.shared.windows.filter { $0.isKeyWindow }.first?.rootViewController
-//                             rootVC?.present(alertView, animated: true, completion: nil)
+                             //alertView.addAction(allowNowAction)
                              AppUtils.presentOnRootViewController(alertView)
-
                          }
                      }
                  }
@@ -194,8 +188,6 @@ extension ProfileViewController:UIImagePickerControllerDelegate, UINavigationCon
              alertView.addAction(cameraAction)
              alertView.addAction(photoLibraryAction)
              alertView.addAction(cancelAction)
-//             let rootVC = UIApplication.shared.windows.filter { $0.isKeyWindow }.first?.rootViewController
-//             rootVC?.present(alertView, animated: true, completion: nil)
         AppUtils.presentOnRootViewController(alertView)
 
     }
@@ -260,15 +252,15 @@ extension ProfileViewController:UIImagePickerControllerDelegate, UINavigationCon
             break
         case .denied, .restricted :
             DispatchQueue.main.async {
-                let alertView = UIAlertController(title: "Are you sure?", message: "We appreciate your concern about denying this permission, but it will give you a seamless experience.", preferredStyle: .alert)
-                let cancelAction: UIAlertAction = UIAlertAction(title: "Allow Later", style: .cancel) { action -> Void in
+                let alertView = UIAlertController(title: "Purpose of photo library Access?", message: "To upload proof of delivery which is already available on your device, this app requires access to your photo library. Please enable permissions in your device settings to continue.", preferredStyle: .alert)
+                let cancelAction: UIAlertAction = UIAlertAction(title: "OK", style: .cancel) { action -> Void in
                     alertView.dismiss(animated: true, completion: nil)
                 }
-                let allowNowAction: UIAlertAction = UIAlertAction(title: "Allow Now", style: .default) { action -> Void in
-                    UIApplication.shared.open(URL(string:UIApplication.openSettingsURLString)!)
-                }
+//                let allowNowAction: UIAlertAction = UIAlertAction(title: "Allow Now", style: .default) { action -> Void in
+//                    UIApplication.shared.open(URL(string:UIApplication.openSettingsURLString)!)
+//                }
                 alertView.addAction(cancelAction)
-                alertView.addAction(allowNowAction)
+               // alertView.addAction(allowNowAction)
 //                let rootVC = UIApplication.shared.windows.filter { $0.isKeyWindow }.first?.rootViewController
 //                rootVC?.present(alertView, animated: true, completion: nil)
                 AppUtils.presentOnRootViewController(alertView)
@@ -298,15 +290,15 @@ extension ProfileViewController:UIImagePickerControllerDelegate, UINavigationCon
                     break
                 case .denied, .restricted:
                     DispatchQueue.main.async {
-                        let alertView = UIAlertController(title: "Are you sure?", message: "We appreciate your concern about denying this permission, but it will give you a seamless experience.", preferredStyle: .alert)
-                        let cancelAction: UIAlertAction = UIAlertAction(title: "Allow Later", style: .cancel) { action -> Void in
+                        let alertView = UIAlertController(title: "Purpose of photo library Access?", message: "To upload proof of delivery which is already available on your device, this app requires access to your photo library. Please enable permissions in your device settings to continue.", preferredStyle: .alert)
+                        let cancelAction: UIAlertAction = UIAlertAction(title: "OK", style: .cancel) { action -> Void in
                             alertView.dismiss(animated: true, completion: nil)
                         }
-                        let allowNowAction: UIAlertAction = UIAlertAction(title: "Allow Now", style: .default) { action -> Void in
-                            UIApplication.shared.open(URL(string:UIApplication.openSettingsURLString)!)
-                        }
+//                        let allowNowAction: UIAlertAction = UIAlertAction(title: "Allow Now", style: .default) { action -> Void in
+//                            UIApplication.shared.open(URL(string:UIApplication.openSettingsURLString)!)
+//                        }
                         alertView.addAction(cancelAction)
-                        alertView.addAction(allowNowAction)
+                       // alertView.addAction(allowNowAction)
 //                        let rootVC = UIApplication.shared.windows.filter { $0.isKeyWindow }.first?.rootViewController
 //                        rootVC?.present(alertView, animated: true, completion: nil)
                         AppUtils.presentOnRootViewController(alertView)
@@ -409,11 +401,12 @@ extension ProfileViewController {
             topController.present(alert, animated: true)
         }
     }
-    func requestTrackingPermission() {
+    @objc func requestTrackingPermission() {
             ATTrackingManager.requestTrackingAuthorization { status in
                 switch status {
                 case .authorized:
                     print("Tracking authorized")
+                    self.btnProfileImageTapped()
                 case .denied, .restricted, .notDetermined:
                     print("Tracking denied")
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
@@ -426,20 +419,16 @@ extension ProfileViewController {
         }
     func showTrackingDeniedAlert() {
         let alert = UIAlertController(
-            title: "Tracking Permission Denied",
-            message: "You have denied tracking permission. If you change your mind, you can enable it in Settings.",
+            title: "Purpose of tracking permission Access?",
+            message: "To ensure a smooth app experience, we rely on app tracking to collect essential crash reports and performance data. This helps us maintain and improve the app regularly. Please enable tracking in your device settings to support ongoing enhancements.",
             preferredStyle: .alert
         )
+//        alert.addAction(UIAlertAction(title: "Go to Settings", style: .default) { _ in
+//            self.openAppSettings()
+//        })
 
-        alert.addAction(UIAlertAction(title: "Go to Settings", style: .default) { _ in
-            self.openAppSettings()
-        })
-
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
-
-        if let topController = UIApplication.shared.windows.first?.rootViewController {
-            topController.present(alert, animated: true)
-        }
+        alert.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
+        AppUtils.presentOnRootViewController(alert)
     }
     func openAppSettings() {
         if let url = URL(string: UIApplication.openSettingsURLString) {
