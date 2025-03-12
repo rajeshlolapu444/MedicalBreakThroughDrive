@@ -60,16 +60,22 @@ class OrderDetailViewController: UIViewController {
     }
     
     @IBAction func startDeliveryBtnAct(_ sender: UIButton) {
-        var destinations = [CLLocationCoordinate2D]()
-        let lat = orderData?.address?.latitude ?? 0.0
-        let longi = orderData?.address?.longitude ?? 0.0
+        let miles = self.orderData?.address?.distance_in_miles ?? ""
+        if miles.isEmpty || miles == "0.00" || miles == "0.0" || miles == "0"{
+            let vc = MAIN.instantiateViewController(withIdentifier: "ConfirmDeliveryVC") as! ConfirmDeliveryVC
+            vc.orderData = orderData
+            self.navigationController?.pushViewController(vc, animated: true)
+        } else {
+            var destinations = [CLLocationCoordinate2D]()
+            let lat = orderData?.address?.latitude ?? 0.0
+            let longi = orderData?.address?.longitude ?? 0.0
             let coordinate = CLLocationCoordinate2D(latitude: lat, longitude:longi)
             destinations.append(coordinate)
-        let vc = MapGoogleViewController()
-        vc.destinations = destinations
-        vc.orderData = self.orderData
-       
-        self.navigationController?.pushViewController(vc, animated: true)
+            let vc = MapGoogleViewController()
+            vc.destinations = destinations
+            vc.orderData = self.orderData
+            self.navigationController?.pushViewController(vc, animated: true)
+        }
     }
     // MARK: - Setup Collection View
     func setupCollectionView() {

@@ -64,16 +64,17 @@ class MyOrdersListTableViewCell: UITableViewCell {
                 self.notesBgView.isHidden = false
             }
         }
-        
-//        let storeLatitude: Double = PersistenceStorage.sharedInstance.storeAddressLatitude ?? 40.730610
-//        let storeLongitude: Double = PersistenceStorage.sharedInstance.storeAddressLongitude ?? -73.935242
-//        let latitude: Double = data.address?.latitude ?? 0
-//        let longitude: Double = data.address?.longitude ?? 0
-//        let miles = HomeViewModel.shared.calculateDistance(lat1: storeLatitude, lon1: storeLongitude, lat2: latitude, lon2: longitude)
-//        self.milesLbl.text = String(format: "%.2f", miles) + " miles"
-        self.milesLbl.text =  (data.address?.distance_in_miles ?? "") + " miles"
-        self.milesBgView.isHidden = !(ordersType == .Active)
-    
+        if ordersType == .Active {
+            let miles = data.address?.distance_in_miles ?? ""
+            if miles.isEmpty || miles == "0.00" || miles == "0.0" || miles == "0"{
+                self.milesBgView.isHidden = true
+            } else {
+                self.milesBgView.isHidden = false
+                self.milesLbl.text =  miles + " miles"
+            }
+        } else {
+            self.milesBgView.isHidden = true
+        }
         if ordersType == .Past {
             if contactBgView.isHidden == true && notesBgView.isHidden == true && milesBgView.isHidden == true{
                 self.threeBgView.isHidden = true
