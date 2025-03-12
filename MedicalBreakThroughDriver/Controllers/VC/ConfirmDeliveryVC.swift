@@ -492,7 +492,7 @@ extension ConfirmDeliveryVC:UIImagePickerControllerDelegate, UINavigationControl
                     break
                 case .denied, .restricted:
                     DispatchQueue.main.async {
-                        let alertView = UIAlertController(title: "Are you sure?", message: "We appreciate your concern about denying this permission, but it will give you a seamless experience.", preferredStyle: .alert)
+                        let alertView = UIAlertController(title: "Purpose of Photo library Access?", message: "To upload profile image and  proof of delivery which is already available on your device, this app requires access to your photo library. Please enable permissions in your device settings to continue.", preferredStyle: .alert)
                         let cancelAction: UIAlertAction = UIAlertAction(title: "OK", style: .cancel) { action -> Void in
                             alertView.dismiss(animated: true, completion: nil)
                         }
