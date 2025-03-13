@@ -44,7 +44,7 @@ class OrderDetailViewController: UIViewController {
         self.startDeliveryBtnStackView.isHidden = orderType == .Past
         self.instructionsStackView.isHidden = orderType == .Past
         self.notesStackView.isHidden = false
-        self.attachmentsStackView.isHidden = orderType == .Active
+        self.attachmentsStackView.isHidden = false
         self.statusStackView.isHidden = orderType == .Active
 
         if let data = orderData {
