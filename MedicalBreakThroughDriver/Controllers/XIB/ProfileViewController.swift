@@ -410,7 +410,7 @@ extension ProfileViewController {
                 case .denied, .restricted, .notDetermined:
                     print("Tracking denied")
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                        self.showTrackingDeniedAlert()
+                       // self.showTrackingDeniedAlert()
                     }
                 @unknown default:
                     print("Unknown status")
