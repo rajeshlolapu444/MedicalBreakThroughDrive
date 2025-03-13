@@ -42,7 +42,9 @@ class MyOrdersListTableViewCell: UITableViewCell {
     func loadData(data: Order,ordersType:OrdersType) {
 
         self.orderIdLbl.text = "#\(data.orderID ?? 0)"
-        self.productNameLbl.text = data.products?.first?.productName
+        var productName = data.products?.first?.productName ?? ""
+        productName = productName.replacingOccurrences(of: "&trade;", with: "")
+        self.productNameLbl.text = productName
         self.customerNameLbl.text = data.customer?.name
         self.addressLbl.text = "\(data.address?.addressLine1 ?? ""), \(data.address?.city ?? ""), \(data.address?.state ?? ""), \(data.address?.country ?? ""), \(data.address?.postalCode ?? "")"
         if let formattedDate = convertDateFormat(dateString: data.orderTracking?.date ?? "", from: "yyyy-MM-dd") {
