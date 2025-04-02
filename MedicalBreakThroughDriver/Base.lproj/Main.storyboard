@@ -201,17 +201,16 @@
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="PRl-f7-fGu">
                                         <rect key="frame" x="0.0" y="0.0" width="414" height="128"/>
                                         <subviews>
-                                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="driverlogo" translatesAutoresizingMaskIntoConstraints="NO" id="2SK-Cv-Ij9">
-                                                <rect key="frame" x="30" y="30" width="354" height="88"/>
+                                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="driverlogo" translatesAutoresizingMaskIntoConstraints="NO" id="zBR-VX-ZU3">
+                                                <rect key="frame" x="87" y="-41" width="240" height="240"/>
                                             </imageView>
                                         </subviews>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <constraints>
-                                            <constraint firstItem="2SK-Cv-Ij9" firstAttribute="leading" secondItem="PRl-f7-fGu" secondAttribute="leading" constant="30" id="8yR-mf-E3q"/>
-                                            <constraint firstAttribute="bottom" secondItem="2SK-Cv-Ij9" secondAttribute="bottom" constant="10" id="Gwu-yc-Ubm"/>
-                                            <constraint firstAttribute="trailing" secondItem="2SK-Cv-Ij9" secondAttribute="trailing" constant="30" id="R3d-ej-uk6"/>
+                                            <constraint firstItem="zBR-VX-ZU3" firstAttribute="centerX" secondItem="PRl-f7-fGu" secondAttribute="centerX" id="GL1-qf-JO2"/>
                                             <constraint firstAttribute="height" constant="128" id="beU-Jf-K31"/>
-                                            <constraint firstItem="2SK-Cv-Ij9" firstAttribute="top" secondItem="PRl-f7-fGu" secondAttribute="top" constant="30" id="hlc-pt-GUz"/>
+                                            <constraint firstItem="zBR-VX-ZU3" firstAttribute="centerY" secondItem="PRl-f7-fGu" secondAttribute="centerY" constant="15" id="g1G-bP-aT8"/>
+                                            <constraint firstItem="zBR-VX-ZU3" firstAttribute="width" secondItem="PRl-f7-fGu" secondAttribute="height" multiplier="15:8" id="hXC-eY-Yxd"/>
                                         </constraints>
                                     </view>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="QlH-rp-WTs">
@@ -1612,14 +1611,17 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="driverlogo" translatesAutoresizingMaskIntoConstraints="NO" id="ECg-5u-kh6">
-                                <rect key="frame" x="10" y="248" width="394" height="240"/>
+                                <rect key="frame" x="30" y="318" width="354" height="100"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="100" id="haa-ya-f9D"/>
+                                </constraints>
                             </imageView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="dL8-UU-0d6"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
-                            <constraint firstItem="ECg-5u-kh6" firstAttribute="leading" secondItem="dL8-UU-0d6" secondAttribute="leading" constant="10" id="dda-Vh-7wY"/>
-                            <constraint firstItem="dL8-UU-0d6" firstAttribute="trailing" secondItem="ECg-5u-kh6" secondAttribute="trailing" constant="10" id="kQ9-Wo-Ppd"/>
+                            <constraint firstItem="ECg-5u-kh6" firstAttribute="leading" secondItem="dL8-UU-0d6" secondAttribute="leading" constant="30" id="dda-Vh-7wY"/>
+                            <constraint firstItem="dL8-UU-0d6" firstAttribute="trailing" secondItem="ECg-5u-kh6" secondAttribute="trailing" constant="30" id="kQ9-Wo-Ppd"/>
                             <constraint firstItem="ECg-5u-kh6" firstAttribute="centerY" secondItem="qdE-Bk-ZBn" secondAttribute="centerY" id="lMt-vl-uCN"/>
                             <constraint firstItem="ECg-5u-kh6" firstAttribute="centerX" secondItem="qdE-Bk-ZBn" secondAttribute="centerX" id="p8V-Ge-eJt"/>
                         </constraints>

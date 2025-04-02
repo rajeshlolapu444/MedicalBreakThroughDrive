@@ -57,34 +57,9 @@ class MainTabBarController: UITabBarController,UITabBarControllerDelegate {
         item.title = title
     }
     
-    
-    func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
-        let index = tabBarController.viewControllers?.firstIndex(of: viewController)
-//        if index == 0 {
-//            if let homeVC = viewController as? SummaryPageViewController {
-//            }
-//        }
-//        if index == 1 {
-//            if let homeVC = viewController as? HomeViewController {
-//            }
-//        }
-        
-        if let tabItems = tabBarController.tabBar.items {
-            
-            setupTabBarItem(tabItems[0], imageName: "home_un", selectedImageName: "home_select", title: "Home")
-            setupTabBarItem(tabItems[1], imageName: "active_un", selectedImageName: "active_select", title: "Active Orders")
-            setupTabBarItem(tabItems[2], imageName: "history_un", selectedImageName: "history_Select", title: "Past Orders")
-            setupTabBarItem(tabItems[3], imageName: "profile_un", selectedImageName: "profile_select", title: "Profile")
-        }
-    }
-    
     override func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {
         if let index = tabBar.items?.firstIndex(of: item),
            let selectedViewController = viewControllers?[index] {
-//            if index == 0 {
-//                if let homeVC = selectedViewController as? SummaryPageViewController {
-//                }
-//            }
             if index == 1 {
                 if let activeVC = selectedViewController as? HomeViewController {
                     activeVC.topTitle = "Active Orders"
