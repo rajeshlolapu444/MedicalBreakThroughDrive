@@ -48,7 +48,7 @@
             <subviews>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="cey-PJ-tYd">
                     <rect key="frame" x="0.0" y="0.0" width="393" height="70"/>
-                    <color key="backgroundColor" red="0.22745099660000001" green="0.49411764740000003" blue="0.74117648599999997" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                    <color key="backgroundColor" red="0.28235294117647058" green="0.59215686274509804" blue="0.32941176470588235" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="70" id="ODD-wN-ckr"/>
                     </constraints>
@@ -115,7 +115,7 @@
                         </view>
                     </subviews>
                     <viewLayoutGuide key="safeArea" id="WWk-PV-XY6"/>
-                    <color key="backgroundColor" red="0.22745099660000001" green="0.49411764740000003" blue="0.74117648599999997" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                    <color key="backgroundColor" red="0.28235294117647058" green="0.59215686274509804" blue="0.32941176470588235" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                     <constraints>
                         <constraint firstItem="eSj-9J-Con" firstAttribute="centerY" secondItem="gqB-NN-O7Y" secondAttribute="centerY" id="3Uf-FV-erj"/>
                         <constraint firstItem="WWk-PV-XY6" firstAttribute="trailing" secondItem="5zn-W4-2p0" secondAttribute="trailing" id="Hpi-ts-GaW"/>

@@ -59,7 +59,7 @@
                             <nil key="highlightedColor"/>
                         </label>
                     </subviews>
-                    <color key="backgroundColor" red="0.22745099660000001" green="0.49411764740000003" blue="0.74117648599999997" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                    <color key="backgroundColor" red="0.28235294117647058" green="0.59215686274509804" blue="0.32941176470588235" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                     <constraints>
                         <constraint firstAttribute="bottom" secondItem="mDr-yY-ai0" secondAttribute="bottom" id="Iej-Zo-yJU"/>
                         <constraint firstItem="mDr-yY-ai0" firstAttribute="top" secondItem="toK-qe-fh1" secondAttribute="top" id="OHJ-ia-0lO"/>
@@ -174,7 +174,7 @@
                 </stackView>
             </subviews>
             <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
-            <color key="backgroundColor" red="0.2274509804" green="0.4941176471" blue="0.74117647060000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+            <color key="backgroundColor" red="0.28235294117647058" green="0.59215686274509804" blue="0.32941176470588235" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
             <constraints>
                 <constraint firstItem="wwf-eU-Urf" firstAttribute="top" secondItem="DWy-mg-uck" secondAttribute="bottom" constant="20" id="7dM-SJ-HV7"/>
                 <constraint firstItem="YeK-TB-LaZ" firstAttribute="top" secondItem="toK-qe-fh1" secondAttribute="bottom" id="JJA-q4-gTe"/>

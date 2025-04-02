@@ -48,7 +48,7 @@
                             <nil key="highlightedColor"/>
                         </label>
                     </subviews>
-                    <color key="backgroundColor" red="0.22745099660000001" green="0.49411764740000003" blue="0.74117648599999997" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                    <color key="backgroundColor" red="0.28235294117647058" green="0.59215686274509804" blue="0.32941176470588235" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                     <constraints>
                         <constraint firstItem="8ue-uM-iq9" firstAttribute="top" secondItem="xwk-JG-EZG" secondAttribute="top" id="72x-My-qor"/>
                         <constraint firstItem="8ue-uM-iq9" firstAttribute="leading" secondItem="xwk-JG-EZG" secondAttribute="leading" constant="10" id="ERN-v7-3Q1"/>
@@ -67,7 +67,7 @@
                 </view>
             </subviews>
             <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
-            <color key="backgroundColor" red="0.2274509804" green="0.4941176471" blue="0.74117647060000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+            <color key="backgroundColor" red="0.28235294117647058" green="0.59215686274509804" blue="0.32941176470588235" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
             <constraints>
                 <constraint firstAttribute="trailing" secondItem="xwk-JG-EZG" secondAttribute="trailing" id="2sr-qR-4wC"/>
                 <constraint firstAttribute="bottom" secondItem="VjS-X8-rW1" secondAttribute="bottom" id="9Ud-HF-1dU"/>
