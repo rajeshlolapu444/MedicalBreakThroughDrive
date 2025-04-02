@@ -28,13 +28,26 @@ class SplashViewController: UIViewController {
             }
         }
     }
-    func navigateToHome() {
-        let homeViewController = MAIN.instantiateViewController(withIdentifier: "HomeViewController") as! HomeViewController
-        navigationController?.pushViewController(homeViewController, animated: true)
-    }
     func navigateToSummary() {
-        let vc = MAIN.instantiateViewController(withIdentifier: "SummaryPageViewController") as! SummaryPageViewController
-        navigationController?.pushViewController(vc, animated: true)
+        let storyboard = UIStoryboard(name: "Main", bundle: Bundle.main)
+        
+        let homeVC = storyboard.instantiateViewController(identifier: "MainTabBarController") as! MainTabBarController
+        let nav = UINavigationController(rootViewController: homeVC)
+        if let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate{
+            sceneDelegate.window?.rootViewController = nav
+            sceneDelegate.window?.makeKeyAndVisible()
+        }else{
+            if #available(iOS 15.0, *) {
+                if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+                   let keyWindow = windowScene.windows.first(where: { $0.isKeyWindow }) {
+                    keyWindow.rootViewController = nav
+                    keyWindow.makeKeyAndVisible()
+                }
+            } else {
+                UIApplication.shared.windows.filter { $0.isKeyWindow }.first?.rootViewController = nav
+                UIApplication.shared.windows.filter { $0.isKeyWindow }.first?.makeKeyAndVisible()
+            }
+        }
     }
 }
 

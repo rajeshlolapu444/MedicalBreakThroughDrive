@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="23504" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="Bg6-Mc-Tj8">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="23504" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="Jfk-VG-lcG">
     <device id="retina5_5" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
@@ -185,9 +185,9 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="nRW-Gs-doQ" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-26.086956521739133" y="-12.228260869565219"/>
+            <point key="canvasLocation" x="-194" y="-4"/>
         </scene>
-        <!--Summary Page View Controller-->
+        <!--Home-->
         <scene sceneID="Vrn-b8-dRJ">
             <objects>
                 <viewController storyboardIdentifier="SummaryPageViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="ah3-rs-JOx" customClass="SummaryPageViewController" customModule="MedicalBreakThroughDriver" customModuleProvider="target" sceneMemberID="viewController">
@@ -640,12 +640,33 @@
                             <constraint firstItem="kyJ-tz-UoF" firstAttribute="leading" secondItem="UpJ-I0-m75" secondAttribute="leading" id="w8H-sF-Mxj"/>
                         </constraints>
                     </view>
+                    <tabBarItem key="tabBarItem" title="Home" image="home_un" selectedImage="home_select" id="OCu-we-aCF"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="FNO-0W-a24" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="678.26086956521749" y="-14.673913043478262"/>
         </scene>
-        <!--Home View Controller-->
+        <!--Main Tab Bar Controller-->
+        <scene sceneID="hNM-ut-Ed7">
+            <objects>
+                <tabBarController storyboardIdentifier="MainTabBarController" automaticallyAdjustsScrollViewInsets="NO" useStoryboardIdentifierAsRestorationIdentifier="YES" id="Zw7-r7-0IU" customClass="MainTabBarController" customModule="MedicalBreakThroughDriver" customModuleProvider="target" sceneMemberID="viewController">
+                    <nil key="simulatedTopBarMetrics"/>
+                    <tabBar key="tabBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="mPb-bV-B79">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="49"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    </tabBar>
+                    <connections>
+                        <segue destination="ah3-rs-JOx" kind="relationship" relationship="viewControllers" id="HaU-Fw-045"/>
+                        <segue destination="BYZ-38-t0r" kind="relationship" relationship="viewControllers" id="4FB-D3-3ce"/>
+                        <segue destination="BYZ-38-t0r" kind="relationship" relationship="viewControllers" id="cnP-m7-GpC"/>
+                    </connections>
+                </tabBarController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="KwV-ao-J2a" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="564" y="-1007"/>
+        </scene>
+        <!--Active Orders-->
         <scene sceneID="tne-QT-ifu">
             <objects>
                 <viewController storyboardIdentifier="HomeViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="BYZ-38-t0r" customClass="HomeViewController" customModule="MedicalBreakThroughDriver" customModuleProvider="target" sceneMemberID="viewController">
@@ -653,13 +674,6 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="hfb-ql-LAp">
-                                <rect key="frame" x="0.0" y="0.0" width="414" height="400"/>
-                                <color key="backgroundColor" red="0.28235294117647058" green="0.59215686274509804" blue="0.32941176470588235" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="400" id="FQu-Xb-sWA"/>
-                                </constraints>
-                            </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="amM-AG-gAR">
                                 <rect key="frame" x="0.0" y="20" width="414" height="50"/>
                                 <subviews>
@@ -736,10 +750,10 @@
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="tFt-UK-Gyv">
-                                <rect key="frame" x="0.0" y="120" width="414" height="616"/>
+                                <rect key="frame" x="0.0" y="120" width="414" height="567"/>
                                 <subviews>
                                     <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" style="grouped" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" estimatedSectionHeaderHeight="-1" sectionFooterHeight="18" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="Wih-cu-i41">
-                                        <rect key="frame" x="0.0" y="-20" width="414" height="636"/>
+                                        <rect key="frame" x="0.0" y="-20" width="414" height="587"/>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     </tableView>
                                 </subviews>
@@ -936,10 +950,10 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="jaZ-Nm-8G1">
-                                <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
+                                <rect key="frame" x="0.0" y="20" width="414" height="667"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="fft-Dw-X4o">
-                                        <rect key="frame" x="20" y="258" width="374" height="220"/>
+                                        <rect key="frame" x="20" y="248" width="374" height="220"/>
                                         <subviews>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="9cj-IZ-Doz">
                                                 <rect key="frame" x="329" y="5" width="40" height="35"/>
@@ -1024,36 +1038,34 @@
                                 <color key="backgroundColor" white="0.0" alpha="0.10483099489795919" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
                                     <constraint firstItem="fft-Dw-X4o" firstAttribute="centerX" secondItem="jaZ-Nm-8G1" secondAttribute="centerX" id="3mO-ex-VXc"/>
-                                    <constraint firstItem="fft-Dw-X4o" firstAttribute="centerY" secondItem="jaZ-Nm-8G1" secondAttribute="centerY" id="4BO-zg-pL2"/>
+                                    <constraint firstItem="fft-Dw-X4o" firstAttribute="centerY" secondItem="jaZ-Nm-8G1" secondAttribute="centerY" constant="24.5" id="4BO-zg-pL2"/>
                                     <constraint firstItem="fft-Dw-X4o" firstAttribute="leading" secondItem="jaZ-Nm-8G1" secondAttribute="leading" constant="20" id="5iA-Pt-u0E"/>
                                     <constraint firstAttribute="trailing" secondItem="fft-Dw-X4o" secondAttribute="trailing" constant="20" id="q9Y-ke-G4i"/>
                                 </constraints>
                             </view>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <color key="backgroundColor" red="0.28235294119999998" green="0.59215686270000001" blue="0.3294117647" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                         <constraints>
                             <constraint firstItem="uqu-CY-ckm" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="5ky-R9-QbJ"/>
                             <constraint firstItem="amM-AG-gAR" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="8GG-h3-yyE"/>
-                            <constraint firstItem="hfb-ql-LAp" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="8q2-zR-ENK"/>
                             <constraint firstItem="amM-AG-gAR" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="B2M-ab-q3T"/>
                             <constraint firstItem="u3V-sE-4yG" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="EwN-2Z-2No"/>
                             <constraint firstItem="tFt-UK-Gyv" firstAttribute="top" secondItem="uqu-CY-ckm" secondAttribute="bottom" id="KfV-nq-IZM"/>
+                            <constraint firstItem="tFt-UK-Gyv" firstAttribute="bottom" secondItem="6Tk-OE-BBY" secondAttribute="bottom" id="MJS-ww-cgj"/>
                             <constraint firstItem="tFt-UK-Gyv" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="OAj-yX-amq"/>
                             <constraint firstItem="uqu-CY-ckm" firstAttribute="top" secondItem="amM-AG-gAR" secondAttribute="bottom" id="U6g-kU-24X"/>
                             <constraint firstItem="u3V-sE-4yG" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="Us6-1g-fCD"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="tFt-UK-Gyv" secondAttribute="trailing" id="VaE-RD-vsl"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="uqu-CY-ckm" secondAttribute="trailing" id="Vpw-wj-kSf"/>
-                            <constraint firstAttribute="trailing" secondItem="hfb-ql-LAp" secondAttribute="trailing" id="biv-MO-ro6"/>
                             <constraint firstAttribute="trailing" secondItem="jaZ-Nm-8G1" secondAttribute="trailing" id="bjK-Xa-Uoc"/>
+                            <constraint firstItem="jaZ-Nm-8G1" firstAttribute="bottom" secondItem="6Tk-OE-BBY" secondAttribute="bottom" id="cMe-dD-ZfU"/>
                             <constraint firstItem="jaZ-Nm-8G1" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="lLU-Lr-BZk"/>
                             <constraint firstItem="amM-AG-gAR" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="nBm-3w-AxU"/>
-                            <constraint firstAttribute="bottom" secondItem="jaZ-Nm-8G1" secondAttribute="bottom" id="nwK-QH-eIz"/>
-                            <constraint firstItem="hfb-ql-LAp" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="pN0-8m-6q1"/>
-                            <constraint firstItem="jaZ-Nm-8G1" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="pc5-6b-bIQ"/>
-                            <constraint firstAttribute="bottom" secondItem="tFt-UK-Gyv" secondAttribute="bottom" id="vot-Vh-R7N"/>
+                            <constraint firstItem="jaZ-Nm-8G1" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="pc5-6b-bIQ"/>
                         </constraints>
                     </view>
+                    <tabBarItem key="tabBarItem" title="Active Orders" image="active_un" selectedImage="active_select" id="eGb-KU-VRx"/>
                     <connections>
                         <outlet property="endDateBgView" destination="hcc-OY-Yde" id="t5a-OS-r7h"/>
                         <outlet property="endDateLabel" destination="WfQ-bZ-oCE" id="KFa-yj-P3h"/>
@@ -1576,6 +1588,21 @@
             </objects>
             <point key="canvasLocation" x="2207.2463768115945" y="-1.6304347826086958"/>
         </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="XVz-o3-Stu">
+            <objects>
+                <navigationController navigationBarHidden="YES" id="Jfk-VG-lcG" sceneMemberID="viewController">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="dFy-6f-EYq">
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="tVf-3R-X9k" kind="relationship" relationship="rootViewController" id="VWR-x3-rDn"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="8Gi-Bi-9ns" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-1839" y="-15"/>
+        </scene>
         <!--Splash View Controller-->
         <scene sceneID="pZU-3d-eiH">
             <objects>
@@ -1602,23 +1629,6 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="njG-m4-KUd" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-880" y="-12"/>
-        </scene>
-        <!--Navigation Controller-->
-        <scene sceneID="qP7-sW-rpZ">
-            <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" navigationBarHidden="YES" id="Bg6-Mc-Tj8" sceneMemberID="viewController">
-                    <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="ZFd-Ds-MKK">
-                        <autoresizingMask key="autoresizingMask"/>
-                    </navigationBar>
-                    <nil name="viewControllers"/>
-                    <connections>
-                        <segue destination="tVf-3R-X9k" kind="relationship" relationship="rootViewController" id="IbF-aj-rhj"/>
-                    </connections>
-                </navigationController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="esE-Nx-UdI" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="-1751" y="-12"/>
         </scene>
         <!--Help View Controller-->
         <scene sceneID="dJy-PQ-fbk">
@@ -2406,6 +2416,9 @@
             <point key="canvasLocation" x="3989.8550724637685" y="2.4456521739130435"/>
         </scene>
     </scenes>
+    <inferredMetricsTieBreakers>
+        <segue reference="cnP-m7-GpC"/>
+    </inferredMetricsTieBreakers>
     <resources>
         <image name="Breakthrough App-12" width="244" height="199"/>
         <image name="Breakthrough App-13" width="285" height="206"/>
@@ -2415,11 +2428,15 @@
         <image name="Breakthrough App-18" width="120" height="171"/>
         <image name="Breakthrough App-22" width="238" height="171"/>
         <image name="PrivacyPolicy" width="512" height="512"/>
+        <image name="active_select" width="57" height="73"/>
+        <image name="active_un" width="57" height="73"/>
         <image name="ass@4x" width="1738" height="1864"/>
         <image name="calendar.badge.plus" catalog="system" width="128" height="109"/>
         <image name="close" width="24" height="24"/>
         <image name="down-arrow" width="256" height="256"/>
         <image name="driverlogo" width="1736" height="240"/>
+        <image name="home_select" width="73" height="73"/>
+        <image name="home_un" width="73" height="73"/>
         <image name="left" width="16" height="16"/>
         <image name="lock.rotation" catalog="system" width="128" height="119"/>
         <image name="logo" width="1034" height="171"/>
@@ -2429,16 +2446,16 @@
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
         <systemColor name="systemGray5Color">
-            <color red="0.89803921568627454" green="0.89803921568627454" blue="0.91764705882352937" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.8980392157" green="0.8980392157" blue="0.91764705879999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
         <systemColor name="systemGreenColor">
-            <color red="0.20392156862745098" green="0.7803921568627451" blue="0.34901960784313724" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.20392156859999999" green="0.78039215689999997" blue="0.34901960780000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
         <systemColor name="systemRedColor">
-            <color red="1" green="0.23137254901960785" blue="0.18823529411764706" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="1" green="0.23137254900000001" blue="0.18823529410000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
         <systemColor name="tintColor">
-            <color red="0.0" green="0.47843137254901963" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
     </resources>
 </document>
