@@ -70,4 +70,13 @@ class PersistenceStorage {
             defaults.set(coordinates, forKey: "currentLocationCoordinates")
         }
     }
+    var tabTitle: String? {
+        set (newValue){
+            defaults.set(newValue, forKey: "tabTitle")
+        }
+        get {
+            return defaults.object(forKey: "tabTitle") as? String
+        }
+    }
 }
+

@@ -43,6 +43,9 @@ class HomeViewController: UIViewController {
     var selectedIndex : Int?
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.navigationController?.setNavigationBarHidden(true, animated: true)
+        topTitle = PersistenceStorage.sharedInstance.tabTitle ?? "Orders"
+        topTitle == "History" ? (ordersType = .Past) : (ordersType = .Active)
         self.titleLbl.text = topTitle
         setupTableView()
         debugPrint(PersistenceStorage.sharedInstance.loginResponseData?.accessToken ?? "", "accessToken")

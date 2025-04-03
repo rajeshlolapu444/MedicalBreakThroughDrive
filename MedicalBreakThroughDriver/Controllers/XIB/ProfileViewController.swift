@@ -36,6 +36,12 @@ class ProfileViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.navigationController?.setNavigationBarHidden(true, animated: true)
+        if PersistenceStorage.sharedInstance.tabTitle == "Profile" {
+            isProfile = true
+        } else {
+            isProfile = false
+        }
         if isProfile {
             profileStackView.isHidden = false
             changePasswordStackView.isHidden = true

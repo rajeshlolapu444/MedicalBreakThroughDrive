@@ -14,17 +14,20 @@ class SummaryPageViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.profileDataApiCall()
+        self.navigationController?.setNavigationBarHidden(true, animated: true)
     }
     @IBAction func activeOrdersBtnAct(_ sender: UIButton) {
         let homeViewController = MAIN.instantiateViewController(withIdentifier: "HomeViewController") as! HomeViewController
         homeViewController.topTitle = "Active Orders"
         homeViewController.ordersType = .Active
+        PersistenceStorage.sharedInstance.tabTitle = "Active Orders"
         navigationController?.pushViewController(homeViewController, animated: true)
     }
     @IBAction func pastOrdersBtnAct(_ sender: UIButton) {
         let homeViewController = MAIN.instantiateViewController(withIdentifier: "HomeViewController") as! HomeViewController
         homeViewController.topTitle = "History"
         homeViewController.ordersType = .Past
+        PersistenceStorage.sharedInstance.tabTitle = "History"
         navigationController?.pushViewController(homeViewController, animated: true)
     }
     func navigateToHome() {
@@ -34,6 +37,7 @@ class SummaryPageViewController: UIViewController {
     @IBAction func profileBtnAct(_ sender: UIButton) {
         let vc = ProfileViewController()
         vc.isProfile = true
+        PersistenceStorage.sharedInstance.tabTitle = "Profile"
         self.navigationController?.pushViewController(vc, animated: true)
 //        popOrPushToXibViewController(ofType: ProfileViewController.self) {
 //            return ProfileViewController()
@@ -51,6 +55,7 @@ class SummaryPageViewController: UIViewController {
     @IBAction func changePasswordBtnAct(_ sender: UIButton) {
         let vc = ProfileViewController()
         vc.isProfile = false
+        PersistenceStorage.sharedInstance.tabTitle = "password"
         self.navigationController?.pushViewController(vc, animated: true)
 
     }
