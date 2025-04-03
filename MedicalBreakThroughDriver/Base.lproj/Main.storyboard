@@ -23,7 +23,7 @@
         <!--Login View Controller-->
         <scene sceneID="0GQ-0g-tUA">
             <objects>
-                <viewController storyboardIdentifier="LoginViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="MBE-Yx-Uj8" customClass="LoginViewController" customModule="MedicalBreakThroughDriver" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="LoginViewController" hidesBottomBarWhenPushed="YES" useStoryboardIdentifierAsRestorationIdentifier="YES" id="MBE-Yx-Uj8" customClass="LoginViewController" customModule="MedicalBreakThroughDriver" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="1nJ-Hh-ywL">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -1605,7 +1605,7 @@
         <!--Splash View Controller-->
         <scene sceneID="pZU-3d-eiH">
             <objects>
-                <viewController id="tVf-3R-X9k" customClass="SplashViewController" customModule="MedicalBreakThroughDriver" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController hidesBottomBarWhenPushed="YES" id="tVf-3R-X9k" customClass="SplashViewController" customModule="MedicalBreakThroughDriver" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="qdE-Bk-ZBn">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
